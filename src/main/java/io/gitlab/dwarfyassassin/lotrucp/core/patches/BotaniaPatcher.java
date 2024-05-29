@@ -1,21 +1,17 @@
 package io.gitlab.dwarfyassassin.lotrucp.core.patches;
 
-import org.objectweb.asm.tree.*;
-
 import io.gitlab.dwarfyassassin.lotrucp.core.UCPCoreMod;
-import io.gitlab.dwarfyassassin.lotrucp.core.patches.base.*;
+import io.gitlab.dwarfyassassin.lotrucp.core.patches.base.ModPatcher;
 import io.gitlab.dwarfyassassin.lotrucp.core.utils.ASMUtils;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
 
 public class BotaniaPatcher extends ModPatcher {
 	public BotaniaPatcher() {
 		super("Botania", "Botania");
-		classes.put("vazkii.botania.common.block.subtile.generating.SubTileKekimurus", new Patcher.ConsumerImplBecauseNoLambdas<ClassNode>() {
-
-			@Override
-			public void accept(ClassNode node) {
-				BotaniaPatcher.this.patchKekimurus(node);
-			}
-		});
+		classes.put("vazkii.botania.common.block.subtile.generating.SubTileKekimurus", this::patchKekimurus);
 	}
 
 	public void patchKekimurus(ClassNode classNode) {

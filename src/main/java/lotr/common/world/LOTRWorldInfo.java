@@ -1,6 +1,7 @@
 package lotr.common.world;
 
-import net.minecraft.world.storage.*;
+import net.minecraft.world.storage.DerivedWorldInfo;
+import net.minecraft.world.storage.WorldInfo;
 
 public class LOTRWorldInfo extends DerivedWorldInfo {
 	public long lotrTotalTime;
@@ -20,10 +21,6 @@ public class LOTRWorldInfo extends DerivedWorldInfo {
 		return lotrTotalTime;
 	}
 
-	@Override
-	public void incrementTotalWorldTime(long time) {
-	}
-
 	public void lotr_setTotalTime(long time) {
 		lotrTotalTime = time;
 	}
@@ -32,7 +29,4 @@ public class LOTRWorldInfo extends DerivedWorldInfo {
 		lotrWorldTime = time;
 	}
 
-	@Override
-	public void setWorldTime(long time) {
-	}
 }

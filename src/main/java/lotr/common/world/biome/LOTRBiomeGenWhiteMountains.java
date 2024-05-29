@@ -1,15 +1,20 @@
 package lotr.common.world.biome;
 
-import java.util.Random;
-
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRMod;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
 import lotr.common.world.feature.LOTRTreeType;
 import lotr.common.world.map.LOTRWaypoint;
-import lotr.common.world.spawning.*;
-import lotr.common.world.structure2.*;
+import lotr.common.world.spawning.LOTRBiomeSpawnList;
+import lotr.common.world.spawning.LOTREventSpawner;
+import lotr.common.world.spawning.LOTRInvasions;
+import lotr.common.world.spawning.LOTRSpawnList;
+import lotr.common.world.structure2.LOTRWorldGenBeaconTower;
+import lotr.common.world.structure2.LOTRWorldGenSmallStoneRuin;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRBiomeGenWhiteMountains extends LOTRBiomeGenGondor {
 	public LOTRBiomeGenWhiteMountains(int i, boolean major) {
@@ -43,11 +48,11 @@ public class LOTRBiomeGenWhiteMountains extends LOTRBiomeGenGondor {
 		npcSpawnList.newFactionList(0).add(arrspawnListContainer5);
 		clearBiomeVariants();
 		variantChance = 0.2f;
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_BEECH, 0.3f);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_BIRCH, 0.3f);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LARCH, 0.3f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_BEECH, 0.3f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_BIRCH, 0.3f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LARCH, 0.3f);
 		decorator.biomeGemFactor = 1.0f;
 		decorator.treesPerChunk = 1;
 		decorator.flowersPerChunk = 2;

@@ -1,11 +1,11 @@
 package lotr.common.world.map;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.biome.BiomeGenBase;
+
+import java.util.Random;
 
 public abstract class LOTRRoadType {
 	public static LOTRRoadType PATH = new LOTRRoadType() {
@@ -451,6 +451,27 @@ public abstract class LOTRRoadType {
 		return 1.0f;
 	}
 
+	public LOTRRoadType setRepair(float f) {
+		LOTRRoadType baseRoad = this;
+		return new LOTRRoadType() {
+
+			@Override
+			public RoadBlock getBlock(Random rand, BiomeGenBase biome, boolean top, boolean slab) {
+				return baseRoad.getBlock(rand, biome, top, slab);
+			}
+
+			@Override
+			public float getRepair() {
+				return f;
+			}
+
+			@Override
+			public boolean hasFlowers() {
+				return baseRoad.hasFlowers();
+			}
+		};
+	}
+
 	public boolean hasFlowers() {
 		return false;
 	}
@@ -476,28 +497,7 @@ public abstract class LOTRRoadType {
 		};
 	}
 
-	public LOTRRoadType setRepair(float f) {
-		LOTRRoadType baseRoad = this;
-		return new LOTRRoadType() {
-
-			@Override
-			public RoadBlock getBlock(Random rand, BiomeGenBase biome, boolean top, boolean slab) {
-				return baseRoad.getBlock(rand, biome, top, slab);
-			}
-
-			@Override
-			public float getRepair() {
-				return f;
-			}
-
-			@Override
-			public boolean hasFlowers() {
-				return baseRoad.hasFlowers();
-			}
-		};
-	}
-
-	public static abstract class BridgeType {
+	public abstract static class BridgeType {
 		public static BridgeType DEFAULT = new BridgeType() {
 
 			@Override
@@ -558,9 +558,6 @@ public abstract class LOTRRoadType {
 				return new RoadBlock(LOTRMod.fence, 3);
 			}
 		};
-
-		public BridgeType() {
-		}
 
 		public abstract RoadBlock getBlock(Random var1, boolean var2);
 

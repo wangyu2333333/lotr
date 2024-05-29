@@ -1,8 +1,7 @@
 package lotr.common.world.structure;
 
-import java.util.Random;
-
-import lotr.common.*;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
 import lotr.common.entity.LOTREntityNPCRespawner;
 import lotr.common.entity.npc.*;
 import lotr.common.item.LOTRItemBanner;
@@ -12,6 +11,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
+
+import java.util.Random;
 
 public class LOTRWorldGenWoodElfTower extends LOTRWorldGenStructureBase {
 	public WorldGenerator treeGen = new LOTRWorldGenMirkOak(true, 6, 6, 0, false).setGreenOak().disableRestrictions().disableRoots();
@@ -40,21 +41,21 @@ public class LOTRWorldGenWoodElfTower extends LOTRWorldGenStructureBase {
 			rotation = usingPlayerRotation();
 		}
 		switch (rotation) {
-		case 0: {
-			k += radiusPlusOne;
-			break;
-		}
-		case 1: {
-			i -= radiusPlusOne;
-			break;
-		}
-		case 2: {
-			k -= radiusPlusOne;
-			break;
-		}
-		case 3: {
-			i += radiusPlusOne;
-		}
+			case 0: {
+				k += radiusPlusOne;
+				break;
+			}
+			case 1: {
+				i -= radiusPlusOne;
+				break;
+			}
+			case 2: {
+				k -= radiusPlusOne;
+				break;
+			}
+			case 3: {
+				i += radiusPlusOne;
+			}
 		}
 		if (restrictions) {
 			int minHeight = j;
@@ -265,35 +266,35 @@ public class LOTRWorldGenWoodElfTower extends LOTRWorldGenStructureBase {
 		setBlockAndNotifyAdequately(world, i + 2, topHeight + 2, k - 6, LOTRMod.brick3, 5);
 		ItemStack bow1 = new ItemStack(LOTRMod.mirkwoodBow);
 		ItemStack bow2 = new ItemStack(LOTRMod.mirkwoodBow);
-		ItemStack[] armor = { new ItemStack(LOTRMod.helmetWoodElvenScout), new ItemStack(LOTRMod.bodyWoodElvenScout), new ItemStack(LOTRMod.legsWoodElvenScout), new ItemStack(LOTRMod.bootsWoodElvenScout) };
+		ItemStack[] armor = {new ItemStack(LOTRMod.helmetWoodElvenScout), new ItemStack(LOTRMod.bodyWoodElvenScout), new ItemStack(LOTRMod.legsWoodElvenScout), new ItemStack(LOTRMod.bootsWoodElvenScout)};
 		switch (rotation) {
-		case 0: {
-			placeArmorStand(world, i, topHeight + 1, k + 5, 0, armor);
-			spawnItemFrame(world, i + 6, topHeight + 2, k, 1, bow1);
-			spawnItemFrame(world, i - 6, topHeight + 2, k, 3, bow2);
-			setBlockAndNotifyAdequately(world, i, topHeight + 1, k - 4, LOTRMod.commandTable, 0);
-			break;
-		}
-		case 1: {
-			spawnItemFrame(world, i, topHeight + 2, k + 6, 2, bow1);
-			spawnItemFrame(world, i, topHeight + 2, k - 6, 0, bow2);
-			placeArmorStand(world, i - 5, topHeight + 1, k, 1, armor);
-			setBlockAndNotifyAdequately(world, i + 4, topHeight + 1, k, LOTRMod.commandTable, 0);
-			break;
-		}
-		case 2: {
-			spawnItemFrame(world, i + 6, topHeight + 2, k, 1, bow1);
-			placeArmorStand(world, i, topHeight + 1, k - 5, 2, armor);
-			spawnItemFrame(world, i - 6, topHeight + 2, k, 3, bow2);
-			setBlockAndNotifyAdequately(world, i, topHeight + 1, k + 4, LOTRMod.commandTable, 0);
-			break;
-		}
-		case 3: {
-			spawnItemFrame(world, i, topHeight + 2, k + 6, 2, bow1);
-			placeArmorStand(world, i + 5, topHeight + 1, k, 3, armor);
-			spawnItemFrame(world, i, topHeight + 2, k - 6, 0, bow2);
-			setBlockAndNotifyAdequately(world, i - 4, topHeight + 1, k, LOTRMod.commandTable, 0);
-		}
+			case 0: {
+				placeArmorStand(world, i, topHeight + 1, k + 5, 0, armor);
+				spawnItemFrame(world, i + 6, topHeight + 2, k, 1, bow1);
+				spawnItemFrame(world, i - 6, topHeight + 2, k, 3, bow2);
+				setBlockAndNotifyAdequately(world, i, topHeight + 1, k - 4, LOTRMod.commandTable, 0);
+				break;
+			}
+			case 1: {
+				spawnItemFrame(world, i, topHeight + 2, k + 6, 2, bow1);
+				spawnItemFrame(world, i, topHeight + 2, k - 6, 0, bow2);
+				placeArmorStand(world, i - 5, topHeight + 1, k, 1, armor);
+				setBlockAndNotifyAdequately(world, i + 4, topHeight + 1, k, LOTRMod.commandTable, 0);
+				break;
+			}
+			case 2: {
+				spawnItemFrame(world, i + 6, topHeight + 2, k, 1, bow1);
+				placeArmorStand(world, i, topHeight + 1, k - 5, 2, armor);
+				spawnItemFrame(world, i - 6, topHeight + 2, k, 3, bow2);
+				setBlockAndNotifyAdequately(world, i, topHeight + 1, k + 4, LOTRMod.commandTable, 0);
+				break;
+			}
+			case 3: {
+				spawnItemFrame(world, i, topHeight + 2, k + 6, 2, bow1);
+				placeArmorStand(world, i + 5, topHeight + 1, k, 3, armor);
+				spawnItemFrame(world, i, topHeight + 2, k - 6, 0, bow2);
+				setBlockAndNotifyAdequately(world, i - 4, topHeight + 1, k, LOTRMod.commandTable, 0);
+			}
 		}
 		placeWallBanner(world, i, topHeight + 1, k + 6, 0, LOTRItemBanner.BannerType.WOOD_ELF);
 		placeWallBanner(world, i - 6, topHeight + 1, k, 1, LOTRItemBanner.BannerType.WOOD_ELF);
@@ -303,12 +304,12 @@ public class LOTRWorldGenWoodElfTower extends LOTRWorldGenStructureBase {
 			setBlockAndNotifyAdequately(world, i12, j - sectionHeight + 1, k - 5, Blocks.wooden_slab, 8);
 			setBlockAndNotifyAdequately(world, i12, j - sectionHeight + 1, k + 5, Blocks.wooden_slab, 8);
 			if (random.nextBoolean()) {
-				this.placeMug(world, random, i12, j - sectionHeight + 2, k + 5, 0, LOTRFoods.WOOD_ELF_DRINK);
+				placeMug(world, random, i12, j - sectionHeight + 2, k + 5, 0, LOTRFoods.WOOD_ELF_DRINK);
 			}
 			if (Math.abs(i12 - i) <= 1) {
 				continue;
 			}
-			this.placeBarrel(world, random, i12, j - sectionHeight + 2, k - 5, 3, LOTRFoods.WOOD_ELF_DRINK);
+			placeBarrel(world, random, i12, j - sectionHeight + 2, k - 5, 3, LOTRFoods.WOOD_ELF_DRINK);
 		}
 		setBlockAndNotifyAdequately(world, i - 1, j - sectionHeight + 1, k - 5, LOTRMod.woodElvenTable, 0);
 		setBlockAndNotifyAdequately(world, i + 1, j - sectionHeight + 1, k - 5, LOTRMod.woodElvenTable, 0);
@@ -317,11 +318,11 @@ public class LOTRWorldGenWoodElfTower extends LOTRWorldGenStructureBase {
 		for (i12 = i + 4; i12 <= i + 5; ++i12) {
 			setBlockAndNotifyAdequately(world, i12, j - sectionHeight + 1, k - 3, Blocks.oak_stairs, 3);
 			setBlockAndNotifyAdequately(world, i12, j - sectionHeight + 1, k - 1, Blocks.planks, 0);
-			this.placeMug(world, random, i12, j - sectionHeight + 2, k - 1, 0, LOTRFoods.WOOD_ELF_DRINK);
+			placeMug(world, random, i12, j - sectionHeight + 2, k - 1, 0, LOTRFoods.WOOD_ELF_DRINK);
 			setBlockAndNotifyAdequately(world, i12, j - sectionHeight + 1, k, Blocks.wooden_slab, 8);
 			placePlateWithCertainty(world, random, i12, j - sectionHeight + 2, k, plateBlock, LOTRFoods.ELF);
 			setBlockAndNotifyAdequately(world, i12, j - sectionHeight + 1, k + 1, Blocks.planks, 0);
-			this.placeMug(world, random, i12, j - sectionHeight + 2, k + 1, 2, LOTRFoods.WOOD_ELF_DRINK);
+			placeMug(world, random, i12, j - sectionHeight + 2, k + 1, 2, LOTRFoods.WOOD_ELF_DRINK);
 			setBlockAndNotifyAdequately(world, i12, j - sectionHeight + 1, k + 3, Blocks.oak_stairs, 2);
 		}
 		setBlockAndNotifyAdequately(world, i + 4, j - sectionHeight + 1, k - 4, Blocks.planks, 0);
@@ -434,49 +435,49 @@ public class LOTRWorldGenWoodElfTower extends LOTRWorldGenStructureBase {
 		}
 		setBlockAndNotifyAdequately(world, i - 5, j - sectionHeight + 1, k, Blocks.trapdoor, 3);
 		switch (rotation) {
-		case 0: {
-			int j16;
-			k12 = k - radius;
-			for (i12 = i - 1; i12 <= i + 1; ++i12) {
-				for (j16 = j + 1; j16 <= j + 3; ++j16) {
-					setBlockAndNotifyAdequately(world, i12, j16, k12, LOTRMod.gateWoodElven, 2);
+			case 0: {
+				int j16;
+				k12 = k - radius;
+				for (i12 = i - 1; i12 <= i + 1; ++i12) {
+					for (j16 = j + 1; j16 <= j + 3; ++j16) {
+						setBlockAndNotifyAdequately(world, i12, j16, k12, LOTRMod.gateWoodElven, 2);
+					}
 				}
+				placeWallBanner(world, i, j + 6, k12, 2, LOTRItemBanner.BannerType.WOOD_ELF);
+				break;
 			}
-			placeWallBanner(world, i, j + 6, k12, 2, LOTRItemBanner.BannerType.WOOD_ELF);
-			break;
-		}
-		case 1: {
-			int j16;
-			i12 = i + radius;
-			for (k12 = k - 1; k12 <= k + 1; ++k12) {
-				for (j16 = j + 1; j16 <= j + 3; ++j16) {
-					setBlockAndNotifyAdequately(world, i12, j16, k12, LOTRMod.gateWoodElven, 5);
+			case 1: {
+				int j16;
+				i12 = i + radius;
+				for (k12 = k - 1; k12 <= k + 1; ++k12) {
+					for (j16 = j + 1; j16 <= j + 3; ++j16) {
+						setBlockAndNotifyAdequately(world, i12, j16, k12, LOTRMod.gateWoodElven, 5);
+					}
 				}
+				placeWallBanner(world, i12, j + 6, k, 3, LOTRItemBanner.BannerType.WOOD_ELF);
+				break;
 			}
-			placeWallBanner(world, i12, j + 6, k, 3, LOTRItemBanner.BannerType.WOOD_ELF);
-			break;
-		}
-		case 2: {
-			int j16;
-			k12 = k + radius;
-			for (i12 = i - 1; i12 <= i + 1; ++i12) {
-				for (j16 = j + 1; j16 <= j + 3; ++j16) {
-					setBlockAndNotifyAdequately(world, i12, j16, k12, LOTRMod.gateWoodElven, 3);
+			case 2: {
+				int j16;
+				k12 = k + radius;
+				for (i12 = i - 1; i12 <= i + 1; ++i12) {
+					for (j16 = j + 1; j16 <= j + 3; ++j16) {
+						setBlockAndNotifyAdequately(world, i12, j16, k12, LOTRMod.gateWoodElven, 3);
+					}
 				}
+				placeWallBanner(world, i, j + 6, k12, 0, LOTRItemBanner.BannerType.WOOD_ELF);
+				break;
 			}
-			placeWallBanner(world, i, j + 6, k12, 0, LOTRItemBanner.BannerType.WOOD_ELF);
-			break;
-		}
-		case 3: {
-			int j16;
-			i12 = i - radius;
-			for (k12 = k - 1; k12 <= k + 1; ++k12) {
-				for (j16 = j + 1; j16 <= j + 3; ++j16) {
-					setBlockAndNotifyAdequately(world, i12, j16, k12, LOTRMod.gateWoodElven, 4);
+			case 3: {
+				int j16;
+				i12 = i - radius;
+				for (k12 = k - 1; k12 <= k + 1; ++k12) {
+					for (j16 = j + 1; j16 <= j + 3; ++j16) {
+						setBlockAndNotifyAdequately(world, i12, j16, k12, LOTRMod.gateWoodElven, 4);
+					}
 				}
+				placeWallBanner(world, i12, j + 6, k, 1, LOTRItemBanner.BannerType.WOOD_ELF);
 			}
-			placeWallBanner(world, i12, j + 6, k, 1, LOTRItemBanner.BannerType.WOOD_ELF);
-		}
 		}
 		LOTREntityWoodElfCaptain woodElfCaptain = new LOTREntityWoodElfCaptain(world);
 		woodElfCaptain.setLocationAndAngles(i - 3 + 0.5, topHeight + 1, k - 3 + 0.5, world.rand.nextFloat() * 360.0f, 0.0f);
@@ -495,17 +496,17 @@ public class LOTRWorldGenWoodElfTower extends LOTRWorldGenStructureBase {
 	public void placeDungeonBlock(World world, Random random, int i, int j, int k) {
 		int l = random.nextInt(3);
 		switch (l) {
-		case 0: {
-			setBlockAndNotifyAdequately(world, i, j, k, LOTRMod.brick3, 5);
-			break;
-		}
-		case 1: {
-			setBlockAndNotifyAdequately(world, i, j, k, LOTRMod.brick3, 6);
-			break;
-		}
-		case 2: {
-			setBlockAndNotifyAdequately(world, i, j, k, LOTRMod.brick3, 7);
-		}
+			case 0: {
+				setBlockAndNotifyAdequately(world, i, j, k, LOTRMod.brick3, 5);
+				break;
+			}
+			case 1: {
+				setBlockAndNotifyAdequately(world, i, j, k, LOTRMod.brick3, 6);
+				break;
+			}
+			case 2: {
+				setBlockAndNotifyAdequately(world, i, j, k, LOTRMod.brick3, 7);
+			}
 		}
 	}
 

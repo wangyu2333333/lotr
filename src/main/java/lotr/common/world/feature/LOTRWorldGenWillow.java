@@ -1,16 +1,19 @@
 package lotr.common.world.feature;
 
-import java.util.*;
-
 import lotr.common.LOTRMod;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenAbstractTree;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Random;
 
 public class LOTRWorldGenWillow extends WorldGenAbstractTree {
 	public Block woodBlock = LOTRMod.wood6;
@@ -19,7 +22,7 @@ public class LOTRWorldGenWillow extends WorldGenAbstractTree {
 	public int leafMeta = 1;
 	public int minHeight = 8;
 	public int maxHeight = 13;
-	public boolean needsWater = false;
+	public boolean needsWater;
 
 	public LOTRWorldGenWillow(boolean flag) {
 		super(flag);
@@ -51,7 +54,7 @@ public class LOTRWorldGenWillow extends WorldGenAbstractTree {
 		} else {
 			flag = false;
 		}
-		if (!(below = world.getBlock(i, j - 1, k)).canSustainPlant((IBlockAccess) world, i, j - 1, k, ForgeDirection.UP, (IPlantable) Blocks.sapling)) {
+		if (!(below = world.getBlock(i, j - 1, k)).canSustainPlant(world, i, j - 1, k, ForgeDirection.UP, (IPlantable) Blocks.sapling)) {
 			flag = false;
 		}
 		if (needsWater) {
@@ -73,7 +76,7 @@ public class LOTRWorldGenWillow extends WorldGenAbstractTree {
 			return false;
 		}
 		below.onPlantGrow(world, i, j - 1, k, i, j, k);
-		ArrayList<ChunkCoordinates> vineGrows = new ArrayList<>();
+		Collection<ChunkCoordinates> vineGrows = new ArrayList<>();
 		int angle = 0;
 		while (angle < 360) {
 			float angleR = (float) Math.toRadians(angle += 30 + random.nextInt(30));
@@ -114,18 +117,14 @@ public class LOTRWorldGenWillow extends WorldGenAbstractTree {
 				if (Math.abs(i2) == Math.abs(k2)) {
 					continue;
 				}
-				int rootX = i1;
 				int rootY = j + 1 + random.nextInt(2);
-				int rootZ = k1;
 				int roots = 0;
-				while (world.getBlock(rootX, rootY, k1).isReplaceable(world, rootX, rootY, rootZ)) {
-					setBlockAndNotifyAdequately(world, rootX, rootY, rootZ, woodBlock, woodMeta | 0xC);
-					world.getBlock(rootX, rootY - 1, rootZ).onPlantGrow(world, rootX, rootY - 1, rootZ, rootX, rootY, rootZ);
+				while (world.getBlock(i1, rootY, k1).isReplaceable(world, i1, rootY, k1)) {
+					setBlockAndNotifyAdequately(world, i1, rootY, k1, woodBlock, woodMeta | 0xC);
+					world.getBlock(i1, rootY - 1, k1).onPlantGrow(world, i1, rootY - 1, k1, i1, rootY, k1);
 					--rootY;
 					roots++;
-					if (roots <= 4 + random.nextInt(3)) {
-						continue;
-					}
+					random.nextInt(3);
 				}
 			}
 		}

@@ -1,6 +1,7 @@
 package lotr.common.world.biome;
 
-import lotr.common.world.spawning.*;
+import lotr.common.world.spawning.LOTRBiomeSpawnList;
+import lotr.common.world.spawning.LOTRSpawnList;
 
 public class LOTRBiomeGenFangornClearing extends LOTRBiomeGenFangorn {
 	public LOTRBiomeGenFangornClearing(int i, boolean major) {
@@ -16,8 +17,4 @@ public class LOTRBiomeGenFangornClearing extends LOTRBiomeGenFangorn {
 		decorator.doubleGrassPerChunk = 8;
 	}
 
-	@Override
-	public float getTreeIncreaseChance() {
-		return 0.1f;
-	}
 }

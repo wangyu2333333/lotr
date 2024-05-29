@@ -1,6 +1,8 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
 import lotr.common.entity.LOTREntityUtils;
 import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
 import lotr.common.item.LOTRItemLeatherHat;
@@ -17,7 +19,7 @@ public class LOTREntityHobbitFarmer extends LOTREntityHobbit implements LOTRTrad
 		super(world);
 		LOTREntityUtils.removeAITask(this, EntityAIPanic.class);
 		tasks.addTask(2, new LOTREntityAIAttackOnCollide(this, 1.2, false));
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 	}
 
 	@Override

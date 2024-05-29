@@ -3,8 +3,11 @@ package lotr.common.entity.npc;
 import lotr.common.LOTRMod;
 import lotr.common.entity.ai.LOTREntityAIRangedAttack;
 import lotr.common.entity.projectile.LOTREntityDart;
-import lotr.common.item.*;
-import net.minecraft.entity.*;
+import lotr.common.item.LOTRItemBlowgun;
+import lotr.common.item.LOTRItemDart;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -14,7 +17,7 @@ import net.minecraft.world.World;
 public class LOTREntityTauredainBlowgunner extends LOTREntityTauredain {
 	public LOTREntityTauredainBlowgunner(World world) {
 		super(world);
-		this.addTargetTasks(true);
+		addTargetTasks(true);
 	}
 
 	@Override
@@ -27,7 +30,7 @@ public class LOTREntityTauredainBlowgunner extends LOTREntityTauredain {
 	public void attackEntityWithRangedAttack(EntityLivingBase target, float f) {
 		ItemStack heldItem = getHeldItem();
 		float str = 1.0f + getDistanceToEntity(target) / 16.0f * 0.015f;
-		LOTREntityDart dart = ((LOTRItemDart) LOTRMod.tauredainDart).createDart(worldObj, this, target, new ItemStack(LOTRMod.tauredainDart), str *= LOTRItemBlowgun.getBlowgunLaunchSpeedFactor(heldItem), 1.0f);
+		LOTREntityDart dart = ((LOTRItemDart) LOTRMod.tauredainDart).createDart(worldObj, this, target, new ItemStack(LOTRMod.tauredainDart), str * LOTRItemBlowgun.getBlowgunLaunchSpeedFactor(heldItem), 1.0f);
 		if (heldItem != null) {
 			LOTRItemBlowgun.applyBlowgunModifiers(dart, heldItem);
 		}

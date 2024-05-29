@@ -1,18 +1,22 @@
 package lotr.common.world.biome;
 
-import java.util.Random;
-
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRMod;
 import lotr.common.entity.npc.LOTREntityBanditHarad;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
-import lotr.common.world.feature.*;
-import lotr.common.world.map.*;
+import lotr.common.world.feature.LOTRTreeType;
+import lotr.common.world.feature.LOTRWorldGenBoulder;
+import lotr.common.world.map.LOTRRoadType;
+import lotr.common.world.map.LOTRWaypoint;
 import lotr.common.world.spawning.LOTREventSpawner;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.NoiseGeneratorPerlin;
-import net.minecraft.world.gen.feature.*;
+import net.minecraft.world.gen.feature.WorldGenMinable;
+import net.minecraft.world.gen.feature.WorldGenerator;
+
+import java.util.Random;
 
 public class LOTRBiomeGenLostladen extends LOTRBiome {
 	public static NoiseGeneratorPerlin noiseDirt = new NoiseGeneratorPerlin(new Random(486938207230702L), 1);
@@ -25,15 +29,15 @@ public class LOTRBiomeGenLostladen extends LOTRBiome {
 		super(i, major);
 		spawnableCreatureList.clear();
 		npcSpawnList.clear();
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
-		this.addBiomeVariant(LOTRBiomeVariant.STEPPE);
-		this.addBiomeVariant(LOTRBiomeVariant.STEPPE_BARREN);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS_FOREST);
-		this.addBiomeVariant(LOTRBiomeVariant.SHRUBLAND_OAK);
-		this.addBiomeVariant(LOTRBiomeVariant.SCRUBLAND);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS_SCRUBLAND);
-		this.addBiomeVariant(LOTRBiomeVariant.DEADFOREST_OAK, 3.0f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
+		addBiomeVariant(LOTRBiomeVariant.STEPPE);
+		addBiomeVariant(LOTRBiomeVariant.STEPPE_BARREN);
+		addBiomeVariant(LOTRBiomeVariant.HILLS);
+		addBiomeVariant(LOTRBiomeVariant.HILLS_FOREST);
+		addBiomeVariant(LOTRBiomeVariant.SHRUBLAND_OAK);
+		addBiomeVariant(LOTRBiomeVariant.SCRUBLAND);
+		addBiomeVariant(LOTRBiomeVariant.HILLS_SCRUBLAND);
+		addBiomeVariant(LOTRBiomeVariant.DEADFOREST_OAK, 3.0f);
 		decorator.addOre(new WorldGenMinable(Blocks.lapis_ore, 6), 1.0f, 0, 48);
 		decorator.treesPerChunk = 0;
 		decorator.grassPerChunk = 3;

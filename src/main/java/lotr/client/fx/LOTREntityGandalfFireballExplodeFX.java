@@ -1,6 +1,7 @@
 package lotr.client.fx;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.particle.EntityFireworkOverlayFX;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.world.World;
@@ -19,7 +20,7 @@ public class LOTREntityGandalfFireballExplodeFX extends EntityFireworkOverlayFX 
 		return 1.0f;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public int getBrightnessForRender(float f) {
 		return 15728880;

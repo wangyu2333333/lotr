@@ -1,23 +1,42 @@
 package lotr.client;
 
-import java.util.*;
-
-import lotr.common.*;
+import lotr.common.LOTRDimension;
+import lotr.common.LOTRLevelData;
 import lotr.common.fac.LOTRFaction;
 import net.minecraft.entity.player.EntityPlayer;
 
+import java.util.EnumMap;
+import java.util.Map;
+
 public class LOTRAlignmentTicker {
-	public static Map<LOTRFaction, LOTRAlignmentTicker> allFactionTickers = new HashMap<>();
+	public static Map<LOTRFaction, LOTRAlignmentTicker> allFactionTickers = new EnumMap<>(LOTRFaction.class);
 	public LOTRFaction theFac;
 	public float oldAlign;
 	public float newAlign;
-	public int moveTick = 0;
-	public int prevMoveTick = 0;
+	public int moveTick;
+	public int prevMoveTick;
 	public int flashTick;
 	public int numericalTick;
 
 	public LOTRAlignmentTicker(LOTRFaction f) {
 		theFac = f;
+	}
+
+	public static LOTRAlignmentTicker forFaction(LOTRFaction fac) {
+		LOTRAlignmentTicker ticker = allFactionTickers.get(fac);
+		if (ticker == null) {
+			ticker = new LOTRAlignmentTicker(fac);
+			allFactionTickers.put(fac, ticker);
+		}
+		return ticker;
+	}
+
+	public static void updateAll(EntityPlayer entityplayer, boolean forceInstant) {
+		for (LOTRDimension dim : LOTRDimension.values()) {
+			for (LOTRFaction fac : dim.factionList) {
+				forFaction(fac).update(entityplayer, forceInstant);
+			}
+		}
 	}
 
 	public float getInterpolatedAlignment(float f) {
@@ -43,7 +62,6 @@ public class LOTRAlignmentTicker {
 				oldAlign = newAlign;
 				newAlign = curAlign;
 				moveTick = 20;
-				prevMoveTick = 20;
 				flashTick = 30;
 				numericalTick = 200;
 			}
@@ -59,23 +77,6 @@ public class LOTRAlignmentTicker {
 			}
 			if (numericalTick > 0) {
 				--numericalTick;
-			}
-		}
-	}
-
-	public static LOTRAlignmentTicker forFaction(LOTRFaction fac) {
-		LOTRAlignmentTicker ticker = allFactionTickers.get(fac);
-		if (ticker == null) {
-			ticker = new LOTRAlignmentTicker(fac);
-			allFactionTickers.put(fac, ticker);
-		}
-		return ticker;
-	}
-
-	public static void updateAll(EntityPlayer entityplayer, boolean forceInstant) {
-		for (LOTRDimension dim : LOTRDimension.values()) {
-			for (LOTRFaction fac : dim.factionList) {
-				LOTRAlignmentTicker.forFaction(fac).update(entityplayer, forceInstant);
 			}
 		}
 	}

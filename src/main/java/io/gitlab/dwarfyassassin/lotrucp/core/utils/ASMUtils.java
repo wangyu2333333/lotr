@@ -1,9 +1,11 @@
 package io.gitlab.dwarfyassassin.lotrucp.core.utils;
 
-import org.objectweb.asm.tree.*;
-
 import io.gitlab.dwarfyassassin.lotrucp.core.UCPCoreMod;
 import net.minecraftforge.classloading.FMLForgePlugin;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.InsnList;
+import org.objectweb.asm.tree.MethodNode;
 
 public class ASMUtils {
 	public static MethodNode findMethod(ClassNode classNode, String targetMethodName, String targetMethodDesc) {
@@ -18,7 +20,7 @@ public class ASMUtils {
 	}
 
 	public static MethodNode findMethod(ClassNode classNode, String targetMethodName, String obfTargetMethodName, String targetMethodDesc) {
-		return ASMUtils.findMethod(classNode, FMLForgePlugin.RUNTIME_DEOBF ? obfTargetMethodName : targetMethodName, targetMethodDesc);
+		return findMethod(classNode, FMLForgePlugin.RUNTIME_DEOBF ? obfTargetMethodName : targetMethodName, targetMethodDesc);
 	}
 
 	public static void removePreviousNodes(InsnList list, AbstractInsnNode start, int amount) {

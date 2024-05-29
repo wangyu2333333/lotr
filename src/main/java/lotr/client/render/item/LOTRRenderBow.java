@@ -1,28 +1,31 @@
 package lotr.client.render.item;
 
-import java.util.*;
-
-import org.lwjgl.opengl.GL11;
-
 import lotr.client.LOTRClientProxy;
 import lotr.common.item.LOTRItemBow;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.client.IItemRenderer;
+import org.lwjgl.opengl.GL11;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 public class LOTRRenderBow implements IItemRenderer {
-	public static boolean renderingWeaponRack = false;
+	public static boolean renderingWeaponRack;
 	public LOTRRenderLargeItem largeItemRenderer;
 	public Map<LOTRItemBow.BowState, LOTRRenderLargeItem.ExtraLargeIconToken> tokensPullStates;
 
 	public LOTRRenderBow(LOTRRenderLargeItem large) {
 		largeItemRenderer = large;
 		if (largeItemRenderer != null) {
-			tokensPullStates = new HashMap<>();
+			tokensPullStates = new EnumMap<>(LOTRItemBow.BowState.class);
 			for (LOTRItemBow.BowState state : LOTRItemBow.BowState.values()) {
 				if (state == LOTRItemBow.BowState.HELD) {
 					continue;
@@ -74,7 +77,7 @@ public class LOTRRenderBow implements IItemRenderer {
 				throw new RuntimeException("Attempting to render a large bow which is not a bow");
 			}
 			LOTRItemBow bow = (LOTRItemBow) item;
-			LOTRItemBow.BowState bowState = LOTRItemBow.BowState.HELD;
+			LOTRItemBow.BowState bowState;
 			if (entity instanceof EntityPlayer) {
 				EntityPlayer entityplayer = (EntityPlayer) entity;
 				ItemStack usingItem = entityplayer.getItemInUse();

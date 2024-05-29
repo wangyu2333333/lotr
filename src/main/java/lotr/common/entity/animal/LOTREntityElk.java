@@ -1,7 +1,5 @@
 package lotr.common.entity.animal;
 
-import java.util.UUID;
-
 import lotr.common.LOTRMod;
 import lotr.common.entity.LOTRRandomSkinEntity;
 import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
@@ -11,6 +9,8 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+
+import java.util.UUID;
 
 public class LOTREntityElk extends LOTREntityHorse implements LOTRRandomSkinEntity {
 	public LOTREntityElk(World world) {
@@ -27,11 +27,6 @@ public class LOTREntityElk extends LOTREntityHorse implements LOTRRandomSkinEnti
 	@Override
 	public double clampChildHealth(double health) {
 		return MathHelper.clamp_double(health, 16.0, 50.0);
-	}
-
-	@Override
-	public double clampChildJump(double jump) {
-		return MathHelper.clamp_double(jump, 0.3, 1.0);
 	}
 
 	@Override
@@ -96,7 +91,7 @@ public class LOTREntityElk extends LOTREntityHorse implements LOTRRandomSkinEnti
 	@Override
 	public void onLOTRHorseSpawn() {
 		double maxHealth = getEntityAttribute(SharedMonsterAttributes.maxHealth).getAttributeValue();
-		getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(maxHealth *= 1.0f + rand.nextFloat() * 0.5f);
+		getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(maxHealth * (1.0f + rand.nextFloat() * 0.5f));
 	}
 
 	@Override

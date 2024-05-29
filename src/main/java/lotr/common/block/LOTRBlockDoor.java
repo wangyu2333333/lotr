@@ -1,13 +1,16 @@
 package lotr.common.block;
 
-import java.util.Random;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
-import net.minecraft.block.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRCreativeTabs;
+import lotr.common.LOTRMod;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockDoor;
 import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRBlockDoor extends BlockDoor {
 	public LOTRBlockDoor() {
@@ -21,7 +24,7 @@ public class LOTRBlockDoor extends BlockDoor {
 		setCreativeTab(LOTRCreativeTabs.tabUtil);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public Item getItem(World world, int i, int j, int k) {
 		return Item.getItemFromBlock(this);
@@ -32,7 +35,7 @@ public class LOTRBlockDoor extends BlockDoor {
 		return (i & 8) != 0 ? null : Item.getItemFromBlock(this);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public String getItemIconName() {
 		return getTextureName();

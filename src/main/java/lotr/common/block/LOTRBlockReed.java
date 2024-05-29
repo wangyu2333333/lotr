@@ -1,23 +1,27 @@
 package lotr.common.block;
 
-import java.util.Random;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRCreativeTabs;
+import lotr.common.LOTRMod;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.item.Item;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.minecraftforge.common.*;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+import net.minecraftforge.common.EnumPlantType;
+import net.minecraftforge.common.IPlantable;
+
+import java.util.Random;
 
 public class LOTRBlockReed extends Block implements IPlantable {
 	public static int MAX_GROW_HEIGHT = 3;
 	public static int META_GROW_END = 15;
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon iconUpper;
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon iconLower;
 
 	public LOTRBlockReed() {
@@ -52,7 +56,7 @@ public class LOTRBlockReed extends Block implements IPlantable {
 	public boolean checkCanStay(World world, int i, int j, int k) {
 		if (!canBlockStay(world, i, j, k)) {
 			int meta = world.getBlockMetadata(i, j, k);
-			this.dropBlockAsItem(world, i, j, k, meta, 0);
+			dropBlockAsItem(world, i, j, k, meta, 0);
 			world.setBlockToAir(i, j, k);
 			return false;
 		}
@@ -60,16 +64,11 @@ public class LOTRBlockReed extends Block implements IPlantable {
 	}
 
 	@Override
-	public int damageDropped(int i) {
-		return 0;
-	}
-
-	@Override
 	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int i, int j, int k) {
 		return null;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(IBlockAccess world, int i, int j, int k, int side) {
 		if (side == -2) {
@@ -86,23 +85,16 @@ public class LOTRBlockReed extends Block implements IPlantable {
 		return blockIcon;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
 		if (i == -2) {
 			return iconLower;
 		}
-		if (i == -1) {
-		}
 		return blockIcon;
 	}
 
-	@Override
-	public Item getItemDropped(int i, Random random, int j) {
-		return Item.getItemFromBlock(this);
-	}
-
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public String getItemIconName() {
 		return getTextureName();
@@ -138,7 +130,7 @@ public class LOTRBlockReed extends Block implements IPlantable {
 		checkCanStay(world, i, j, k);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
 		blockIcon = iconregister.registerIcon(getTextureName() + "_mid");

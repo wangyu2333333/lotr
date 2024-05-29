@@ -1,14 +1,17 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
-import lotr.common.*;
-import lotr.common.entity.npc.*;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
+import lotr.common.entity.npc.LOTREntityGulfBartender;
+import lotr.common.entity.npc.LOTREntityGulfHaradrim;
+import lotr.common.entity.npc.LOTRNames;
 import lotr.common.item.LOTRItemBanner;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenGulfTavern extends LOTRWorldGenGulfStructure {
 	public LOTRWorldGenGulfTavern(boolean flag) {
@@ -24,7 +27,7 @@ public class LOTRWorldGenGulfTavern extends LOTRWorldGenGulfStructure {
 		int j2;
 		int j12;
 		int k1;
-		this.setOriginAndRotation(world, i, j, k, rotation, 10);
+		setOriginAndRotation(world, i, j, k, rotation, 10);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			int minHeight = 0;
@@ -79,10 +82,10 @@ public class LOTRWorldGenGulfTavern extends LOTRWorldGenGulfStructure {
 		generateStrScan(world, random, 0, 0, 0);
 		String[] tavernName = LOTRNames.getHaradTavernName(random);
 		String tavernNameNPC = tavernName[0] + " " + tavernName[1];
-		placeSign(world, 0, 3, -10, Blocks.wall_sign, 2, new String[] { "", tavernName[0], tavernName[1], "" });
-		placeSign(world, 0, 3, 10, Blocks.wall_sign, 3, new String[] { "", tavernName[0], tavernName[1], "" });
-		this.placeBarrel(world, random, -3, 2, -2, 4, LOTRFoods.GULF_HARAD_DRINK);
-		this.placeBarrel(world, random, 3, 2, 1, 5, LOTRFoods.GULF_HARAD_DRINK);
+		placeSign(world, 0, 3, -10, Blocks.wall_sign, 2, new String[]{"", tavernName[0], tavernName[1], ""});
+		placeSign(world, 0, 3, 10, Blocks.wall_sign, 3, new String[]{"", tavernName[0], tavernName[1], ""});
+		placeBarrel(world, random, -3, 2, -2, 4, LOTRFoods.GULF_HARAD_DRINK);
+		placeBarrel(world, random, 3, 2, 1, 5, LOTRFoods.GULF_HARAD_DRINK);
 		placeFlowerPot(world, 3, 2, -2, getRandomFlower(world, random));
 		placeFlowerPot(world, -3, 2, 1, getRandomFlower(world, random));
 		placeKebabStand(world, random, -2, 2, 2, LOTRMod.kebabStand, 2);
@@ -130,7 +133,7 @@ public class LOTRWorldGenGulfTavern extends LOTRWorldGenGulfStructure {
 			spawnNPCAndSetHome(haradrim, world, random.nextBoolean() ? -5 : 5, 1, 0, 16);
 		}
 		for (i12 = -1; i12 <= 1; ++i12) {
-			for (step = 0; step < 12 && !isOpaque(world, i12, j1 = 0 - step, k1 = -10 - step); ++step) {
+			for (step = 0; step < 12 && !isOpaque(world, i12, j1 = -step, k1 = -10 - step); ++step) {
 				setBlockAndMetadata(world, i12, j1, k1, LOTRMod.stairsRedSandstone, 2);
 				setGrassToDirt(world, i12, j1 - 1, k1);
 				j2 = j1 - 1;
@@ -142,7 +145,7 @@ public class LOTRWorldGenGulfTavern extends LOTRWorldGenGulfStructure {
 			}
 		}
 		for (i12 = -1; i12 <= 1; ++i12) {
-			for (step = 0; step < 12 && !isOpaque(world, i12, j1 = 0 - step, k1 = 10 + step); ++step) {
+			for (step = 0; step < 12 && !isOpaque(world, i12, j1 = -step, k1 = 10 + step); ++step) {
 				setBlockAndMetadata(world, i12, j1, k1, LOTRMod.stairsRedSandstone, 3);
 				setGrassToDirt(world, i12, j1 - 1, k1);
 				j2 = j1 - 1;
@@ -159,7 +162,7 @@ public class LOTRWorldGenGulfTavern extends LOTRWorldGenGulfStructure {
 	public void placeFoodOrDrink(World world, Random random, int i, int j, int k) {
 		if (random.nextBoolean()) {
 			if (random.nextBoolean()) {
-				this.placeMug(world, random, i, j, k, random.nextInt(4), LOTRFoods.GULF_HARAD_DRINK);
+				placeMug(world, random, i, j, k, random.nextInt(4), LOTRFoods.GULF_HARAD_DRINK);
 			} else {
 				Block plateBlock;
 				plateBlock = random.nextBoolean() ? LOTRMod.woodPlateBlock : LOTRMod.ceramicPlateBlock;

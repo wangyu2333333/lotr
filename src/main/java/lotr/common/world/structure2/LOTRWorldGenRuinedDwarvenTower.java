@@ -1,13 +1,14 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
-import lotr.common.entity.npc.*;
+import lotr.common.entity.npc.LOTREntityGundabadOrcMercenaryCaptain;
+import lotr.common.entity.npc.LOTREntityNPC;
 import lotr.common.item.LOTRItemBanner;
 import lotr.common.world.structure.LOTRChestContents;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenRuinedDwarvenTower extends LOTRWorldGenDwarvenTower {
 	public boolean isGundabad;
@@ -86,20 +87,20 @@ public class LOTRWorldGenRuinedDwarvenTower extends LOTRWorldGenDwarvenTower {
 		} else {
 			int randomBars = random.nextInt(4);
 			switch (randomBars) {
-			case 0:
-				barsBlock = LOTRMod.dwarfBars;
-				break;
-			case 1:
-				barsBlock = LOTRMod.orcSteelBars;
-				break;
-			case 2:
-				barsBlock = Blocks.iron_bars;
-				break;
-			case 3:
-				barsBlock = LOTRMod.bronzeBars;
-				break;
-			default:
-				break;
+				case 0:
+					barsBlock = LOTRMod.dwarfBars;
+					break;
+				case 1:
+					barsBlock = LOTRMod.orcSteelBars;
+					break;
+				case 2:
+					barsBlock = Blocks.iron_bars;
+					break;
+				case 3:
+					barsBlock = LOTRMod.bronzeBars;
+					break;
+				default:
+					break;
 			}
 		}
 		isGundabad = random.nextInt(3) == 0;

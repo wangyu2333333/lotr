@@ -1,22 +1,21 @@
 package lotr.common;
 
-import java.io.*;
-
 import cpw.mods.fml.common.FMLLog;
-import lotr.common.world.*;
-import net.minecraft.nbt.*;
+import lotr.common.world.LOTRWorldInfo;
+import lotr.common.world.LOTRWorldProvider;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.WorldServer;
+
+import java.io.File;
+import java.nio.file.Files;
 
 public class LOTRTime {
 	public static int DAY_LENGTH = 48000;
 	public static long totalTime;
 	public static long worldTime;
-	public static boolean needsLoad;
-
-	static {
-		needsLoad = true;
-	}
+	public static boolean needsLoad = true;
 
 	public static void addWorldTime(long time) {
 		worldTime += time;
@@ -24,7 +23,7 @@ public class LOTRTime {
 
 	public static void advanceToMorning() {
 		long l = worldTime + DAY_LENGTH;
-		LOTRTime.setWorldTime(l - l % DAY_LENGTH);
+		worldTime = l - l % DAY_LENGTH;
 	}
 
 	public static File getTimeDat() {
@@ -33,11 +32,11 @@ public class LOTRTime {
 
 	public static void load() {
 		try {
-			NBTTagCompound timeData = LOTRLevelData.loadNBTFromFile(LOTRTime.getTimeDat());
+			NBTTagCompound timeData = LOTRLevelData.loadNBTFromFile(getTimeDat());
 			totalTime = timeData.getLong("LOTRTotalTime");
 			worldTime = timeData.getLong("LOTRWorldTime");
 			needsLoad = false;
-			LOTRTime.save();
+			save();
 		} catch (Exception e) {
 			FMLLog.severe("Error loading LOTR time data");
 			e.printStackTrace();
@@ -46,9 +45,9 @@ public class LOTRTime {
 
 	public static void save() {
 		try {
-			File time_dat = LOTRTime.getTimeDat();
+			File time_dat = getTimeDat();
 			if (!time_dat.exists()) {
-				CompressedStreamTools.writeCompressed(new NBTTagCompound(), new FileOutputStream(time_dat));
+				CompressedStreamTools.writeCompressed(new NBTTagCompound(), Files.newOutputStream(time_dat.toPath()));
 			}
 			NBTTagCompound timeData = new NBTTagCompound();
 			timeData.setLong("LOTRTotalTime", totalTime);

@@ -1,20 +1,27 @@
 package lotr.common.block;
 
-import java.util.*;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRCreativeTabs;
+import lotr.common.LOTRDate;
+import lotr.common.LOTRMod;
 import lotr.common.world.LOTRWorldProvider;
 import net.minecraft.block.BlockLeaves;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import net.minecraft.world.*;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class LOTRBlockLeavesBase extends BlockLeaves {
-	public static List allLeafBlocks = new ArrayList();
-	@SideOnly(value = Side.CLIENT)
+	public static Collection allLeafBlocks = new ArrayList();
+	@SideOnly(Side.CLIENT)
 	public IIcon[][] leafIcons;
 	public String[] leafNames;
 	public String vanillaTextureName;
@@ -33,7 +40,34 @@ public class LOTRBlockLeavesBase extends BlockLeaves {
 		allLeafBlocks.add(this);
 	}
 
-	public void addSpecialLeafDrops(ArrayList drops, World world, int i, int j, int k, int meta, int fortune) {
+	public static int getBiomeLeafColor(IBlockAccess world, int i, int j, int k) {
+		int totalR = 0;
+		int totalG = 0;
+		int totalB = 0;
+		int count = 0;
+		int range = 1;
+		for (int i1 = -range; i1 <= range; ++i1) {
+			for (int k1 = -range; k1 <= range; ++k1) {
+				int biomeColor = world.getBiomeGenForCoords(i + i1, k + k1).getBiomeFoliageColor(i + i1, j, k + k1);
+				totalR += (biomeColor & 0xFF0000) >> 16;
+				totalG += (biomeColor & 0xFF00) >> 8;
+				totalB += biomeColor & 0xFF;
+				++count;
+			}
+		}
+		int avgR = totalR / count & 0xFF;
+		int avgG = totalG / count & 0xFF;
+		int avgB = totalB / count & 0xFF;
+		return avgR << 16 | avgG << 8 | avgB;
+	}
+
+	public static void setAllGraphicsLevels(boolean flag) {
+		for (Object leafBlock : allLeafBlocks) {
+			((BlockLeaves) leafBlock).setGraphicsLevel(flag);
+		}
+	}
+
+	public void addSpecialLeafDrops(List drops, World world, int i, int j, int k, int meta, int fortune) {
 	}
 
 	public int calcFortuneModifiedDropChance(int baseChance, int fortune) {
@@ -47,7 +81,7 @@ public class LOTRBlockLeavesBase extends BlockLeaves {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public int colorMultiplier(IBlockAccess world, int i, int j, int k) {
 		return 16777215;
 	}
@@ -74,7 +108,7 @@ public class LOTRBlockLeavesBase extends BlockLeaves {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int i, int j) {
 		int meta = j & 3;
 		if (meta >= leafNames.length) {
@@ -84,7 +118,7 @@ public class LOTRBlockLeavesBase extends BlockLeaves {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public int getRenderColor(int i) {
 		return 16777215;
 	}
@@ -94,7 +128,7 @@ public class LOTRBlockLeavesBase extends BlockLeaves {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item item, CreativeTabs tab, List list) {
 		for (int j = 0; j < leafNames.length; ++j) {
 			list.add(new ItemStack(item, 1, j));
@@ -110,7 +144,7 @@ public class LOTRBlockLeavesBase extends BlockLeaves {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconregister) {
 		leafIcons = new IIcon[leafNames.length][2];
 		for (int i = 0; i < leafNames.length; ++i) {
@@ -135,32 +169,5 @@ public class LOTRBlockLeavesBase extends BlockLeaves {
 	public boolean shouldOakUseBiomeColor() {
 		LOTRDate.Season season = LOTRDate.ShireReckoning.getSeason();
 		return season == LOTRDate.Season.SPRING || season == LOTRDate.Season.SUMMER || !(LOTRMod.proxy.getClientWorld().provider instanceof LOTRWorldProvider);
-	}
-
-	public static int getBiomeLeafColor(IBlockAccess world, int i, int j, int k) {
-		int totalR = 0;
-		int totalG = 0;
-		int totalB = 0;
-		int count = 0;
-		int range = 1;
-		for (int i1 = -range; i1 <= range; ++i1) {
-			for (int k1 = -range; k1 <= range; ++k1) {
-				int biomeColor = world.getBiomeGenForCoords(i + i1, k + k1).getBiomeFoliageColor(i + i1, j, k + k1);
-				totalR += (biomeColor & 0xFF0000) >> 16;
-				totalG += (biomeColor & 0xFF00) >> 8;
-				totalB += biomeColor & 0xFF;
-				++count;
-			}
-		}
-		int avgR = totalR / count & 0xFF;
-		int avgG = totalG / count & 0xFF;
-		int avgB = totalB / count & 0xFF;
-		return avgR << 16 | avgG << 8 | avgB;
-	}
-
-	public static void setAllGraphicsLevels(boolean flag) {
-		for (Object leafBlock : allLeafBlocks) {
-			((LOTRBlockLeavesBase) leafBlock).setGraphicsLevel(flag);
-		}
 	}
 }

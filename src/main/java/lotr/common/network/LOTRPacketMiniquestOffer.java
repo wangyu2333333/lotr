@@ -1,11 +1,13 @@
 package lotr.common.network;
 
-import java.io.IOException;
-
 import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.network.simpleimpl.*;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import lotr.common.*;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
+import lotr.common.LOTRPlayerData;
 import lotr.common.entity.npc.LOTREntityNPC;
 import lotr.common.quest.LOTRMiniQuest;
 import net.minecraft.entity.Entity;
@@ -13,6 +15,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
+
+import java.io.IOException;
 
 public class LOTRPacketMiniquestOffer implements IMessage {
 	public int entityID;
@@ -24,6 +28,15 @@ public class LOTRPacketMiniquestOffer implements IMessage {
 	public LOTRPacketMiniquestOffer(int id, NBTTagCompound nbt) {
 		entityID = id;
 		miniquestData = nbt;
+	}
+
+	public static void sendClosePacket(EntityPlayer entityplayer, LOTREntityNPC npc, boolean accept) {
+		if (entityplayer == null) {
+			FMLLog.warning("LOTR Warning: Tried to send miniquest offer close packet, but player == null");
+			return;
+		}
+		IMessage packet = new LOTRPacketMiniquestOfferClose(npc.getEntityId(), accept);
+		LOTRPacketHandler.networkWrapper.sendToServer(packet);
 	}
 
 	@Override
@@ -48,15 +61,6 @@ public class LOTRPacketMiniquestOffer implements IMessage {
 		}
 	}
 
-	public static void sendClosePacket(EntityPlayer entityplayer, LOTREntityNPC npc, boolean accept) {
-		if (entityplayer == null) {
-			FMLLog.warning("LOTR Warning: Tried to send miniquest offer close packet, but player == null");
-			return;
-		}
-		LOTRPacketMiniquestOfferClose packet = new LOTRPacketMiniquestOfferClose(npc.getEntityId(), accept);
-		LOTRPacketHandler.networkWrapper.sendToServer(packet);
-	}
-
 	public static class Handler implements IMessageHandler<LOTRPacketMiniquestOffer, IMessage> {
 		@Override
 		public IMessage onMessage(LOTRPacketMiniquestOffer packet, MessageContext context) {
@@ -70,7 +74,7 @@ public class LOTRPacketMiniquestOffer implements IMessage {
 				if (quest != null) {
 					LOTRMod.proxy.displayMiniquestOffer(quest, npc);
 				} else {
-					LOTRPacketMiniquestOffer.sendClosePacket(entityplayer, npc, false);
+					sendClosePacket(entityplayer, npc, false);
 				}
 			}
 			return null;

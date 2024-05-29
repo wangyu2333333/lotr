@@ -1,31 +1,36 @@
 package lotr.common.command;
 
-import java.util.*;
-
-import lotr.common.*;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRPlayerData;
 import lotr.common.world.map.LOTRWaypoint;
-import net.minecraft.command.*;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LOTRCommandWaypoints extends CommandBase {
 	@Override
 	public List addTabCompletionOptions(ICommandSender sender, String[] args) {
 		switch (args.length) {
-		case 1:
-			return CommandBase.getListOfStringsMatchingLastWord(args, "unlock", "lock");
-		case 2: {
-			ArrayList<String> names = new ArrayList<>();
-			for (LOTRWaypoint.Region r : LOTRWaypoint.Region.values()) {
-				names.add(r.name());
+			case 1:
+				return CommandBase.getListOfStringsMatchingLastWord(args, "unlock", "lock");
+			case 2: {
+				ArrayList<String> names = new ArrayList<>();
+				for (LOTRWaypoint.Region r : LOTRWaypoint.Region.values()) {
+					names.add(r.name());
+				}
+				names.add("all");
+				return CommandBase.getListOfStringsMatchingLastWord(args, names.toArray(new String[0]));
 			}
-			names.add("all");
-			return CommandBase.getListOfStringsMatchingLastWord(args, names.toArray(new String[0]));
-		}
-		case 3:
-			return CommandBase.getListOfStringsMatchingLastWord(args, MinecraftServer.getServer().getAllUsernames());
-		default:
-			break;
+			case 3:
+				return CommandBase.getListOfStringsMatchingLastWord(args, MinecraftServer.getServer().getAllUsernames());
+			default:
+				break;
 		}
 		return null;
 	}

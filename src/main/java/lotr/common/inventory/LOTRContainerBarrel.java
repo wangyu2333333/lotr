@@ -1,16 +1,21 @@
 package lotr.common.inventory;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.recipe.LOTRBrewingRecipes;
 import lotr.common.tileentity.LOTRTileEntityBarrel;
-import net.minecraft.entity.player.*;
-import net.minecraft.inventory.*;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 public class LOTRContainerBarrel extends Container {
 	public LOTRTileEntityBarrel theBarrel;
-	public int barrelMode = 0;
-	public int brewingTime = 0;
+	public int barrelMode;
+	public int brewingTime;
 
 	public LOTRContainerBarrel(InventoryPlayer inv, LOTRTileEntityBarrel barrel) {
 		int i;
@@ -93,7 +98,7 @@ public class LOTRContainerBarrel extends Container {
 				if (aBarrelSlot.isItemValid(itemstack1)) {
 					flag = LOTRBrewingRecipes.isWaterSource(itemstack1) ? mergeItemStack(itemstack1, 6, 9, false) : mergeItemStack(itemstack1, 0, 6, false);
 				}
-				if (!flag && (i >= 10 && i < 37 ? !mergeItemStack(itemstack1, 37, 46, false) : !mergeItemStack(itemstack1, 10, 37, false))) {
+				if (!flag && (i < 37 ? !mergeItemStack(itemstack1, 37, 46, false) : !mergeItemStack(itemstack1, 10, 37, false))) {
 					return null;
 				}
 			}
@@ -111,7 +116,7 @@ public class LOTRContainerBarrel extends Container {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public void updateProgressBar(int i, int j) {
 		if (i == 0) {
 			theBarrel.barrelMode = j;

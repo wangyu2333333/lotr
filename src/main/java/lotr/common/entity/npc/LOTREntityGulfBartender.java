@@ -1,6 +1,9 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -9,7 +12,7 @@ import net.minecraft.world.World;
 public class LOTREntityGulfBartender extends LOTREntityGulfHaradrim implements LOTRTradeable.Bartender {
 	public LOTREntityGulfBartender(World world) {
 		super(world);
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 		npcLocationName = "entity.lotr.GulfBartender.locationName";
 	}
 

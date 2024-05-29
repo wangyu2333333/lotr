@@ -1,6 +1,7 @@
 package lotr.common.item;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.LOTRMod;
 import lotr.common.block.LOTRBlockTallGrass;
 import net.minecraft.block.Block;
@@ -12,7 +13,7 @@ public class LOTRItemTallGrass extends LOTRItemBlockMetadata {
 		super(block);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public int getColorFromItemStack(ItemStack itemstack, int pass) {
 		if (pass > 0) {
@@ -21,7 +22,7 @@ public class LOTRItemTallGrass extends LOTRItemBlockMetadata {
 		return super.getColorFromItemStack(itemstack, pass);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIconFromDamageForRenderPass(int meta, int pass) {
 		if (pass > 0) {

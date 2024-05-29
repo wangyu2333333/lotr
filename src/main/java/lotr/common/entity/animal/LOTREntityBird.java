@@ -1,38 +1,54 @@
 package lotr.common.entity.animal;
 
-import java.util.*;
-
 import lotr.common.LOTRMod;
 import lotr.common.block.LOTRBlockBerryBush;
-import lotr.common.entity.*;
+import lotr.common.entity.AnimalJarUpdater;
+import lotr.common.entity.LOTREntities;
+import lotr.common.entity.LOTRRandomSkinEntity;
+import lotr.common.entity.LOTRScarecrows;
 import lotr.common.inventory.LOTREntityInventory;
 import lotr.common.item.LOTRValuableItems;
 import lotr.common.world.biome.LOTRBiomeGenFarHarad;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockCrops;
 import net.minecraft.block.material.Material;
 import net.minecraft.command.IEntitySelector;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraftforge.common.*;
+import net.minecraftforge.common.EnumPlantType;
+import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class LOTREntityBird extends EntityLiving implements LOTRAmbientCreature, LOTRRandomSkinEntity, AnimalJarUpdater {
 	public ChunkCoordinates currentFlightTarget;
-	public int flightTargetTime = 0;
-	public int flapTime = 0;
+	public int flightTargetTime;
+	public int flapTime;
 	public LOTREntityInventory birdInv = new LOTREntityInventory("BirdItems", this, 9);
 	public EntityItem stealTargetItem;
 	public EntityPlayer stealTargetPlayer;
-	public int stolenTime = 0;
-	public boolean stealingCrops = false;
+	public int stolenTime;
+	public boolean stealingCrops;
 
 	public LOTREntityBird(World world) {
 		super(world);
@@ -186,6 +202,14 @@ public class LOTREntityBird extends EntityLiving implements LOTRAmbientCreature,
 		return BirdType.values()[i];
 	}
 
+	public void setBirdType(BirdType type) {
+		setBirdType(type.ordinal());
+	}
+
+	public void setBirdType(int i) {
+		dataWatcher.updateObject(16, (byte) i);
+	}
+
 	@Override
 	public boolean getCanSpawnHere() {
 		if (super.getCanSpawnHere()) {
@@ -253,7 +277,7 @@ public class LOTREntityBird extends EntityLiving implements LOTRAmbientCreature,
 	}
 
 	public List<Integer> getStealablePlayerSlots(EntityPlayer entityplayer) {
-		ArrayList<Integer> slots = new ArrayList<>();
+		List<Integer> slots = new ArrayList<>();
 		for (int i = 0; i <= 8; ++i) {
 			ItemStack itemstack;
 			if (i != entityplayer.inventory.currentItem || (itemstack = entityplayer.inventory.getStackInSlot(i)) == null || !isStealable(itemstack)) {
@@ -266,6 +290,10 @@ public class LOTREntityBird extends EntityLiving implements LOTRAmbientCreature,
 
 	public ItemStack getStolenItem() {
 		return getEquipmentInSlot(4);
+	}
+
+	public void setStolenItem(ItemStack itemstack) {
+		setCurrentItemOrArmor(4, itemstack);
 	}
 
 	@Override
@@ -285,6 +313,10 @@ public class LOTREntityBird extends EntityLiving implements LOTRAmbientCreature,
 
 	public boolean isBirdStill() {
 		return dataWatcher.getWatchableObjectByte(17) == 1;
+	}
+
+	public void setBirdStill(boolean flag) {
+		dataWatcher.updateObject(17, flag ? (byte) 1 : 0);
 	}
 
 	public boolean isStealable(ItemStack itemstack) {
@@ -330,21 +362,20 @@ public class LOTREntityBird extends EntityLiving implements LOTRAmbientCreature,
 	public IEntityLivingData onSpawnWithEgg(IEntityLivingData data) {
 		data = super.onSpawnWithEgg(data);
 		int i = MathHelper.floor_double(posX);
-		MathHelper.floor_double(posY);
 		int k = MathHelper.floor_double(posZ);
 		BiomeGenBase biome = worldObj.getBiomeGenForCoords(i, k);
 		if (biome instanceof LOTRBiomeGenFarHarad) {
 			if (rand.nextInt(8) == 0) {
-				this.setBirdType(BirdType.CROW);
+				setBirdType(BirdType.CROW);
 			} else {
-				this.setBirdType(BirdType.FAR_HARAD);
+				setBirdType(BirdType.FAR_HARAD);
 			}
 		} else if (rand.nextInt(6) == 0) {
-			this.setBirdType(BirdType.CROW);
+			setBirdType(BirdType.CROW);
 		} else if (rand.nextInt(10) == 0) {
-			this.setBirdType(BirdType.MAGPIE);
+			setBirdType(BirdType.MAGPIE);
 		} else {
-			this.setBirdType(BirdType.COMMON);
+			setBirdType(BirdType.COMMON);
 		}
 		return data;
 	}
@@ -387,26 +418,10 @@ public class LOTREntityBird extends EntityLiving implements LOTRAmbientCreature,
 	@Override
 	public void readEntityFromNBT(NBTTagCompound nbt) {
 		super.readEntityFromNBT(nbt);
-		this.setBirdType(nbt.getInteger("BirdType"));
+		setBirdType(nbt.getInteger("BirdType"));
 		setBirdStill(nbt.getBoolean("BirdStill"));
 		birdInv.writeToNBT(nbt);
 		nbt.setShort("StealTime", (short) stolenTime);
-	}
-
-	public void setBirdStill(boolean flag) {
-		dataWatcher.updateObject(17, flag ? (byte) 1 : 0);
-	}
-
-	public void setBirdType(BirdType type) {
-		this.setBirdType(type.ordinal());
-	}
-
-	public void setBirdType(int i) {
-		dataWatcher.updateObject(16, (byte) i);
-	}
-
-	public void setStolenItem(ItemStack itemstack) {
-		setCurrentItemOrArmor(4, itemstack);
 	}
 
 	@Override
@@ -414,6 +429,7 @@ public class LOTREntityBird extends EntityLiving implements LOTRAmbientCreature,
 		entityUniqueID = uuid;
 	}
 
+	@SuppressWarnings("Convert2Lambda")
 	@Override
 	public void updateAITasks() {
 		super.updateAITasks();
@@ -436,26 +452,22 @@ public class LOTREntityBird extends EntityLiving implements LOTRAmbientCreature,
 					@Override
 					public boolean isEntityApplicable(Entity e) {
 						EntityPlayer entityplayer;
-						if (e instanceof EntityPlayer && LOTREntityBird.this.canStealPlayer(entityplayer = (EntityPlayer) e)) {
-							ChunkCoordinates coords = LOTREntityBird.this.getPlayerFlightTarget(entityplayer);
-							return LOTREntityBird.this.isValidFlightTarget(coords);
+						if (e instanceof EntityPlayer && canStealPlayer(entityplayer = (EntityPlayer) e)) {
+							ChunkCoordinates coords = getPlayerFlightTarget(entityplayer);
+							return isValidFlightTarget(coords);
 						}
 						return false;
 					}
 				});
-				if (!players.isEmpty()) {
-					stealTargetPlayer = (EntityPlayer) players.get(rand.nextInt(players.size()));
-					currentFlightTarget = getPlayerFlightTarget(stealTargetPlayer);
-					newFlight();
-				} else {
+				if (players.isEmpty()) {
 					List entityItems = worldObj.selectEntitiesWithinAABB(EntityItem.class, boundingBox.expand(range, range, range), new IEntitySelector() {
 
 						@Override
 						public boolean isEntityApplicable(Entity e) {
 							EntityItem eItem;
-							if (e instanceof EntityItem && LOTREntityBird.this.canStealItem(eItem = (EntityItem) e)) {
-								ChunkCoordinates coords = LOTREntityBird.this.getItemFlightTarget(eItem);
-								return LOTREntityBird.this.isValidFlightTarget(coords);
+							if (e instanceof EntityItem && canStealItem(eItem = (EntityItem) e)) {
+								ChunkCoordinates coords = getItemFlightTarget(eItem);
+								return isValidFlightTarget(coords);
 							}
 							return false;
 						}
@@ -465,6 +477,10 @@ public class LOTREntityBird extends EntityLiving implements LOTRAmbientCreature,
 						currentFlightTarget = getItemFlightTarget(stealTargetItem);
 						newFlight();
 					}
+				} else {
+					stealTargetPlayer = (EntityPlayer) players.get(rand.nextInt(players.size()));
+					currentFlightTarget = getPlayerFlightTarget(stealTargetPlayer);
+					newFlight();
 				}
 			}
 			if (stealTargetItem != null || stealTargetPlayer != null) {
@@ -565,7 +581,7 @@ public class LOTREntityBird extends EntityLiving implements LOTRAmbientCreature,
 						int i = MathHelper.floor_double(posX);
 						j = MathHelper.floor_double(posY);
 						int k = MathHelper.floor_double(posZ);
-						currentFlightTarget = new ChunkCoordinates(i += rand.nextInt(16) - rand.nextInt(16), j += MathHelper.getRandomIntegerInRange(rand, -2, 3), k += rand.nextInt(16) - rand.nextInt(16));
+						currentFlightTarget = new ChunkCoordinates(i + (rand.nextInt(16) - rand.nextInt(16)), j + MathHelper.getRandomIntegerInRange(rand, -2, 3), k + (rand.nextInt(16) - rand.nextInt(16)));
 						newFlight();
 					}
 				}

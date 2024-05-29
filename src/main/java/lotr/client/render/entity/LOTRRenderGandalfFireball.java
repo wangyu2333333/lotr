@@ -1,13 +1,12 @@
 package lotr.client.render.entity;
 
-import org.lwjgl.opengl.GL11;
-
 import lotr.client.LOTRClientProxy;
 import lotr.common.entity.projectile.LOTREntityGandalfFireball;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 public class LOTRRenderGandalfFireball extends Render {
 	@Override
@@ -24,10 +23,10 @@ public class LOTRRenderGandalfFireball extends Render {
 	}
 
 	public void drawSprite(Tessellator tessellator, int index) {
-		float f = (index % 8 * 16 + 0) / 128.0f;
+		float f = (index % 8 * 16) / 128.0f;
 		float f1 = (index % 8 * 16 + 16) / 128.0f;
-		float f2 = (index / 8 * 16 + 0) / 128.0f;
-		float f3 = (index / 8 * 16 + 16) / 128.0f;
+		float f2 = ((float) index / 8 * 16) / 128.0f;
+		float f3 = ((float) index / 8 * 16 + 16) / 128.0f;
 		float f4 = 1.0f;
 		float f5 = 0.5f;
 		float f6 = 0.25f;

@@ -1,24 +1,29 @@
 package lotr.common.block;
 
-import java.util.Random;
-
-import cpw.mods.fml.relauncher.*;
-import net.minecraft.block.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockBed;
+import net.minecraft.block.BlockDirectional;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
+import net.minecraft.util.Direction;
+import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRBlockBed extends BlockBed {
 	public Item bedItem;
 	public Block bedBottomBlock;
 	public int bedBottomMetadata;
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon[] bedIconsEnd;
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon[] bedIconsSide;
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon[] bedIconsTop;
 
 	public LOTRBlockBed(Block block, int k) {
@@ -28,7 +33,7 @@ public class LOTRBlockBed extends BlockBed {
 		setStepSound(Block.soundTypeWood);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
 		int i1;
@@ -41,7 +46,7 @@ public class LOTRBlockBed extends BlockBed {
 		return (i1 != 1 || l != 2) && (i1 != 0 || l != 3) ? l != 5 && l != 4 ? bedIconsTop[i1] : bedIconsSide[i1] : bedIconsEnd[i1];
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public Item getItem(World world, int i, int j, int k) {
 		return bedItem;
@@ -57,11 +62,11 @@ public class LOTRBlockBed extends BlockBed {
 		return true;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
-		bedIconsTop = new IIcon[] { iconregister.registerIcon(getTextureName() + "_feet_top"), iconregister.registerIcon(getTextureName() + "_head_top") };
-		bedIconsEnd = new IIcon[] { iconregister.registerIcon(getTextureName() + "_feet_end"), iconregister.registerIcon(getTextureName() + "_head_end") };
-		bedIconsSide = new IIcon[] { iconregister.registerIcon(getTextureName() + "_feet_side"), iconregister.registerIcon(getTextureName() + "_head_side") };
+		bedIconsTop = new IIcon[]{iconregister.registerIcon(getTextureName() + "_feet_top"), iconregister.registerIcon(getTextureName() + "_head_top")};
+		bedIconsEnd = new IIcon[]{iconregister.registerIcon(getTextureName() + "_feet_end"), iconregister.registerIcon(getTextureName() + "_head_end")};
+		bedIconsSide = new IIcon[]{iconregister.registerIcon(getTextureName() + "_feet_side"), iconregister.registerIcon(getTextureName() + "_head_side")};
 	}
 }

@@ -1,10 +1,15 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
-import lotr.common.entity.ai.*;
-import lotr.common.quest.*;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
+import lotr.common.LOTRShields;
+import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
+import lotr.common.entity.ai.LOTREntityAIRangedAttack;
+import lotr.common.quest.LOTRMiniQuest;
+import lotr.common.quest.LOTRMiniQuestFactory;
 import lotr.common.world.structure.LOTRChestContents;
-import net.minecraft.entity.*;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -12,13 +17,13 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 public class LOTREntityCorsair extends LOTREntityUmbarian {
-	public static ItemStack[] weaponsCorsair = { new ItemStack(LOTRMod.swordCorsair), new ItemStack(LOTRMod.swordCorsair), new ItemStack(LOTRMod.daggerCorsair), new ItemStack(LOTRMod.daggerCorsairPoisoned), new ItemStack(LOTRMod.spearCorsair), new ItemStack(LOTRMod.spearCorsair), new ItemStack(LOTRMod.battleaxeCorsair), new ItemStack(LOTRMod.battleaxeCorsair) };
+	public static ItemStack[] weaponsCorsair = {new ItemStack(LOTRMod.swordCorsair), new ItemStack(LOTRMod.swordCorsair), new ItemStack(LOTRMod.daggerCorsair), new ItemStack(LOTRMod.daggerCorsairPoisoned), new ItemStack(LOTRMod.spearCorsair), new ItemStack(LOTRMod.spearCorsair), new ItemStack(LOTRMod.battleaxeCorsair), new ItemStack(LOTRMod.battleaxeCorsair)};
 	public EntityAIBase rangedAttackAI = createHaradrimRangedAttackAI();
 	public EntityAIBase meleeAttackAI;
 
 	public LOTREntityCorsair(World world) {
 		super(world);
-		this.addTargetTasks(true);
+		addTargetTasks(true);
 		spawnRidingHorse = false;
 		npcShield = LOTRShields.ALIGNMENT_CORSAIR;
 	}

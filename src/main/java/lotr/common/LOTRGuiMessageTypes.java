@@ -11,21 +11,21 @@ public enum LOTRGuiMessageTypes {
 		messageName = s;
 	}
 
+	public static LOTRGuiMessageTypes forSaveName(String name) {
+		for (LOTRGuiMessageTypes message : values()) {
+			if (!message.messageName.equals(name)) {
+				continue;
+			}
+			return message;
+		}
+		return null;
+	}
+
 	public String getMessage() {
 		return StatCollector.translateToLocal("lotr.gui.message." + messageName);
 	}
 
 	public String getSaveName() {
 		return messageName;
-	}
-
-	public static LOTRGuiMessageTypes forSaveName(String name) {
-		for (LOTRGuiMessageTypes message : LOTRGuiMessageTypes.values()) {
-			if (!message.getSaveName().equals(name)) {
-				continue;
-			}
-			return message;
-		}
-		return null;
 	}
 }

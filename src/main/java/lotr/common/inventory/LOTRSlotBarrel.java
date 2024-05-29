@@ -1,6 +1,7 @@
 package lotr.common.inventory;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.item.LOTRItemMug;
 import lotr.common.recipe.LOTRBrewingRecipes;
 import lotr.common.tileentity.LOTRTileEntityBarrel;
@@ -17,7 +18,7 @@ public class LOTRSlotBarrel extends Slot {
 		theBarrel = inv;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getBackgroundIconIndex() {
 		IIcon iIcon;

@@ -1,21 +1,29 @@
 package lotr.common.block;
 
-import java.util.ArrayList;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRCreativeTabs;
+import lotr.common.LOTRLevelData;
 import lotr.common.item.LOTRItemKebabStand;
 import lotr.common.tileentity.LOTRTileEntityKebabStand;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
 
 public class LOTRBlockKebabStand extends BlockContainer {
 	public String standTextureName;
@@ -28,11 +36,6 @@ public class LOTRBlockKebabStand extends BlockContainer {
 		setResistance(1.0f);
 		setStepSound(Block.soundTypeWood);
 		setCreativeTab(LOTRCreativeTabs.tabUtil);
-	}
-
-	@Override
-	public boolean canBlockStay(World world, int i, int j, int k) {
-		return true;
 	}
 
 	@Override
@@ -58,13 +61,13 @@ public class LOTRBlockKebabStand extends BlockContainer {
 		return drops;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
 		return Blocks.planks.getIcon(i, 0);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public String getItemIconName() {
 		return getTextureName();
@@ -118,7 +121,7 @@ public class LOTRBlockKebabStand extends BlockContainer {
 					ItemStack meat = stand.removeFirstMeat();
 					if (meat != null) {
 						if (!entityplayer.inventory.addItemStackToInventory(meat)) {
-							this.dropBlockAsItem(world, i, j, k, meat);
+							dropBlockAsItem(world, i, j, k, meat);
 						}
 						entityplayer.inventoryContainer.detectAndSendChanges();
 						world.playSoundEffect(i + 0.5, j + 0.5, k + 0.5, "random.pop", 0.5f, 0.5f + world.rand.nextFloat() * 0.5f);
@@ -138,7 +141,7 @@ public class LOTRBlockKebabStand extends BlockContainer {
 		if (entityplayer.capabilities.isCreativeMode) {
 			world.setBlockMetadataWithNotify(i, j, k, meta |= 8, 4);
 		}
-		this.dropBlockAsItem(world, i, j, k, meta, 0);
+		dropBlockAsItem(world, i, j, k, meta, 0);
 		super.onBlockHarvested(world, i, j, k, meta, entityplayer);
 	}
 
@@ -147,20 +150,20 @@ public class LOTRBlockKebabStand extends BlockContainer {
 		int rotation = MathHelper.floor_double(entity.rotationYaw * 4.0f / 360.0f + 0.5) & 3;
 		int meta = 0;
 		switch (rotation) {
-		case 0:
-			meta = 2;
-			break;
-		case 1:
-			meta = 5;
-			break;
-		case 2:
-			meta = 3;
-			break;
-		case 3:
-			meta = 4;
-			break;
-		default:
-			break;
+			case 0:
+				meta = 2;
+				break;
+			case 1:
+				meta = 5;
+				break;
+			case 2:
+				meta = 3;
+				break;
+			case 3:
+				meta = 4;
+				break;
+			default:
+				break;
 		}
 		world.setBlockMetadataWithNotify(i, j, k, meta, 2);
 		TileEntity tileentity = world.getTileEntity(i, j, k);
@@ -175,12 +178,12 @@ public class LOTRBlockKebabStand extends BlockContainer {
 	public void onNeighborBlockChange(World world, int i, int j, int k, Block block) {
 		if (!canBlockStay(world, i, j, k)) {
 			int meta = world.getBlockMetadata(i, j, k);
-			this.dropBlockAsItem(world, i, j, k, meta, 0);
+			dropBlockAsItem(world, i, j, k, meta, 0);
 			world.setBlockToAir(i, j, k);
 		}
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
 	}

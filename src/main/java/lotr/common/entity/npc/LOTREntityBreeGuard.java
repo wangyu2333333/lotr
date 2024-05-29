@@ -1,6 +1,7 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRMod;
+import lotr.common.LOTRShields;
 import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
 import lotr.common.util.LOTRColorUtil;
 import net.minecraft.entity.IEntityLivingData;
@@ -10,12 +11,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class LOTREntityBreeGuard extends LOTREntityBreeMan {
-	public static ItemStack[] guardWeapons = { new ItemStack(Items.iron_sword), new ItemStack(Items.iron_sword), new ItemStack(LOTRMod.pikeIron) };
-	public static int[] leatherDyes = { 11373426, 7823440, 5983041, 9535090 };
+	public static ItemStack[] guardWeapons = {new ItemStack(Items.iron_sword), new ItemStack(Items.iron_sword), new ItemStack(LOTRMod.pikeIron)};
+	public static int[] leatherDyes = {11373426, 7823440, 5983041, 9535090};
 
 	public LOTREntityBreeGuard(World world) {
 		super(world);
-		this.addTargetTasks(true);
+		addTargetTasks(true);
 		npcShield = LOTRShields.ALIGNMENT_BREE;
 	}
 

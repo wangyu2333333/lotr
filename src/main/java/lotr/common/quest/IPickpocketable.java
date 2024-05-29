@@ -1,17 +1,17 @@
 package lotr.common.quest;
 
-import java.util.UUID;
-
 import lotr.common.util.LOTRLog;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+
+import java.util.UUID;
 
 public interface IPickpocketable {
 	boolean canPickpocket();
 
 	ItemStack createPickpocketItem();
 
-	public static class Helper {
+	class Helper {
 		public static String getOwner(ItemStack itemstack) {
 			if (itemstack.hasTagCompound()) {
 				return itemstack.getTagCompound().getCompoundTag("LOTRPickpocket").getString("Owner");

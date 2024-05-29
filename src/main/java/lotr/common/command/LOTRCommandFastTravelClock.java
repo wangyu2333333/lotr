@@ -1,11 +1,13 @@
 package lotr.common.command;
 
-import java.util.List;
-
 import lotr.common.LOTRLevelData;
-import net.minecraft.command.*;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+
+import java.util.List;
 
 public class LOTRCommandFastTravelClock extends CommandBase {
 	@Override
@@ -49,9 +51,6 @@ public class LOTRCommandFastTravelClock extends CommandBase {
 				entityplayer = CommandBase.getPlayer(sender, args[1]);
 			} else {
 				entityplayer = CommandBase.getCommandSenderAsPlayer(sender);
-				if (entityplayer == null) {
-					throw new PlayerNotFoundException();
-				}
 			}
 			int ticks = seconds * 20;
 			LOTRLevelData.getData(entityplayer).setTimeSinceFTWithUpdate(ticks);

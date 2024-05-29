@@ -1,10 +1,13 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
 import lotr.common.entity.animal.LOTREntityHorse;
 import lotr.common.fac.LOTRFaction;
 import lotr.common.item.LOTRItemMug;
-import lotr.common.quest.*;
+import lotr.common.quest.LOTRMiniQuest;
+import lotr.common.quest.LOTRMiniQuestFactory;
 import lotr.common.world.biome.LOTRBiomeGenLothlorien;
 import lotr.common.world.structure.LOTRChestContents;
 import net.minecraft.entity.IEntityLivingData;
@@ -45,7 +48,7 @@ public class LOTREntityGaladhrimElf extends LOTREntityElf {
 		super.dropElfItems(flag, i);
 		if (flag) {
 			int dropChance = 20 - i * 4;
-			if (rand.nextInt(dropChance = Math.max(dropChance, 1)) == 0) {
+			if (rand.nextInt(Math.max(dropChance, 1)) == 0) {
 				ItemStack elfDrink = new ItemStack(LOTRMod.mugMiruvor);
 				elfDrink.setItemDamage(1 + rand.nextInt(3));
 				LOTRItemMug.setVessel(elfDrink, LOTRFoods.ELF_DRINK.getRandomVessel(rand), true);
@@ -107,8 +110,4 @@ public class LOTREntityGaladhrimElf extends LOTREntityElf {
 		return data;
 	}
 
-	@Override
-	public void setupNPCName() {
-		familyInfo.setName(LOTRNames.getSindarinOrQuenyaName(rand, familyInfo.isMale()));
-	}
 }

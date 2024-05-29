@@ -1,20 +1,23 @@
 package lotr.client.render;
 
-import java.util.Random;
-
-import org.lwjgl.opengl.GL11;
-
 import lotr.client.LOTRTickHandlerClient;
-import lotr.common.*;
+import lotr.common.LOTRConfig;
+import lotr.common.LOTRMod;
 import lotr.common.world.biome.*;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.EntityRenderer;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.util.*;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.client.IRenderHandler;
+import org.lwjgl.opengl.GL11;
+
+import java.util.Random;
 
 public class LOTRWeatherRenderer extends IRenderHandler {
 	public static ResourceLocation rainTexture = new ResourceLocation("lotr:weather/rain.png");
@@ -26,6 +29,10 @@ public class LOTRWeatherRenderer extends IRenderHandler {
 	public Random rand = new Random();
 	public float[] rainXCoords;
 	public float[] rainYCoords;
+
+	public static boolean isSandstormBiome(BiomeGenBase biome) {
+		return !biome.canSpawnLightningBolt() && biome.topBlock.getMaterial() == Material.sand;
+	}
 
 	@Override
 	public void render(float partialTicks, WorldClient world, Minecraft mc) {
@@ -85,7 +92,7 @@ public class LOTRWeatherRenderer extends IRenderHandler {
 					boolean rainy = biomegenbase.canSpawnLightningBolt();
 					boolean snowy = biomegenbase.getEnableSnow();
 					boolean ashy = biomegenbase instanceof LOTRBiomeGenMordor && !(biomegenbase instanceof LOTRBiomeGenNurn) && !(biomegenbase instanceof LOTRBiomeGenMorgulVale) || biomegenbase instanceof LOTRBiomeGenFarHaradVolcano || biomegenbase instanceof LOTRBiomeGenDagorlad;
-					boolean sandy = LOTRWeatherRenderer.isSandstormBiome(biomegenbase);
+					boolean sandy = isSandstormBiome(biomegenbase);
 					if (isChristmas) {
 						ashy = false;
 						sandy = false;
@@ -103,18 +110,15 @@ public class LOTRWeatherRenderer extends IRenderHandler {
 						i2 = k1;
 					}
 					float f8 = 1.0f;
-					int j2 = k1;
-					if (k1 < k) {
-						j2 = k;
-					}
+					int j2 = Math.max(k1, k);
 					if (l1 == i2) {
 						continue;
 					}
-					rand.setSeed(i1 * i1 * 3121 + i1 * 45238971 ^ l * l * 418711 + l * 13761);
+					rand.setSeed((long) i1 * i1 * 3121 + i1 * 45238971L ^ (long) l * l * 418711 + l * 13761L);
 					float f9 = biomegenbase.getFloatTemperature(i1, l1, l);
 					if (ashy) {
 						if (b1 != 1) {
-							if (b1 >= 0) {
+							if (b1 == 0) {
 								tessellator.draw();
 							}
 							b1 = 1;
@@ -130,17 +134,17 @@ public class LOTRWeatherRenderer extends IRenderHandler {
 						f15 = 1.0f;
 						tessellator.setBrightness((world.getLightBrightnessForSkyBlocks(i1, j2, l, 0) * 3 + 15728880) / 4);
 						tessellator.setColorRGBA_F(f15, f15, f15, ((1.0f - f14 * f14) * 0.3f + 0.5f) * rainStrength);
-						tessellator.setTranslation(-d0 * 1.0, -d1 * 1.0, -d2 * 1.0);
+						tessellator.setTranslation(-d0, -d1, -d2);
 						tessellator.addVertexWithUV(i1 - f6 + 0.5, l1, l - f7 + 0.5, 0.0f * f8 + f16, l1 * f8 / 4.0f + f10 * f8 + f11);
-						tessellator.addVertexWithUV(i1 + f6 + 0.5, l1, l + f7 + 0.5, 1.0f * f8 + f16, l1 * f8 / 4.0f + f10 * f8 + f11);
-						tessellator.addVertexWithUV(i1 + f6 + 0.5, i2, l + f7 + 0.5, 1.0f * f8 + f16, i2 * f8 / 4.0f + f10 * f8 + f11);
+						tessellator.addVertexWithUV(i1 + f6 + 0.5, l1, l + f7 + 0.5, f8 + f16, l1 * f8 / 4.0f + f10 * f8 + f11);
+						tessellator.addVertexWithUV(i1 + f6 + 0.5, i2, l + f7 + 0.5, f8 + f16, i2 * f8 / 4.0f + f10 * f8 + f11);
 						tessellator.addVertexWithUV(i1 - f6 + 0.5, i2, l - f7 + 0.5, 0.0f * f8 + f16, i2 * f8 / 4.0f + f10 * f8 + f11);
 						tessellator.setTranslation(0.0, 0.0, 0.0);
 						continue;
 					}
 					if (sandy) {
 						if (b1 != 1) {
-							if (b1 >= 0) {
+							if (b1 == 0) {
 								tessellator.draw();
 							}
 							b1 = 1;
@@ -156,10 +160,10 @@ public class LOTRWeatherRenderer extends IRenderHandler {
 						f15 = 1.0f;
 						tessellator.setBrightness((world.getLightBrightnessForSkyBlocks(i1, j2, l, 0) * 3 + 15728880) / 4);
 						tessellator.setColorRGBA_F(f15, f15, f15, ((1.0f - f14 * f14) * 0.3f + 0.5f) * rainStrength);
-						tessellator.setTranslation(-d0 * 1.0, -d1 * 1.0, -d2 * 1.0);
+						tessellator.setTranslation(-d0, -d1, -d2);
 						tessellator.addVertexWithUV(i1 - f6 + 0.5, l1, l - f7 + 0.5, 0.0f * f8 + f16, l1 * f8 / 4.0f + f10 * f8 + f11);
-						tessellator.addVertexWithUV(i1 + f6 + 0.5, l1, l + f7 + 0.5, 1.0f * f8 + f16, l1 * f8 / 4.0f + f10 * f8 + f11);
-						tessellator.addVertexWithUV(i1 + f6 + 0.5, i2, l + f7 + 0.5, 1.0f * f8 + f16, i2 * f8 / 4.0f + f10 * f8 + f11);
+						tessellator.addVertexWithUV(i1 + f6 + 0.5, l1, l + f7 + 0.5, f8 + f16, l1 * f8 / 4.0f + f10 * f8 + f11);
+						tessellator.addVertexWithUV(i1 + f6 + 0.5, i2, l + f7 + 0.5, f8 + f16, i2 * f8 / 4.0f + f10 * f8 + f11);
 						tessellator.addVertexWithUV(i1 - f6 + 0.5, i2, l - f7 + 0.5, 0.0f * f8 + f16, i2 * f8 / 4.0f + f10 * f8 + f11);
 						tessellator.setTranslation(0.0, 0.0, 0.0);
 						continue;
@@ -184,16 +188,16 @@ public class LOTRWeatherRenderer extends IRenderHandler {
 						float f13 = 1.0f;
 						tessellator.setBrightness(world.getLightBrightnessForSkyBlocks(i1, j2, l, 0));
 						tessellator.setColorRGBA_F(f13, f13, f13, ((1.0f - f12 * f12) * 0.5f + 0.5f) * rainStrength);
-						tessellator.setTranslation(-d0 * 1.0, -d1 * 1.0, -d2 * 1.0);
+						tessellator.setTranslation(-d0, -d1, -d2);
 						tessellator.addVertexWithUV(i1 - f6 + 0.5, l1, l - f7 + 0.5, 0.0f * f8, l1 * f8 / 4.0f + f10 * f8);
-						tessellator.addVertexWithUV(i1 + f6 + 0.5, l1, l + f7 + 0.5, 1.0f * f8, l1 * f8 / 4.0f + f10 * f8);
-						tessellator.addVertexWithUV(i1 + f6 + 0.5, i2, l + f7 + 0.5, 1.0f * f8, i2 * f8 / 4.0f + f10 * f8);
+						tessellator.addVertexWithUV(i1 + f6 + 0.5, l1, l + f7 + 0.5, f8, l1 * f8 / 4.0f + f10 * f8);
+						tessellator.addVertexWithUV(i1 + f6 + 0.5, i2, l + f7 + 0.5, f8, i2 * f8 / 4.0f + f10 * f8);
 						tessellator.addVertexWithUV(i1 - f6 + 0.5, i2, l - f7 + 0.5, 0.0f * f8, i2 * f8 / 4.0f + f10 * f8);
 						tessellator.setTranslation(0.0, 0.0, 0.0);
 						continue;
 					}
 					if (b1 != 1) {
-						if (b1 >= 0) {
+						if (b1 == 0) {
 							tessellator.draw();
 						}
 						b1 = 1;
@@ -213,10 +217,10 @@ public class LOTRWeatherRenderer extends IRenderHandler {
 					f15 = 1.0f;
 					tessellator.setBrightness((world.getLightBrightnessForSkyBlocks(i1, j2, l, 0) * 3 + 15728880) / 4);
 					tessellator.setColorRGBA_F(f15, f15, f15, ((1.0f - f14 * f14) * 0.3f + 0.5f) * rainStrength);
-					tessellator.setTranslation(-d0 * 1.0, -d1 * 1.0, -d2 * 1.0);
+					tessellator.setTranslation(-d0, -d1, -d2);
 					tessellator.addVertexWithUV(i1 - f6 + 0.5, l1, l - f7 + 0.5, 0.0f * f8 + f16, l1 * f8 / 4.0f + f10 * f8 + f11);
-					tessellator.addVertexWithUV(i1 + f6 + 0.5, l1, l + f7 + 0.5, 1.0f * f8 + f16, l1 * f8 / 4.0f + f10 * f8 + f11);
-					tessellator.addVertexWithUV(i1 + f6 + 0.5, i2, l + f7 + 0.5, 1.0f * f8 + f16, i2 * f8 / 4.0f + f10 * f8 + f11);
+					tessellator.addVertexWithUV(i1 + f6 + 0.5, l1, l + f7 + 0.5, f8 + f16, l1 * f8 / 4.0f + f10 * f8 + f11);
+					tessellator.addVertexWithUV(i1 + f6 + 0.5, i2, l + f7 + 0.5, f8 + f16, i2 * f8 / 4.0f + f10 * f8 + f11);
 					tessellator.addVertexWithUV(i1 - f6 + 0.5, i2, l - f7 + 0.5, 0.0f * f8 + f16, i2 * f8 / 4.0f + f10 * f8 + f11);
 					tessellator.setTranslation(0.0, 0.0, 0.0);
 				}
@@ -229,9 +233,5 @@ public class LOTRWeatherRenderer extends IRenderHandler {
 			GL11.glAlphaFunc(516, 0.1f);
 			er.disableLightmap(partialTicks);
 		}
-	}
-
-	public static boolean isSandstormBiome(BiomeGenBase biome) {
-		return !biome.canSpawnLightningBolt() && biome.topBlock.getMaterial() == Material.sand;
 	}
 }

@@ -1,6 +1,7 @@
 package lotr.common.inventory;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.LOTRMod;
 import lotr.common.entity.npc.LOTREntityNPC;
 import lotr.common.item.LOTRItemCoin;
@@ -13,7 +14,7 @@ public class LOTRContainerCoinExchange extends Container {
 	public IInventory coinInputInv = new InventoryCoinExchangeSlot(1);
 	public IInventory exchangeInv = new InventoryCoinExchangeSlot(2);
 	public LOTREntityNPC theTraderNPC;
-	public boolean exchanged = false;
+	public boolean exchanged;
 
 	public LOTRContainerCoinExchange(EntityPlayer entityplayer, LOTREntityNPC npc) {
 		int i;
@@ -22,26 +23,11 @@ public class LOTRContainerCoinExchange extends Container {
 
 			@Override
 			public boolean isItemValid(ItemStack itemstack) {
-				return super.isItemValid(itemstack) && itemstack != null && LOTRContainerCoinExchange.isValidCoin(itemstack);
+				return super.isItemValid(itemstack) && itemstack != null && isValidCoin(itemstack);
 			}
 		});
-		class SlotCoinResult extends Slot {
-			public SlotCoinResult(IInventory inv, int i, int j, int k) {
-				super(inv, i, j, k);
-			}
-
-			@Override
-			public boolean canTakeStack(EntityPlayer entityplayer) {
-				return exchanged;
-			}
-
-			@Override
-			public boolean isItemValid(ItemStack itemstack) {
-				return false;
-			}
-		}
-		addSlotToContainer(new SlotCoinResult(exchangeInv, 0, 26, 46));
-		addSlotToContainer(new SlotCoinResult(exchangeInv, 1, 134, 46));
+		addSlotToContainer(new LOTRSlotCoinResult(this, exchangeInv, 0, 26, 46));
+		addSlotToContainer(new LOTRSlotCoinResult(this, exchangeInv, 1, 134, 46));
 		for (i = 0; i < 3; ++i) {
 			for (int j = 0; j < 9; ++j) {
 				addSlotToContainer(new Slot(entityplayer.inventory, j + i * 9 + 9, 8 + j * 18, 106 + i * 18));
@@ -51,6 +37,10 @@ public class LOTRContainerCoinExchange extends Container {
 			addSlotToContainer(new Slot(entityplayer.inventory, i, 8 + i * 18, 164));
 		}
 		onCraftMatrixChanged(coinInputInv);
+	}
+
+	public static boolean isValidCoin(ItemStack item) {
+		return item.getItem() == LOTRMod.silverCoin && !IPickpocketable.Helper.isPickpocketed(item);
 	}
 
 	@Override
@@ -125,7 +115,7 @@ public class LOTRContainerCoinExchange extends Container {
 		if (inv == coinInputInv) {
 			if (!exchanged) {
 				ItemStack coin = coinInputInv.getStackInSlot(0);
-				if (coin != null && coin.stackSize > 0 && LOTRContainerCoinExchange.isValidCoin(coin)) {
+				if (coin != null && coin.stackSize > 0 && isValidCoin(coin)) {
 					int coins = coin.stackSize;
 					int coinType = coin.getItemDamage();
 					if (coinType > 0) {
@@ -190,7 +180,7 @@ public class LOTRContainerCoinExchange extends Container {
 				if (coinSlot.isItemValid(itemstack1) && mergeItemStack(itemstack1, 0, 1, true)) {
 					flag = true;
 				}
-				if (!flag && (i >= 3 && i < 30 ? !mergeItemStack(itemstack1, 30, 39, false) : !mergeItemStack(itemstack1, 3, 30, false))) {
+				if (!flag && (i < 30 ? !mergeItemStack(itemstack1, 30, 39, false) : !mergeItemStack(itemstack1, 3, 30, false))) {
 					return null;
 				}
 			}
@@ -209,15 +199,11 @@ public class LOTRContainerCoinExchange extends Container {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public void updateProgressBar(int i, int j) {
 		if (i == 0) {
 			exchanged = j == 1;
 		}
-	}
-
-	public static boolean isValidCoin(ItemStack item) {
-		return item.getItem() == LOTRMod.silverCoin && !IPickpocketable.Helper.isPickpocketed(item);
 	}
 
 	public class InventoryCoinExchangeSlot extends InventoryBasic {

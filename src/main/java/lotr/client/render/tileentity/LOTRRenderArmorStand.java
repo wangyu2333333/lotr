@@ -1,19 +1,21 @@
 package lotr.client.render.tileentity;
 
-import org.lwjgl.opengl.GL11;
-
 import io.gitlab.dwarfyassassin.lotrucp.client.util.FakeArmorStandEntity;
 import lotr.client.LOTRClientProxy;
-import lotr.client.model.*;
+import lotr.client.model.LOTRArmorModels;
+import lotr.client.model.LOTRModelArmorStand;
 import lotr.common.item.LOTRItemPlate;
 import lotr.common.tileentity.LOTRTileEntityArmorStand;
-import net.minecraft.client.model.*;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.item.*;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.ForgeHooksClient;
+import org.lwjgl.opengl.GL11;
 
 public class LOTRRenderArmorStand extends TileEntitySpecialRenderer {
 	public static ResourceLocation standTexture = new ResourceLocation("lotr:item/armorStand.png");
@@ -34,21 +36,21 @@ public class LOTRRenderArmorStand extends TileEntitySpecialRenderer {
 		GL11.glEnable(3008);
 		GL11.glTranslatef((float) d + 0.5f, (float) d1 + 1.5f, (float) d2 + 0.5f);
 		switch (armorStand.getBlockMetadata() & 3) {
-		case 0: {
-			GL11.glRotatef(0.0f, 0.0f, 1.0f, 0.0f);
-			break;
-		}
-		case 1: {
-			GL11.glRotatef(270.0f, 0.0f, 1.0f, 0.0f);
-			break;
-		}
-		case 2: {
-			GL11.glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
-			break;
-		}
-		case 3: {
-			GL11.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-		}
+			case 0: {
+				GL11.glRotatef(0.0f, 0.0f, 1.0f, 0.0f);
+				break;
+			}
+			case 1: {
+				GL11.glRotatef(270.0f, 0.0f, 1.0f, 0.0f);
+				break;
+			}
+			case 2: {
+				GL11.glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
+				break;
+			}
+			case 3: {
+				GL11.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+			}
 		}
 		GL11.glScalef(-1.0f, -1.0f, 1.0f);
 		float scale = 0.0625f;
@@ -78,14 +80,14 @@ public class LOTRRenderArmorStand extends TileEntitySpecialRenderer {
 			boolean isColoredArmor = false;
 			if (isArmor) {
 				int j = ((ItemArmor) itemstack.getItem()).getColor(itemstack);
-				if (j != -1) {
+				if (j == -1) {
+					GL11.glColor3f(f1, f1, f1);
+				} else {
 					float f2 = (j >> 16 & 0xFF) / 255.0f;
 					float f3 = (j >> 8 & 0xFF) / 255.0f;
 					f4 = (j & 0xFF) / 255.0f;
 					GL11.glColor3f(f1 * f2, f1 * f3, f1 * f4);
 					isColoredArmor = true;
-				} else {
-					GL11.glColor3f(f1, f1, f1);
 				}
 			} else {
 				GL11.glColor3f(f1, f1, f1);

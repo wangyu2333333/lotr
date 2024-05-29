@@ -1,13 +1,13 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import lotr.common.entity.npc.LOTREntityMoredain;
 import lotr.common.world.structure.LOTRChestContents;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenMoredainHutVillage extends LOTRWorldGenMoredainHut {
 	public Block bedBlock;
@@ -117,7 +117,7 @@ public class LOTRWorldGenMoredainHutVillage extends LOTRWorldGenMoredainHut {
 		setBlockAndMetadata(world, -1, 1, 2, plankBlock, plankMeta);
 		setBlockAndMetadata(world, 2, 1, 2, Blocks.crafting_table, 0);
 		setBlockAndMetadata(world, 2, 1, 1, plankBlock, plankMeta);
-		this.placeChest(world, random, 2, 1, 0, LOTRMod.chestBasket, 5, LOTRChestContents.MOREDAIN_HUT);
+		placeChest(world, random, 2, 1, 0, LOTRMod.chestBasket, 5, LOTRChestContents.MOREDAIN_HUT);
 		setBlockAndMetadata(world, 2, 1, -1, plankBlock, plankMeta);
 		setBlockAndMetadata(world, 2, 1, -2, LOTRMod.moredainTable, 0);
 		setBlockAndMetadata(world, -1, 1, -1, bedBlock, 3);

@@ -1,6 +1,8 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
 import lotr.common.item.LOTRItemLeatherHat;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.player.EntityPlayer;
@@ -8,12 +10,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class LOTREntityDaleMerchant extends LOTREntityDaleMan implements LOTRTravellingTrader {
-	public static int[] hatColors = { 8874591, 11895125, 4949452, 8298956, 5657939 };
-	public static int[] featherColors = { 16777215, 6736967, 15358290, 156402, 15719168 };
+	public static int[] hatColors = {8874591, 11895125, 4949452, 8298956, 5657939};
+	public static int[] featherColors = {16777215, 6736967, 15358290, 156402, 15719168};
 
 	public LOTREntityDaleMerchant(World world) {
 		super(world);
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 	}
 
 	@Override

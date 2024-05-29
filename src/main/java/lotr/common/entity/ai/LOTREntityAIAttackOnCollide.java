@@ -2,8 +2,11 @@ package lotr.common.entity.ai;
 
 import lotr.common.entity.npc.LOTREntityNPC;
 import lotr.common.entity.projectile.LOTREntitySpear;
-import lotr.common.item.*;
-import net.minecraft.entity.*;
+import lotr.common.item.LOTRItemSpear;
+import lotr.common.item.LOTRWeaponStats;
+import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathEntity;
@@ -14,7 +17,7 @@ public class LOTREntityAIAttackOnCollide extends EntityAIBase {
 	public World worldObj;
 	public EntityCreature theOwner;
 	public EntityLivingBase attackTarget;
-	public int attackTick = 0;
+	public int attackTick;
 	public double moveSpeed;
 	public boolean sightNotRequired;
 	public PathEntity entityPathEntity;
@@ -87,8 +90,8 @@ public class LOTREntityAIAttackOnCollide extends EntityAIBase {
 	public void updateLookAndPathing() {
 		theOwner.getLookHelper().setLookPositionWithEntity(attackTarget, 30.0f, 30.0f);
 		if (theOwner.riddenByEntity instanceof EntityLiving) {
-			((EntityLiving) theOwner.riddenByEntity).rotationYaw = theOwner.rotationYaw;
-			((EntityLiving) theOwner.riddenByEntity).rotationYawHead = theOwner.rotationYawHead;
+			theOwner.riddenByEntity.rotationYaw = theOwner.rotationYaw;
+			((EntityLivingBase) theOwner.riddenByEntity).rotationYawHead = theOwner.rotationYawHead;
 		}
 		if ((sightNotRequired || theOwner.getEntitySenses().canSee(attackTarget)) && --pathCheckTimer <= 0) {
 			pathCheckTimer = 10 + theOwner.getRNG().nextInt(10);
@@ -132,7 +135,7 @@ public class LOTREntityAIAttackOnCollide extends EntityAIBase {
 		if (theOwner.ridingEntity != null) {
 			weaponReach = LOTREntityNPC.MOUNT_RANGE_BONUS;
 		}
-		float meleeRange = (float) theOwner.boundingBox.getAverageEdgeLength() + (weaponReach *= LOTRWeaponStats.getMeleeReachFactor(theOwner.getHeldItem()));
+		float meleeRange = (float) theOwner.boundingBox.getAverageEdgeLength() + weaponReach * LOTRWeaponStats.getMeleeReachFactor(theOwner.getHeldItem());
 		if (theOwner.getDistanceSqToEntity(attackTarget) <= meleeRange * meleeRange && attackTick <= 0) {
 			attackTick = LOTRWeaponStats.getAttackTimeMob(weapon);
 			theOwner.attackEntityAsMob(attackTarget);

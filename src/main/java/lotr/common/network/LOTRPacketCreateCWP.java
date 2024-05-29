@@ -1,10 +1,14 @@
 package lotr.common.network;
 
 import com.google.common.base.Charsets;
-
-import cpw.mods.fml.common.network.simpleimpl.*;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import lotr.common.*;
+import lotr.common.LOTRBannerProtection;
+import lotr.common.LOTRConfig;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRPlayerData;
 import lotr.common.util.LOTRLog;
 import lotr.common.world.map.LOTRCustomWaypoint;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -49,15 +53,15 @@ public class LOTRPacketCreateCWP implements IMessage {
 			if (numWaypoints <= pd.getMaxCustomWaypoints()) {
 				IChatComponent[] protectionMessage = new IChatComponent[1];
 				boolean protection = LOTRBannerProtection.isProtected(world, entityplayer, LOTRBannerProtection.forPlayer_returnMessage(entityplayer, LOTRBannerProtection.Permission.FULL, protectionMessage), true);
-				if (!protection) {
+				if (protection) {
+					IChatComponent clientMessage = protectionMessage[0];
+					IMessage packetMessage = new LOTRPacketCWPProtectionMessage(clientMessage);
+					LOTRPacketHandler.networkWrapper.sendTo(packetMessage, entityplayer);
+				} else {
 					String wpName = LOTRCustomWaypoint.validateCustomName(packet.name);
 					if (wpName != null) {
 						LOTRCustomWaypoint.createForPlayer(wpName, entityplayer);
 					}
-				} else {
-					IChatComponent clientMessage = protectionMessage[0];
-					LOTRPacketCWPProtectionMessage packetMessage = new LOTRPacketCWPProtectionMessage(clientMessage);
-					LOTRPacketHandler.networkWrapper.sendTo(packetMessage, entityplayer);
 				}
 			}
 			return null;

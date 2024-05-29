@@ -16,7 +16,7 @@ public class LocationInfo {
 	public int posZ;
 	public int rotation;
 	public String name;
-	public boolean isFixedLocation = false;
+	public boolean isFixedLocation;
 	public LOTRWaypoint associatedWaypoint;
 
 	public LocationInfo(int x, int z, int r, String s) {
@@ -34,14 +34,14 @@ public class LocationInfo {
 		return isFixedLocation;
 	}
 
-	public boolean isPresent() {
-		return true;
-	}
-
 	public LocationInfo setFixedLocation(LOTRWaypoint wp) {
 		isFixedLocation = true;
 		associatedWaypoint = wp;
 		return this;
+	}
+
+	public boolean isPresent() {
+		return true;
 	}
 
 }

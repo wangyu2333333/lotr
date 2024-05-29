@@ -1,8 +1,10 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
-import lotr.common.entity.ai.*;
-import net.minecraft.entity.*;
+import lotr.common.LOTRMod;
+import lotr.common.LOTRShields;
+import lotr.common.entity.ai.LOTREntityAIRangedAttack;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -20,11 +22,6 @@ public class LOTREntityHighElfWarrior extends LOTREntityHighElf {
 	public void applyEntityAttributes() {
 		super.applyEntityAttributes();
 		getEntityAttribute(SharedMonsterAttributes.followRange).setBaseValue(24.0);
-	}
-
-	@Override
-	public EntityAIBase createElfMeleeAttackAI() {
-		return new LOTREntityAIAttackOnCollide(this, 1.5, false);
 	}
 
 	@Override

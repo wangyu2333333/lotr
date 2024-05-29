@@ -1,23 +1,30 @@
 package lotr.common.block;
 
-import java.util.*;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
-import net.minecraft.block.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRCreativeTabs;
+import lotr.common.LOTRMod;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockSlab;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemSlab;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Facing;
-import net.minecraft.world.*;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+
+import java.util.List;
+import java.util.Random;
 
 public abstract class LOTRBlockSlabBase extends BlockSlab {
 	public Block singleSlab;
 	public Block doubleSlab;
 	public int subtypes;
 
-	public LOTRBlockSlabBase(boolean flag, Material material, int n) {
+	protected LOTRBlockSlabBase(boolean flag, Material material, int n) {
 		super(flag, material);
 		subtypes = n;
 		setCreativeTab(LOTRCreativeTabs.tabBlock);
@@ -27,6 +34,13 @@ public abstract class LOTRBlockSlabBase extends BlockSlab {
 			setResistance(5.0f);
 			setStepSound(Block.soundTypeWood);
 		}
+	}
+
+	public static void registerSlabs(Block block, Block block1) {
+		((LOTRBlockSlabBase) block).singleSlab = block;
+		((LOTRBlockSlabBase) block).doubleSlab = block1;
+		((LOTRBlockSlabBase) block1).singleSlab = block;
+		((LOTRBlockSlabBase) block1).doubleSlab = block1;
 	}
 
 	@Override
@@ -42,11 +56,11 @@ public abstract class LOTRBlockSlabBase extends BlockSlab {
 
 	@Override
 	public String func_150002_b(int i) {
-		return super.getUnlocalizedName() + "." + i;
+		return getUnlocalizedName() + "." + i;
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public Item getItem(World world, int i, int j, int k) {
 		return Item.getItemFromBlock(singleSlab);
 	}
@@ -57,7 +71,7 @@ public abstract class LOTRBlockSlabBase extends BlockSlab {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item item, CreativeTabs tab, List list) {
 		if (item != Item.getItemFromBlock(doubleSlab)) {
 			for (int j = 0; j < subtypes; ++j) {
@@ -72,7 +86,7 @@ public abstract class LOTRBlockSlabBase extends BlockSlab {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockAccess world, int i, int j, int k, int l) {
 		boolean flag;
 		if (this == doubleSlab) {
@@ -85,14 +99,7 @@ public abstract class LOTRBlockSlabBase extends BlockSlab {
 		int j1 = j + Facing.offsetsYForSide[Facing.oppositeSide[l]];
 		int k1 = k + Facing.offsetsZForSide[Facing.oppositeSide[l]];
 		flag = (world.getBlockMetadata(i1, j1, k1) & 8) != 0;
-		return flag ? l == 0 ? true : l == 1 && super.shouldSideBeRendered(world, i, j, k, l) ? true : world.getBlock(i, j, k) != singleSlab || (world.getBlockMetadata(i, j, k) & 8) == 0 : l == 1 ? true : l == 0 && super.shouldSideBeRendered(world, i, j, k, l) ? true : world.getBlock(i, j, k) != singleSlab || (world.getBlockMetadata(i, j, k) & 8) != 0;
-	}
-
-	public static void registerSlabs(Block block, Block block1) {
-		((LOTRBlockSlabBase) block).singleSlab = block;
-		((LOTRBlockSlabBase) block).doubleSlab = block1;
-		((LOTRBlockSlabBase) block1).singleSlab = block;
-		((LOTRBlockSlabBase) block1).doubleSlab = block1;
+		return flag ? l == 0 || l == 1 && super.shouldSideBeRendered(world, i, j, k, l) || world.getBlock(i, j, k) != singleSlab || (world.getBlockMetadata(i, j, k) & 8) == 0 : l == 1 || l == 0 && super.shouldSideBeRendered(world, i, j, k, l) || world.getBlock(i, j, k) != singleSlab || (world.getBlockMetadata(i, j, k) & 8) != 0;
 	}
 
 	public static class SlabItems {

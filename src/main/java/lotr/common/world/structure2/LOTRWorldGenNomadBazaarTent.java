@@ -1,16 +1,24 @@
 package lotr.common.world.structure2;
 
-import java.util.*;
-
-import lotr.common.*;
-import lotr.common.entity.animal.*;
-import lotr.common.entity.npc.*;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
+import lotr.common.entity.animal.LOTREntityBird;
+import lotr.common.entity.animal.LOTREntityButterfly;
+import lotr.common.entity.npc.LOTREntityNomadArmourer;
+import lotr.common.entity.npc.LOTREntityNomadBrewer;
+import lotr.common.entity.npc.LOTREntityNomadMason;
+import lotr.common.entity.npc.LOTREntityNomadMiner;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
 public class LOTRWorldGenNomadBazaarTent extends LOTRWorldGenNomadStructure {
-	public static Class[] stalls = { Mason.class, Brewer.class, Miner.class, Armourer.class };
+	public static Class[] stalls = {Mason.class, Brewer.class, Miner.class, Armourer.class};
 
 	public LOTRWorldGenNomadBazaarTent(boolean flag) {
 		super(flag);
@@ -19,7 +27,7 @@ public class LOTRWorldGenNomadBazaarTent extends LOTRWorldGenNomadStructure {
 	@Override
 	public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
 		int j1;
-		this.setOriginAndRotation(world, i, j, k, rotation, 7);
+		setOriginAndRotation(world, i, j, k, rotation, 7);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			int minHeight = 0;
@@ -45,8 +53,6 @@ public class LOTRWorldGenNomadBazaarTent extends LOTRWorldGenNomadStructure {
 		}
 		for (int i1 = -14; i1 <= 14; ++i1) {
 			for (int k1 = -6; k1 <= 8; ++k1) {
-				Math.abs(i1);
-				Math.abs(k1);
 				if (!isSurface(world, i1, 0, k1)) {
 					laySandBase(world, i1, 0, k1);
 				}
@@ -67,16 +73,16 @@ public class LOTRWorldGenNomadBazaarTent extends LOTRWorldGenNomadStructure {
 		associateBlockMetaAlias("CARPET", carpetBlock, carpetMeta);
 		associateBlockMetaAlias("CARPET2", carpet2Block, carpet2Meta);
 		generateStrScan(world, random, 0, 1, 0);
-		this.placeSkull(world, random, -8, 2, -4);
-		this.placeBarrel(world, random, 7, 2, -4, 3, LOTRFoods.NOMAD_DRINK);
-		this.placeBarrel(world, random, 8, 2, -4, 3, LOTRFoods.NOMAD_DRINK);
+		placeSkull(world, random, -8, 2, -4);
+		placeBarrel(world, random, 7, 2, -4, 3, LOTRFoods.NOMAD_DRINK);
+		placeBarrel(world, random, 8, 2, -4, 3, LOTRFoods.NOMAD_DRINK);
 		placeAnimalJar(world, -7, 2, -4, LOTRMod.butterflyJar, 0, new LOTREntityButterfly(world));
 		placeAnimalJar(world, 9, 1, 5, LOTRMod.birdCageWood, 0, null);
 		placeAnimalJar(world, 4, 3, 2, LOTRMod.birdCageWood, 0, new LOTREntityBird(world));
 		placeAnimalJar(world, -4, 4, 5, LOTRMod.birdCage, 2, new LOTREntityBird(world));
 		placeAnimalJar(world, -4, 5, -1, LOTRMod.birdCage, 0, new LOTREntityBird(world));
 		placeAnimalJar(world, 0, 5, 5, LOTRMod.birdCageWood, 0, new LOTREntityBird(world));
-		ArrayList<Class> stallClasses = new ArrayList<>(Arrays.asList(stalls));
+		List<Class> stallClasses = new ArrayList<>(Arrays.asList(stalls));
 		while (stallClasses.size() > 3) {
 			stallClasses.remove(random.nextInt(stallClasses.size()));
 		}
@@ -100,9 +106,9 @@ public class LOTRWorldGenNomadBazaarTent extends LOTRWorldGenNomadStructure {
 
 		@Override
 		public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
-			this.setOriginAndRotation(world, i, j, k, rotation, 0);
+			setOriginAndRotation(world, i, j, k, rotation, 0);
 			setBlockAndMetadata(world, 1, 1, 1, Blocks.anvil, 1);
-			placeArmorStand(world, 0, 1, 1, 0, new ItemStack[] { new ItemStack(LOTRMod.helmetMoredainLion), new ItemStack(LOTRMod.bodyHarnedor), new ItemStack(LOTRMod.legsNomad), new ItemStack(LOTRMod.bootsNomad) });
+			placeArmorStand(world, 0, 1, 1, 0, new ItemStack[]{new ItemStack(LOTRMod.helmetMoredainLion), new ItemStack(LOTRMod.bodyHarnedor), new ItemStack(LOTRMod.legsNomad), new ItemStack(LOTRMod.bootsNomad)});
 			placeWeaponRack(world, -1, 2, -2, 2, new LOTRWorldGenNomadBazaarTent(false).getRandomNomadWeapon(random));
 			LOTREntityNomadArmourer trader = new LOTREntityNomadArmourer(world);
 			spawnNPCAndSetHome(trader, world, 0, 1, 0, 4);
@@ -117,14 +123,14 @@ public class LOTRWorldGenNomadBazaarTent extends LOTRWorldGenNomadStructure {
 
 		@Override
 		public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
-			this.setOriginAndRotation(world, i, j, k, rotation, 0);
+			setOriginAndRotation(world, i, j, k, rotation, 0);
 			setBlockAndMetadata(world, -1, 1, 1, LOTRMod.stairsCedar, 6);
 			setBlockAndMetadata(world, -1, 2, 1, LOTRMod.barrel, 2);
 			setBlockAndMetadata(world, 0, 1, 1, Blocks.cauldron, 3);
 			setBlockAndMetadata(world, 1, 1, 1, LOTRMod.stairsCedar, 6);
 			setBlockAndMetadata(world, 1, 2, 1, LOTRMod.barrel, 2);
-			this.placeMug(world, random, -1, 2, -2, 0, LOTRFoods.NOMAD_DRINK);
-			this.placeMug(world, random, 1, 2, -2, 0, LOTRFoods.NOMAD_DRINK);
+			placeMug(world, random, -1, 2, -2, 0, LOTRFoods.NOMAD_DRINK);
+			placeMug(world, random, 1, 2, -2, 0, LOTRFoods.NOMAD_DRINK);
 			LOTREntityNomadBrewer trader = new LOTREntityNomadBrewer(world);
 			spawnNPCAndSetHome(trader, world, 0, 1, 0, 4);
 			return true;
@@ -138,7 +144,7 @@ public class LOTRWorldGenNomadBazaarTent extends LOTRWorldGenNomadStructure {
 
 		@Override
 		public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
-			this.setOriginAndRotation(world, i, j, k, rotation, 0);
+			setOriginAndRotation(world, i, j, k, rotation, 0);
 			setBlockAndMetadata(world, -1, 1, 1, LOTRMod.redSandstone, 0);
 			setBlockAndMetadata(world, -1, 2, 1, LOTRMod.redSandstone, 0);
 			setBlockAndMetadata(world, -1, 3, 1, LOTRMod.redSandstone, 0);
@@ -162,7 +168,7 @@ public class LOTRWorldGenNomadBazaarTent extends LOTRWorldGenNomadStructure {
 
 		@Override
 		public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
-			this.setOriginAndRotation(world, i, j, k, rotation, 0);
+			setOriginAndRotation(world, i, j, k, rotation, 0);
 			setBlockAndMetadata(world, -1, 1, 1, LOTRMod.oreCopper, 0);
 			setBlockAndMetadata(world, -1, 2, 1, LOTRMod.oreTin, 0);
 			setBlockAndMetadata(world, 0, 1, 1, LOTRMod.oreCopper, 0);

@@ -1,14 +1,17 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRMod;
+import lotr.common.LOTRShields;
 import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
-import net.minecraft.entity.*;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class LOTREntityGundabadUruk extends LOTREntityGundabadOrc {
-	public static ItemStack[] urukWeapons = { new ItemStack(LOTRMod.swordGundabadUruk), new ItemStack(LOTRMod.battleaxeGundabadUruk), new ItemStack(LOTRMod.hammerGundabadUruk), new ItemStack(LOTRMod.daggerGundabadUruk), new ItemStack(LOTRMod.daggerGundabadUrukPoisoned), new ItemStack(LOTRMod.pikeGundabadUruk) };
+	public static ItemStack[] urukWeapons = {new ItemStack(LOTRMod.swordGundabadUruk), new ItemStack(LOTRMod.battleaxeGundabadUruk), new ItemStack(LOTRMod.hammerGundabadUruk), new ItemStack(LOTRMod.daggerGundabadUruk), new ItemStack(LOTRMod.daggerGundabadUrukPoisoned), new ItemStack(LOTRMod.pikeGundabadUruk)};
 
 	public LOTREntityGundabadUruk(World world) {
 		super(world);

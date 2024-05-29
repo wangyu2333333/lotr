@@ -1,8 +1,7 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
-import lotr.common.*;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
 import lotr.common.entity.LOTREntityNPCRespawner;
 import lotr.common.entity.npc.LOTREntityNPC;
 import lotr.common.item.LOTRItemBanner;
@@ -11,6 +10,8 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.Random;
 
 public abstract class LOTRWorldGenWargPitBase extends LOTRWorldGenStructureBase2 {
 	public Block brickBlock;
@@ -44,7 +45,7 @@ public abstract class LOTRWorldGenWargPitBase extends LOTRWorldGenStructureBase2
 	public LOTRItemBanner.BannerType banner;
 	public LOTRChestContents chestContents;
 
-	public LOTRWorldGenWargPitBase(boolean flag) {
+	protected LOTRWorldGenWargPitBase(boolean flag) {
 		super(flag);
 	}
 
@@ -71,7 +72,7 @@ public abstract class LOTRWorldGenWargPitBase extends LOTRWorldGenStructureBase2
 		int k1;
 		int i12;
 		int k12;
-		this.setOriginAndRotation(world, i, j, k, rotation, 8, -10);
+		setOriginAndRotation(world, i, j, k, rotation, 8, -10);
 		originY -= 4;
 		setupRandomBlocks(random);
 		if (restrictions) {
@@ -192,14 +193,14 @@ public abstract class LOTRWorldGenWargPitBase extends LOTRWorldGenStructureBase2
 		placeOrcTorch(world, -4, 8, 4);
 		placeOrcTorch(world, -8, 10, -4);
 		placeOrcTorch(world, -12, 10, -4);
-		this.placeChest(world, random, -7, 1, 0, 4, chestContents);
-		this.placeChest(world, random, 1, 7, 12, 2, chestContents);
+		placeChest(world, random, -7, 1, 0, 4, chestContents);
+		placeChest(world, random, 1, 7, 12, 2, chestContents);
 		setBlockAndMetadata(world, -2, 7, 9, bedBlock, 3);
 		setBlockAndMetadata(world, -3, 7, 9, bedBlock, 11);
 		setBlockAndMetadata(world, -2, 7, 11, bedBlock, 3);
 		setBlockAndMetadata(world, -3, 7, 11, bedBlock, 11);
-		this.placeBarrel(world, random, 3, 8, 11, 5, LOTRFoods.ORC_DRINK);
-		this.placeMug(world, random, 3, 8, 10, 1, LOTRFoods.ORC_DRINK);
+		placeBarrel(world, random, 3, 8, 11, 5, LOTRFoods.ORC_DRINK);
+		placeMug(world, random, 3, 8, 10, 1, LOTRFoods.ORC_DRINK);
 		placePlateWithCertainty(world, random, 3, 8, 9, LOTRMod.woodPlateBlock, LOTRFoods.ORC);
 		int maxStep = 12;
 		for (i1 = -1; i1 <= 1; ++i1) {
@@ -249,12 +250,6 @@ public abstract class LOTRWorldGenWargPitBase extends LOTRWorldGenStructureBase2
 	public abstract LOTREntityNPC getOrc(World var1);
 
 	public abstract LOTREntityNPC getWarg(World var1);
-
-	@Override
-	public void placeOrcTorch(World world, int i, int j, int k) {
-		setBlockAndMetadata(world, i, j, k, LOTRMod.orcTorch, 0);
-		setBlockAndMetadata(world, i, j + 1, k, LOTRMod.orcTorch, 1);
-	}
 
 	public abstract void setOrcSpawner(LOTREntityNPCRespawner var1);
 

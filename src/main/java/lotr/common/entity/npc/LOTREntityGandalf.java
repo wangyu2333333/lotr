@@ -1,18 +1,27 @@
 package lotr.common.entity.npc;
 
-import java.util.*;
-
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.*;
-import lotr.common.entity.ai.*;
-import lotr.common.fac.LOTRFaction;
-import lotr.common.quest.*;
-import net.minecraft.entity.*;
+import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
+import lotr.common.entity.ai.LOTREntityAIGandalfSmoke;
+import lotr.common.entity.ai.LOTREntityAINearestAttackableTargetBasic;
+import lotr.common.quest.LOTRMiniQuest;
+import lotr.common.quest.LOTRMiniQuestWelcome;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class LOTREntityGandalf extends LOTREntityNPC {
 	public LOTREntityGandalf(World world) {
@@ -29,7 +38,7 @@ public class LOTREntityGandalf extends LOTREntityNPC {
 		tasks.addTask(5, new EntityAIWatchClosest2(this, LOTREntityNPC.class, 5.0f, 0.05f));
 		tasks.addTask(5, new EntityAIWatchClosest(this, EntityLiving.class, 8.0f, 0.02f));
 		tasks.addTask(6, new EntityAILookIdle(this));
-		int target = this.addTargetTasks(false);
+		int target = addTargetTasks(false);
 		targetTasks.addTask(target + 1, new LOTREntityAINearestAttackableTargetBasic(this, LOTREntityBalrog.class, 0, true));
 		targetTasks.addTask(target + 2, new LOTREntityAINearestAttackableTargetBasic(this, LOTREntitySaruman.class, 0, true));
 		npcCape = LOTRCapes.GANDALF;
@@ -54,7 +63,7 @@ public class LOTREntityGandalf extends LOTREntityNPC {
 	}
 
 	public void arriveAt(EntityPlayer entityplayer) {
-		ArrayList<EntityPlayer> msgPlayers = new ArrayList<>();
+		Collection<EntityPlayer> msgPlayers = new ArrayList<>();
 		if (entityplayer != null) {
 			msgPlayers.add(entityplayer);
 		}
@@ -93,7 +102,7 @@ public class LOTREntityGandalf extends LOTREntityNPC {
 	}
 
 	public void depart() {
-		ArrayList<EntityPlayer> msgPlayers = new ArrayList<>();
+		Collection<EntityPlayer> msgPlayers = new ArrayList<>();
 		List worldPlayers = worldObj.playerEntities;
 		for (Object obj : worldPlayers) {
 			EntityPlayer player = (EntityPlayer) obj;
@@ -120,11 +129,6 @@ public class LOTREntityGandalf extends LOTREntityNPC {
 	}
 
 	@Override
-	public LOTRFaction getFaction() {
-		return LOTRFaction.UNALIGNED;
-	}
-
-	@Override
 	public ItemStack getHeldItemLeft() {
 		ItemStack heldItem = getHeldItem();
 		if (heldItem != null && heldItem.getItem() == LOTRMod.glamdring) {
@@ -141,7 +145,7 @@ public class LOTREntityGandalf extends LOTREntityNPC {
 		return "char/gandalf/hostile";
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void handleHealthUpdate(byte b) {
 		if (b == 16) {
@@ -199,7 +203,7 @@ public class LOTREntityGandalf extends LOTREntityNPC {
 			if (addMQOfferFor(entityplayer)) {
 				LOTRGreyWandererTracker.setWandererActive(getUniqueID());
 				String speechBank = "char/gandalf/welcome";
-				this.sendSpeechBank(entityplayer, speechBank);
+				sendSpeechBank(entityplayer, speechBank);
 				return true;
 			}
 		}

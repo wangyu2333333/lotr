@@ -1,52 +1,70 @@
 package lotr.client;
 
-import java.util.*;
-
-import org.lwjgl.opengl.GL11;
-
 import com.mojang.authlib.GameProfile;
-
-import cpw.mods.fml.client.registry.*;
+import cpw.mods.fml.client.registry.ClientRegistry;
+import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.relauncher.Side;
 import lotr.client.fx.*;
 import lotr.client.gui.*;
 import lotr.client.model.LOTRArmorModels;
-import lotr.client.render.*;
+import lotr.client.render.LOTRRenderBlocks;
+import lotr.client.render.LOTRRenderPlayer;
 import lotr.client.render.entity.*;
 import lotr.client.render.tileentity.*;
 import lotr.client.sound.LOTRMusic;
 import lotr.common.*;
-import lotr.common.entity.*;
+import lotr.common.entity.LOTREntityFallingFireJar;
+import lotr.common.entity.LOTREntityInvasionSpawner;
+import lotr.common.entity.LOTREntityNPCRespawner;
+import lotr.common.entity.LOTRInvasionStatus;
 import lotr.common.entity.animal.*;
 import lotr.common.entity.item.*;
 import lotr.common.entity.npc.*;
 import lotr.common.entity.projectile.*;
-import lotr.common.fac.*;
-import lotr.common.network.*;
+import lotr.common.fac.LOTRAlignmentBonusMap;
+import lotr.common.fac.LOTRFaction;
+import lotr.common.network.LOTRPacketClientInfo;
+import lotr.common.network.LOTRPacketFellowshipAcceptInviteResult;
+import lotr.common.network.LOTRPacketHandler;
 import lotr.common.quest.LOTRMiniQuest;
 import lotr.common.tileentity.*;
 import lotr.common.util.LOTRFunctions;
 import lotr.common.world.biome.LOTRBiome;
-import lotr.common.world.map.*;
+import lotr.common.world.map.LOTRAbstractWaypoint;
+import lotr.common.world.map.LOTRConquestZone;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderSnowball;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityPotion;
-import net.minecraft.init.*;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.C08PacketPlayerBlockPlacement;
-import net.minecraft.potion.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
-import net.minecraft.world.chunk.*;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.IChatComponent;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.EmptyChunk;
+import org.lwjgl.opengl.GL11;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 
 public class LOTRClientProxy extends LOTRCommonProxy {
 	public static ResourceLocation enchantmentTexture = new ResourceLocation("textures/misc/enchanted_item_glint.png");
@@ -57,19 +75,13 @@ public class LOTRClientProxy extends LOTRCommonProxy {
 	public static int TESSELLATOR_MAX_BRIGHTNESS = 15728880;
 	public static int FONTRENDERER_ALPHA_MIN = 4;
 	public static LOTREffectRenderer customEffectRenderer;
-	public static LOTRRenderPlayer specialPlayerRenderer;
-	public static LOTRSwingHandler swingHandler;
-	public static LOTRTickHandlerClient tickHandler;
-	public static LOTRKeyHandler keyHandler;
-	public static LOTRGuiHandler guiHandler;
+	public static LOTRRenderPlayer specialPlayerRenderer = new LOTRRenderPlayer();
+	public static LOTRSwingHandler swingHandler = new LOTRSwingHandler();
+	public static LOTRTickHandlerClient tickHandler = new LOTRTickHandlerClient();
+	public static LOTRKeyHandler keyHandler = new LOTRKeyHandler();
+	public static LOTRGuiHandler guiHandler = new LOTRGuiHandler();
 	public static LOTRMusic musicHandler;
-	static {
-		specialPlayerRenderer = new LOTRRenderPlayer();
-		swingHandler = new LOTRSwingHandler();
-		tickHandler = new LOTRTickHandlerClient();
-		keyHandler = new LOTRKeyHandler();
-		guiHandler = new LOTRGuiHandler();
-	}
+
 	public int beaconRenderID;
 	public int barrelRenderID;
 	public int orcBombRenderID;
@@ -108,6 +120,58 @@ public class LOTRClientProxy extends LOTRCommonProxy {
 
 	public int trapdoorRenderID;
 
+	public static boolean doesClientChunkExist(World world, int i, int k) {
+		int chunkX = i >> 4;
+		int chunkZ = k >> 4;
+		Chunk chunk = world.getChunkProvider().provideChunk(chunkX, chunkZ);
+		return !(chunk instanceof EmptyChunk);
+	}
+
+	public static int getAlphaInt(float alphaF) {
+		int alphaI = (int) (alphaF * 255.0f);
+		return MathHelper.clamp_int(alphaI, 4, 255);
+	}
+
+	public static void renderEnchantmentEffect() {
+		Tessellator tessellator = Tessellator.instance;
+		TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
+		GL11.glDepthFunc(514);
+		GL11.glDisable(2896);
+		texturemanager.bindTexture(enchantmentTexture);
+		GL11.glEnable(3042);
+		GL11.glBlendFunc(768, 1);
+		float shade = 0.76f;
+		GL11.glColor4f(0.5f * shade, 0.25f * shade, 0.8f * shade, 1.0f);
+		GL11.glMatrixMode(5890);
+		GL11.glPushMatrix();
+		float scale = 0.125f;
+		GL11.glScalef(scale, scale, scale);
+		float randomShift = Minecraft.getSystemTime() % 3000L / 3000.0f * 8.0f;
+		GL11.glTranslatef(randomShift, 0.0f, 0.0f);
+		GL11.glRotatef(-50.0f, 0.0f, 0.0f, 1.0f);
+		ItemRenderer.renderItemIn2D(tessellator, 0.0f, 0.0f, 1.0f, 1.0f, 256, 256, 0.0625f);
+		GL11.glPopMatrix();
+		GL11.glPushMatrix();
+		GL11.glScalef(scale, scale, scale);
+		randomShift = Minecraft.getSystemTime() % 4873L / 4873.0f * 8.0f;
+		GL11.glTranslatef(-randomShift, 0.0f, 0.0f);
+		GL11.glRotatef(10.0f, 0.0f, 0.0f, 1.0f);
+		ItemRenderer.renderItemIn2D(tessellator, 0.0f, 0.0f, 1.0f, 1.0f, 256, 256, 0.0625f);
+		GL11.glPopMatrix();
+		GL11.glMatrixMode(5888);
+		GL11.glDisable(3042);
+		GL11.glEnable(2896);
+		GL11.glDepthFunc(515);
+	}
+
+	public static void sendClientInfoPacket(LOTRFaction viewingFaction, Map<LOTRDimension.DimensionRegion, LOTRFaction> changedRegionMap) {
+		boolean showWP = LOTRGuiMap.showWP;
+		boolean showCWP = LOTRGuiMap.showCWP;
+		boolean showHiddenSWP = LOTRGuiMap.showHiddenSWP;
+		IMessage packet = new LOTRPacketClientInfo(viewingFaction, changedRegionMap, showWP, showCWP, showHiddenSWP);
+		LOTRPacketHandler.networkWrapper.sendToServer(packet);
+	}
+
 	@Override
 	public void addMapPlayerLocation(GameProfile player, double posX, double posZ) {
 		LOTRGuiMap.addPlayerLocationInfo(player, posX, posZ);
@@ -115,7 +179,7 @@ public class LOTRClientProxy extends LOTRCommonProxy {
 
 	@Override
 	public void cancelItemHighlight() {
-		LOTRClientProxy.tickHandler.cancelItemHighlight = true;
+		tickHandler.cancelItemHighlight = true;
 	}
 
 	@Override
@@ -188,10 +252,10 @@ public class LOTRClientProxy extends LOTRCommonProxy {
 
 	@Override
 	public void fillMugFromCauldron(World world, int i, int j, int k, int side, ItemStack itemstack) {
-		if (!world.isRemote) {
-			super.fillMugFromCauldron(world, i, j, k, side, itemstack);
-		} else {
+		if (world.isRemote) {
 			Minecraft.getMinecraft().thePlayer.sendQueue.addToSendQueue(new C08PacketPlayerBlockPlacement(i, j, k, side, itemstack, 0.0f, 0.0f, 0.0f));
+		} else {
+			super.fillMugFromCauldron(world, i, j, k, side, itemstack);
 		}
 	}
 
@@ -412,7 +476,7 @@ public class LOTRClientProxy extends LOTRCommonProxy {
 	@Override
 	public void onLoad() {
 		customEffectRenderer = new LOTREffectRenderer(Minecraft.getMinecraft());
-		LOTRTextures.load();
+		LOTRTextures.load();  // todo fix this line make ram usage about 350 mb more
 		RenderingRegistry.registerEntityRenderingHandler(LOTREntityPortal.class, new LOTRRenderPortal());
 		RenderingRegistry.registerEntityRenderingHandler(LOTREntityHorse.class, new LOTRRenderHorse());
 		RenderingRegistry.registerEntityRenderingHandler(LOTREntityHobbit.class, new LOTRRenderHobbit());
@@ -679,9 +743,6 @@ public class LOTRClientProxy extends LOTRCommonProxy {
 
 	@Override
 	public void onPostload() {
-		if (LOTRConfig.updateLangFiles) {
-			LOTRLang.runUpdateThread();
-		}
 		musicHandler = new LOTRMusic();
 	}
 
@@ -704,10 +765,10 @@ public class LOTRClientProxy extends LOTRCommonProxy {
 
 	@Override
 	public void placeFlowerInPot(World world, int i, int j, int k, int side, ItemStack itemstack) {
-		if (!world.isRemote) {
-			super.placeFlowerInPot(world, i, j, k, side, itemstack);
-		} else {
+		if (world.isRemote) {
 			Minecraft.getMinecraft().thePlayer.sendQueue.addToSendQueue(new C08PacketPlayerBlockPlacement(i, j, k, side, itemstack, 0.0f, 0.0f, 0.0f));
+		} else {
+			super.placeFlowerInPot(world, i, j, k, side, itemstack);
 		}
 	}
 
@@ -742,7 +803,7 @@ public class LOTRClientProxy extends LOTRCommonProxy {
 		int l = potion.getStatusIconIndex();
 		GuiScreen screen = mc.currentScreen;
 		if (screen != null) {
-			screen.drawTexturedModalRect(x + 6, y + 7, 0 + l % 8 * 18, 0 + l / 8 * 18, 18, 18);
+			screen.drawTexturedModalRect(x + 6, y + 7, l % 8 * 18, l / 8 * 18, 18, 18);
 		}
 	}
 
@@ -784,7 +845,7 @@ public class LOTRClientProxy extends LOTRCommonProxy {
 	@Override
 	public void setInUtumnoReturnPortal(EntityPlayer entityplayer) {
 		if (entityplayer == Minecraft.getMinecraft().thePlayer) {
-			LOTRClientProxy.tickHandler.inUtumnoReturnPortal = true;
+			tickHandler.inUtumnoReturnPortal = true;
 		}
 	}
 
@@ -815,9 +876,9 @@ public class LOTRClientProxy extends LOTRCommonProxy {
 	@Override
 	public void setUtumnoReturnPortalCoords(EntityPlayer entityplayer, int x, int z) {
 		if (entityplayer == Minecraft.getMinecraft().thePlayer) {
-			LOTRClientProxy.tickHandler.inUtumnoReturnPortal = true;
-			LOTRClientProxy.tickHandler.utumnoReturnX = x;
-			LOTRClientProxy.tickHandler.utumnoReturnZ = z;
+			tickHandler.inUtumnoReturnPortal = true;
+			tickHandler.utumnoReturnX = x;
+			tickHandler.utumnoReturnZ = z;
 		}
 	}
 
@@ -868,7 +929,7 @@ public class LOTRClientProxy extends LOTRCommonProxy {
 				mc.effectRenderer.addEffect(new LOTREntityChillFX(world, d, d1, d2, d3, d4, d5));
 			} else if (type.startsWith("elvenGlow")) {
 				LOTREntityElvenGlowFX fx = new LOTREntityElvenGlowFX(world, d, d1, d2, d3, d4, d5);
-				int subIndex = type.indexOf("_");
+				int subIndex = type.indexOf('_');
 				if (subIndex > -1) {
 					String hex = type.substring(subIndex + 1);
 					int color = Integer.parseInt(hex, 16);
@@ -892,8 +953,8 @@ public class LOTRClientProxy extends LOTRCommonProxy {
 					texIndices = rand.nextBoolean() ? LOTRFunctions.intRange(48, 53) : LOTRFunctions.intRange(56, 61);
 				}
 				if (texIndices != null) {
-					if (type.indexOf("_") > -1) {
-						int age = Integer.parseInt(type.substring(type.indexOf("_") + 1));
+					if (type.contains("_")) {
+						int age = Integer.parseInt(type.substring(type.indexOf('_') + 1));
 						customEffectRenderer.addEffect(new LOTREntityLeafFX(world, d, d1, d2, d3, d4, d5, texIndices, age));
 					} else {
 						customEffectRenderer.addEffect(new LOTREntityLeafFX(world, d, d1, d2, d3, d4, d5, texIndices));
@@ -912,8 +973,8 @@ public class LOTRClientProxy extends LOTRCommonProxy {
 			} else if ("mEntJumpSmash".equals(type)) {
 				mc.effectRenderer.addEffect(new LOTREntityLargeBlockFX(world, d, d1, d2, d3, d4, d5, LOTRMod.wood, 1));
 			} else if ("mEntSpawn".equals(type)) {
-				Block block = null;
-				int meta = 0;
+				Block block;
+				int meta;
 				if (world.rand.nextBoolean()) {
 					block = Blocks.dirt;
 					meta = 0;
@@ -942,7 +1003,7 @@ public class LOTRClientProxy extends LOTRCommonProxy {
 			} else if ("mtcHeal".equals(type)) {
 				mc.effectRenderer.addEffect(new LOTREntityMTCHealFX(world, d, d1, d2, d3, d4, d5));
 			} else if ("mtcSpawn".equals(type)) {
-				Block block = null;
+				Block block;
 				int meta = 0;
 				if (world.rand.nextBoolean()) {
 					block = Blocks.stone;
@@ -982,10 +1043,10 @@ public class LOTRClientProxy extends LOTRCommonProxy {
 
 	@Override
 	public void usePouchOnChest(EntityPlayer entityplayer, World world, int i, int j, int k, int side, ItemStack itemstack, int pouchSlot) {
-		if (!world.isRemote) {
-			super.usePouchOnChest(entityplayer, world, i, j, k, side, itemstack, pouchSlot);
-		} else {
+		if (world.isRemote) {
 			((EntityClientPlayerMP) entityplayer).sendQueue.addToSendQueue(new C08PacketPlayerBlockPlacement(i, j, k, side, itemstack, 0.0f, 0.0f, 0.0f));
+		} else {
+			super.usePouchOnChest(entityplayer, world, i, j, k, side, itemstack, pouchSlot);
 		}
 	}
 
@@ -999,57 +1060,5 @@ public class LOTRClientProxy extends LOTRCommonProxy {
 				guiBanner.validateUsername(slot, prevText, valid);
 			}
 		}
-	}
-
-	public static boolean doesClientChunkExist(World world, int i, int k) {
-		int chunkX = i >> 4;
-		int chunkZ = k >> 4;
-		Chunk chunk = world.getChunkProvider().provideChunk(chunkX, chunkZ);
-		return !(chunk instanceof EmptyChunk);
-	}
-
-	public static int getAlphaInt(float alphaF) {
-		int alphaI = (int) (alphaF * 255.0f);
-		return MathHelper.clamp_int(alphaI, 4, 255);
-	}
-
-	public static void renderEnchantmentEffect() {
-		Tessellator tessellator = Tessellator.instance;
-		TextureManager texturemanager = Minecraft.getMinecraft().getTextureManager();
-		GL11.glDepthFunc(514);
-		GL11.glDisable(2896);
-		texturemanager.bindTexture(enchantmentTexture);
-		GL11.glEnable(3042);
-		GL11.glBlendFunc(768, 1);
-		float shade = 0.76f;
-		GL11.glColor4f(0.5f * shade, 0.25f * shade, 0.8f * shade, 1.0f);
-		GL11.glMatrixMode(5890);
-		GL11.glPushMatrix();
-		float scale = 0.125f;
-		GL11.glScalef(scale, scale, scale);
-		float randomShift = Minecraft.getSystemTime() % 3000L / 3000.0f * 8.0f;
-		GL11.glTranslatef(randomShift, 0.0f, 0.0f);
-		GL11.glRotatef(-50.0f, 0.0f, 0.0f, 1.0f);
-		ItemRenderer.renderItemIn2D(tessellator, 0.0f, 0.0f, 1.0f, 1.0f, 256, 256, 0.0625f);
-		GL11.glPopMatrix();
-		GL11.glPushMatrix();
-		GL11.glScalef(scale, scale, scale);
-		randomShift = Minecraft.getSystemTime() % 4873L / 4873.0f * 8.0f;
-		GL11.glTranslatef(-randomShift, 0.0f, 0.0f);
-		GL11.glRotatef(10.0f, 0.0f, 0.0f, 1.0f);
-		ItemRenderer.renderItemIn2D(tessellator, 0.0f, 0.0f, 1.0f, 1.0f, 256, 256, 0.0625f);
-		GL11.glPopMatrix();
-		GL11.glMatrixMode(5888);
-		GL11.glDisable(3042);
-		GL11.glEnable(2896);
-		GL11.glDepthFunc(515);
-	}
-
-	public static void sendClientInfoPacket(LOTRFaction viewingFaction, Map<LOTRDimension.DimensionRegion, LOTRFaction> changedRegionMap) {
-		boolean showWP = LOTRGuiMap.showWP;
-		boolean showCWP = LOTRGuiMap.showCWP;
-		boolean showHiddenSWP = LOTRGuiMap.showHiddenSWP;
-		LOTRPacketClientInfo packet = new LOTRPacketClientInfo(viewingFaction, changedRegionMap, showWP, showCWP, showHiddenSWP);
-		LOTRPacketHandler.networkWrapper.sendToServer(packet);
 	}
 }

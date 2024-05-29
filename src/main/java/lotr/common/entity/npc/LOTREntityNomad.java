@@ -1,9 +1,11 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
 import lotr.common.entity.animal.LOTREntityCamel;
 import lotr.common.item.LOTRItemHaradRobes;
-import lotr.common.quest.*;
+import lotr.common.quest.LOTRMiniQuest;
+import lotr.common.quest.LOTRMiniQuestFactory;
 import lotr.common.world.biome.LOTRBiomeGenNearHarad;
 import lotr.common.world.structure.LOTRChestContents;
 import net.minecraft.entity.IEntityLivingData;
@@ -12,11 +14,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class LOTREntityNomad extends LOTREntityNearHaradrimBase implements LOTRBiomeGenNearHarad.ImmuneToHeat {
-	public static int[] nomadTurbanColors = { 15392448, 13550476, 10063441, 8354400, 8343622 };
+	public static int[] nomadTurbanColors = {15392448, 13550476, 10063441, 8354400, 8343622};
 
 	public LOTREntityNomad(World world) {
 		super(world);
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 	}
 
 	@Override
@@ -51,11 +53,6 @@ public class LOTREntityNomad extends LOTREntityNearHaradrimBase implements LOTRB
 	@Override
 	public LOTRFoods getHaradrimFoods() {
 		return LOTRFoods.NOMAD;
-	}
-
-	@Override
-	public LOTRAchievement getKillAchievement() {
-		return LOTRAchievement.killNearHaradrim;
 	}
 
 	@Override

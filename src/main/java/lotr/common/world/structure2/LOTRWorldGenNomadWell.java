@@ -1,9 +1,9 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenNomadWell extends LOTRWorldGenNomadStructure {
 	public LOTRWorldGenNomadWell(boolean flag) {
@@ -15,7 +15,7 @@ public class LOTRWorldGenNomadWell extends LOTRWorldGenNomadStructure {
 		int j1;
 		int i1;
 		int k1;
-		this.setOriginAndRotation(world, i, j, k, rotation, 0);
+		setOriginAndRotation(world, i, j, k, rotation, 0);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			int minHeight = 0;

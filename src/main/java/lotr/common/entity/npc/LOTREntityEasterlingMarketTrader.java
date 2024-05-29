@@ -1,14 +1,15 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public abstract class LOTREntityEasterlingMarketTrader extends LOTREntityEasterling implements LOTRTradeable {
-	public LOTREntityEasterlingMarketTrader(World world) {
+	protected LOTREntityEasterlingMarketTrader(World world) {
 		super(world);
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 	}
 
 	@Override
@@ -27,15 +28,6 @@ public abstract class LOTREntityEasterlingMarketTrader extends LOTREntityEasterl
 			return "rhun/marketTrader/friendly";
 		}
 		return "rhun/marketTrader/hostile";
-	}
-
-	@Override
-	public void onAttackModeChange(LOTREntityNPC.AttackMode mode, boolean mounted) {
-		if (mode == LOTREntityNPC.AttackMode.IDLE) {
-			setCurrentItemOrArmor(0, npcItemsInv.getIdleItem());
-		} else {
-			setCurrentItemOrArmor(0, npcItemsInv.getMeleeWeapon());
-		}
 	}
 
 	@Override

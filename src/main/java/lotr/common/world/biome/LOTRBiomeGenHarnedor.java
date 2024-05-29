@@ -1,14 +1,21 @@
 package lotr.common.world.biome;
 
-import java.util.Random;
-
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRMod;
 import lotr.common.entity.animal.LOTREntityHorse;
-import lotr.common.entity.npc.*;
+import lotr.common.entity.npc.LOTREntityBanditHarad;
+import lotr.common.entity.npc.LOTREntityDorwinionMerchantMan;
+import lotr.common.entity.npc.LOTREntityNomadMerchant;
+import lotr.common.entity.npc.LOTREntityScrapTrader;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
-import lotr.common.world.feature.*;
-import lotr.common.world.map.*;
-import lotr.common.world.spawning.*;
+import lotr.common.world.feature.LOTRTreeType;
+import lotr.common.world.feature.LOTRWorldGenBoulder;
+import lotr.common.world.map.LOTRRoadType;
+import lotr.common.world.map.LOTRWaypoint;
+import lotr.common.world.spawning.LOTRBiomeSpawnList;
+import lotr.common.world.spawning.LOTREventSpawner;
+import lotr.common.world.spawning.LOTRInvasions;
+import lotr.common.world.spawning.LOTRSpawnList;
 import lotr.common.world.structure2.*;
 import lotr.common.world.village.LOTRVillageGenHarnedor;
 import net.minecraft.block.Block;
@@ -16,7 +23,10 @@ import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.gen.NoiseGeneratorPerlin;
-import net.minecraft.world.gen.feature.*;
+import net.minecraft.world.gen.feature.WorldGenMinable;
+import net.minecraft.world.gen.feature.WorldGenerator;
+
+import java.util.Random;
 
 public class LOTRBiomeGenHarnedor extends LOTRBiome {
 	public static NoiseGeneratorPerlin noiseDirt = new NoiseGeneratorPerlin(new Random(3869098386927266L), 1);
@@ -58,17 +68,17 @@ public class LOTRBiomeGenHarnedor extends LOTRBiome {
 		LOTRBiomeSpawnList.SpawnListContainer[] arrspawnListContainer8 = new LOTRBiomeSpawnList.SpawnListContainer[1];
 		arrspawnListContainer8[0] = LOTRBiomeSpawnList.entry(LOTRSpawnList.HALF_TROLLS, 10);
 		npcSpawnList.newFactionList(0).add(arrspawnListContainer8);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
-		this.addBiomeVariant(LOTRBiomeVariant.STEPPE);
-		this.addBiomeVariant(LOTRBiomeVariant.STEPPE_BARREN);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS_FOREST);
-		this.addBiomeVariant(LOTRBiomeVariant.SHRUBLAND_OAK, 2.0f);
-		this.addBiomeVariant(LOTRBiomeVariant.SCRUBLAND_SAND, 2.0f);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS_SCRUBLAND_SAND);
-		this.addBiomeVariant(LOTRBiomeVariant.WASTELAND_SAND);
-		this.addBiomeVariant(LOTRBiomeVariant.DEADFOREST_OAK);
+		addBiomeVariant(LOTRBiomeVariant.FOREST);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
+		addBiomeVariant(LOTRBiomeVariant.STEPPE);
+		addBiomeVariant(LOTRBiomeVariant.STEPPE_BARREN);
+		addBiomeVariant(LOTRBiomeVariant.HILLS);
+		addBiomeVariant(LOTRBiomeVariant.HILLS_FOREST);
+		addBiomeVariant(LOTRBiomeVariant.SHRUBLAND_OAK, 2.0f);
+		addBiomeVariant(LOTRBiomeVariant.SCRUBLAND_SAND, 2.0f);
+		addBiomeVariant(LOTRBiomeVariant.HILLS_SCRUBLAND_SAND);
+		addBiomeVariant(LOTRBiomeVariant.WASTELAND_SAND);
+		addBiomeVariant(LOTRBiomeVariant.DEADFOREST_OAK);
 		decorator.addOre(new WorldGenMinable(Blocks.lapis_ore, 6), 1.0f, 0, 48);
 		decorator.setTreeCluster(3, 30);
 		decorator.grassPerChunk = 8;

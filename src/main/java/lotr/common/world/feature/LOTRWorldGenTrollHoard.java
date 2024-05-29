@@ -1,7 +1,5 @@
 package lotr.common.world.feature;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import lotr.common.world.biome.LOTRBiomeGenEttenmoors;
 import lotr.common.world.structure.LOTRChestContents;
@@ -10,6 +8,8 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
+
+import java.util.Random;
 
 public class LOTRWorldGenTrollHoard extends WorldGenerator {
 	@Override
@@ -22,7 +22,8 @@ public class LOTRWorldGenTrollHoard extends WorldGenerator {
 		int maxCaveHeight = height - 4;
 		int chests = 2 + random.nextInt(5);
 		int chestsGenerated = 0;
-		block0: for (l = 0; l < 64; ++l) {
+		block0:
+		for (l = 0; l < 64; ++l) {
 			i1 = i + MathHelper.getRandomIntegerInRange(random, -3, 3);
 			j1 = j + MathHelper.getRandomIntegerInRange(random, -3, 3);
 			k1 = k + MathHelper.getRandomIntegerInRange(random, -3, 3);

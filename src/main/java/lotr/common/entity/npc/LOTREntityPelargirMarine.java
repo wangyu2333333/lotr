@@ -1,9 +1,8 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
-import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
+import lotr.common.LOTRMod;
+import lotr.common.LOTRShields;
 import net.minecraft.entity.IEntityLivingData;
-import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -12,11 +11,6 @@ public class LOTREntityPelargirMarine extends LOTREntityGondorSoldier {
 		super(world);
 		spawnRidingHorse = false;
 		npcShield = LOTRShields.ALIGNMENT_PELARGIR;
-	}
-
-	@Override
-	public EntityAIBase createGondorAttackAI() {
-		return new LOTREntityAIAttackOnCollide(this, 1.45, false);
 	}
 
 	@Override

@@ -1,14 +1,16 @@
 package lotr.common.item;
 
-import java.util.List;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRCreativeTabs;
+import lotr.common.LOTRMod;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
+
+import java.util.List;
 
 public class LOTRItemPartyHat extends LOTRItemArmor {
 	public static int HAT_WHITE = 16777215;
@@ -18,31 +20,12 @@ public class LOTRItemPartyHat extends LOTRItemArmor {
 		setCreativeTab(LOTRCreativeTabs.tabMisc);
 	}
 
-	@SideOnly(value = Side.CLIENT)
-	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag) {
-		if (LOTRItemPartyHat.isHatDyed(itemstack) && LOTRItemPartyHat.getHatColor(itemstack) != 16777215) {
-			list.add(StatCollector.translateToLocal("item.lotr.hat.dyed"));
-		}
-	}
-
-	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type) {
-		return "lotr:armor/partyhat.png";
-	}
-
-	@SideOnly(value = Side.CLIENT)
-	@Override
-	public int getColorFromItemStack(ItemStack itemstack, int pass) {
-		return LOTRItemPartyHat.getHatColor(itemstack);
-	}
-
 	public static ItemStack createDyedHat(int i) {
-		return LOTRItemPartyHat.setHatColor(new ItemStack(LOTRMod.partyHat), i);
+		return setHatColor(new ItemStack(LOTRMod.partyHat), i);
 	}
 
 	public static int getHatColor(ItemStack itemstack) {
-		int dye = LOTRItemPartyHat.getSavedDyeColor(itemstack);
+		int dye = getSavedDyeColor(itemstack);
 		if (dye != -1) {
 			return dye;
 		}
@@ -57,7 +40,7 @@ public class LOTRItemPartyHat extends LOTRItemArmor {
 	}
 
 	public static boolean isHatDyed(ItemStack itemstack) {
-		return LOTRItemPartyHat.getSavedDyeColor(itemstack) != -1;
+		return getSavedDyeColor(itemstack) != -1;
 	}
 
 	public static void removeHatDye(ItemStack itemstack) {
@@ -72,5 +55,24 @@ public class LOTRItemPartyHat extends LOTRItemArmor {
 		}
 		itemstack.getTagCompound().setInteger("HatColor", i);
 		return itemstack;
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag) {
+		if (isHatDyed(itemstack) && getHatColor(itemstack) != 16777215) {
+			list.add(StatCollector.translateToLocal("item.lotr.hat.dyed"));
+		}
+	}
+
+	@Override
+	public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type) {
+		return "lotr:armor/partyhat.png";
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public int getColorFromItemStack(ItemStack itemstack, int pass) {
+		return getHatColor(itemstack);
 	}
 }

@@ -1,9 +1,14 @@
 package lotr.common.enchant;
 
-import lotr.common.item.*;
-import net.minecraft.entity.*;
-import net.minecraft.item.*;
-import net.minecraft.util.*;
+import lotr.common.item.LOTRMaterial;
+import lotr.common.item.LOTRWeaponStats;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.StatCollector;
 
 public class LOTREnchantmentProtectionMithril extends LOTREnchantmentProtectionSpecial {
 	public LOTREnchantmentProtectionMithril(String s) {
@@ -39,9 +44,7 @@ public class LOTREnchantmentProtectionMithril extends LOTREnchantmentProtectionS
 			ItemStack weaponBase = weapon.copy();
 			LOTREnchantmentHelper.clearEnchants(weaponBase);
 			float range = LOTRWeaponStats.getMeleeReachFactor(weaponBase);
-			if (range >= 1.3f) {
-				return true;
-			}
+			return range >= 1.3f;
 		}
 		return false;
 	}

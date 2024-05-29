@@ -1,8 +1,10 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRCapes;
+import lotr.common.LOTRMod;
 import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
-import net.minecraft.entity.*;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -33,7 +35,7 @@ public class LOTREntityDunlendingBerserker extends LOTREntityDunlendingWarrior {
 		int i = rand.nextInt(2);
 		if (i == 0) {
 			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.battleaxeIron));
-		} else if (i == 1) {
+		} else {
 			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.battleaxeBronze));
 		}
 		npcItemsInv.setIdleItem(npcItemsInv.getMeleeWeapon());

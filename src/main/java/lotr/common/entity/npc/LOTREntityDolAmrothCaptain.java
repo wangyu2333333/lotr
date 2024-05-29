@@ -1,6 +1,9 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRCapes;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
 import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
 import lotr.common.world.spawning.LOTRInvasions;
 import net.minecraft.entity.IEntityLivingData;
@@ -12,13 +15,8 @@ import net.minecraft.world.World;
 public class LOTREntityDolAmrothCaptain extends LOTREntitySwanKnight implements LOTRUnitTradeable {
 	public LOTREntityDolAmrothCaptain(World world) {
 		super(world);
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 		npcCape = LOTRCapes.GONDOR;
-	}
-
-	@Override
-	public void applyEntityAttributes() {
-		super.applyEntityAttributes();
 	}
 
 	@Override

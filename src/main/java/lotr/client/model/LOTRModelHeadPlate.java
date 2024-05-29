@@ -1,7 +1,5 @@
 package lotr.client.model;
 
-import org.lwjgl.opengl.GL11;
-
 import lotr.client.LOTRTickHandlerClient;
 import lotr.client.render.LOTRRenderBlocks;
 import lotr.common.LOTRMod;
@@ -13,9 +11,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+import org.lwjgl.opengl.GL11;
 
 public class LOTRModelHeadPlate extends LOTRModelHuman {
 	public RenderBlocks blockRenderer = new RenderBlocks();
@@ -27,13 +27,12 @@ public class LOTRModelHeadPlate extends LOTRModelHuman {
 		ItemStack heldItem;
 		float tick = LOTRTickHandlerClient.renderTick;
 		setRotationAngles(f, f1, f2, f3, f4, f5, entity);
-		float headRotateY = f3;
 		LOTRPlateFallingInfo fallingInfo = entity == null ? null : LOTRPlateFallingInfo.getOrCreateFor(entity, false);
 		float fallOffset = fallingInfo == null ? 0.0f : fallingInfo.getPlateOffsetY(tick);
 		GL11.glEnable(32826);
 		GL11.glPushMatrix();
 		GL11.glScalef(1.0f, -1.0f, 1.0f);
-		GL11.glRotatef(headRotateY, 0.0f, 1.0f, 0.0f);
+		GL11.glRotatef(f3, 0.0f, 1.0f, 0.0f);
 		GL11.glTranslatef(0.0f, 1.0f - bipedHead.rotationPointY / 16.0f, 0.0f);
 		GL11.glTranslatef(0.0f, fallOffset * 0.5f, 0.0f);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(TextureMap.locationBlocksTexture);

@@ -3,8 +3,10 @@ package lotr.common.tileentity;
 import lotr.common.LOTRMod;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.init.*;
-import net.minecraft.item.*;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 
 public abstract class LOTRTileEntityAlloyForgeBase extends LOTRTileEntityForgeBase {
@@ -146,8 +148,8 @@ public abstract class LOTRTileEntityAlloyForgeBase extends LOTRTileEntityForgeBa
 
 	@Override
 	public void setupForgeSlots() {
-		inputSlots = new int[] { 4, 5, 6, 7 };
-		outputSlots = new int[] { 8, 9, 10, 11 };
+		inputSlots = new int[]{4, 5, 6, 7};
+		outputSlots = new int[]{8, 9, 10, 11};
 		fuelSlot = 12;
 	}
 

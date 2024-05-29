@@ -1,19 +1,24 @@
 package lotr.common.block;
 
-import java.util.Random;
-
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.LOTRMod;
 import lotr.common.tileentity.LOTRTileEntityPlate;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.Random;
 
 public class LOTRBlockPlate extends BlockContainer {
 	public static Block.SoundType soundTypePlate = new Block.SoundType("lotr:plate", 1.0f, 1.0f) {
@@ -28,16 +33,11 @@ public class LOTRBlockPlate extends BlockContainer {
 		}
 
 		@Override
-		public float getPitch() {
-			return super.getPitch();
-		}
-
-		@Override
 		public String getStepResourcePath() {
 			return Block.soundTypeStone.getStepResourcePath();
 		}
 	};
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon[] plateIcons;
 	public Item plateItem;
 
@@ -47,12 +47,20 @@ public class LOTRBlockPlate extends BlockContainer {
 		setBlockBounds(0.125f, 0.0f, 0.125f, 0.875f, 0.125f, 0.875f);
 	}
 
+	public static ItemStack getFoodItem(IBlockAccess world, int i, int j, int k) {
+		TileEntity tileentity = world.getTileEntity(i, j, k);
+		if (tileentity instanceof LOTRTileEntityPlate) {
+			return ((LOTRTileEntityPlate) tileentity).getFoodItem();
+		}
+		return null;
+	}
+
 	@Override
 	public void breakBlock(World world, int i, int j, int k, Block block, int meta) {
 		ItemStack foodItem;
 		TileEntity tileentity = world.getTileEntity(i, j, k);
 		if (!world.isRemote && tileentity instanceof LOTRTileEntityPlate && (foodItem = ((LOTRTileEntityPlate) tileentity).getFoodItem()) != null) {
-			this.dropBlockAsItem(world, i, j, k, foodItem);
+			dropBlockAsItem(world, i, j, k, foodItem);
 		}
 		super.breakBlock(world, i, j, k, block, meta);
 	}
@@ -75,18 +83,18 @@ public class LOTRBlockPlate extends BlockContainer {
 	public void dropOnePlateItem(LOTRTileEntityPlate plate) {
 		ItemStack item = plate.getFoodItem().copy();
 		item.stackSize = 1;
-		this.dropPlateItem(plate, item);
+		dropPlateItem(plate, item);
 	}
 
 	public void dropPlateItem(LOTRTileEntityPlate plate) {
-		this.dropPlateItem(plate, plate.getFoodItem());
+		dropPlateItem(plate, plate.getFoodItem());
 	}
 
 	public void dropPlateItem(LOTRTileEntityPlate plate, ItemStack itemstack) {
-		this.dropBlockAsItem(plate.getWorldObj(), plate.xCoord, plate.yCoord, plate.zCoord, itemstack);
+		dropBlockAsItem(plate.getWorldObj(), plate.xCoord, plate.yCoord, plate.zCoord, itemstack);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
 		return i == 1 ? plateIcons[0] : plateIcons[1];
@@ -99,7 +107,7 @@ public class LOTRBlockPlate extends BlockContainer {
 
 	@Override
 	public ItemStack getPickBlock(MovingObjectPosition target, World world, int i, int j, int k, EntityPlayer entityplayer) {
-		ItemStack foodItem = LOTRBlockPlate.getFoodItem(world, i, j, k);
+		ItemStack foodItem = getFoodItem(world, i, j, k);
 		if (foodItem != null) {
 			ItemStack copy = foodItem.copy();
 			copy.stackSize = 1;
@@ -164,12 +172,12 @@ public class LOTRBlockPlate extends BlockContainer {
 	@Override
 	public void onNeighborBlockChange(World world, int i, int j, int k, Block block) {
 		if (!canBlockStay(world, i, j, k)) {
-			this.dropBlockAsItem(world, i, j, k, world.getBlockMetadata(i, j, k), 0);
+			dropBlockAsItem(world, i, j, k, world.getBlockMetadata(i, j, k), 0);
 			world.setBlockToAir(i, j, k);
 		}
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
 		plateIcons = new IIcon[2];
@@ -184,14 +192,6 @@ public class LOTRBlockPlate extends BlockContainer {
 
 	public void setPlateItem(Item item) {
 		plateItem = item;
-	}
-
-	public static ItemStack getFoodItem(World world, int i, int j, int k) {
-		TileEntity tileentity = world.getTileEntity(i, j, k);
-		if (tileentity instanceof LOTRTileEntityPlate) {
-			return ((LOTRTileEntityPlate) tileentity).getFoodItem();
-		}
-		return null;
 	}
 
 }

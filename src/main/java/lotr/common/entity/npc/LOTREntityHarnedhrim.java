@@ -1,7 +1,9 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
-import lotr.common.quest.*;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
+import lotr.common.quest.LOTRMiniQuest;
+import lotr.common.quest.LOTRMiniQuestFactory;
 import lotr.common.world.structure.LOTRChestContents;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,7 +14,7 @@ import net.minecraft.world.World;
 public class LOTREntityHarnedhrim extends LOTREntityNearHaradrimBase {
 	public LOTREntityHarnedhrim(World world) {
 		super(world);
-		this.addTargetTasks(true);
+		addTargetTasks(true);
 	}
 
 	@Override
@@ -44,7 +46,7 @@ public class LOTREntityHarnedhrim extends LOTREntityNearHaradrimBase {
 
 	@Override
 	public String getNPCFormattedName(String npcName, String entityName) {
-		if (this.getClass() == LOTREntityHarnedhrim.class) {
+		if (getClass() == LOTREntityHarnedhrim.class) {
 			return StatCollector.translateToLocalFormatted("entity.lotr.Harnedhrim.entityName", npcName);
 		}
 		return super.getNPCFormattedName(npcName, entityName);

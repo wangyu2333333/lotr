@@ -1,8 +1,11 @@
 package lotr.common.inventory;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.*;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 public class LOTRSlotMillstone extends Slot {
@@ -39,12 +42,12 @@ public class LOTRSlotMillstone extends Slot {
 	@Override
 	public void onCrafting(ItemStack itemstack, int i) {
 		itemsTaken += i;
-		this.onCrafting(itemstack);
+		onCrafting(itemstack);
 	}
 
 	@Override
 	public void onPickupFromSlot(EntityPlayer entityplayer, ItemStack itemstack) {
-		this.onCrafting(itemstack);
+		onCrafting(itemstack);
 		super.onPickupFromSlot(entityplayer, itemstack);
 	}
 }

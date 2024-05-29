@@ -1,6 +1,7 @@
 package lotr.common.world;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.world.WorldType;
 
 public class LOTRWorldTypeMiddleEarth extends WorldType {
@@ -8,7 +9,7 @@ public class LOTRWorldTypeMiddleEarth extends WorldType {
 		super(name);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public boolean showWorldInfoNotice() {
 		return true;

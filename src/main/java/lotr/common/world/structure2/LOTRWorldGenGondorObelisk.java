@@ -1,9 +1,9 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenGondorObelisk extends LOTRWorldGenGondorStructure {
 	public LOTRWorldGenGondorObelisk(boolean flag) {
@@ -16,7 +16,7 @@ public class LOTRWorldGenGondorObelisk extends LOTRWorldGenGondorStructure {
 		int k1;
 		int k12;
 		int i1;
-		this.setOriginAndRotation(world, i, j, k, rotation, 4);
+		setOriginAndRotation(world, i, j, k, rotation, 4);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			for (i1 = -3; i1 <= 3; ++i1) {

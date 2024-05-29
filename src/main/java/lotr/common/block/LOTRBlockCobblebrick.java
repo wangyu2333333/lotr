@@ -1,6 +1,7 @@
 package lotr.common.block;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.client.render.LOTRConnectedTextures;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
@@ -22,19 +23,19 @@ public class LOTRBlockCobblebrick extends LOTRBlockBrickBase implements LOTRConn
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(IBlockAccess world, int i, int j, int k, int side) {
 		return LOTRConnectedTextures.getConnectedIconBlock(this, world, i, j, k, side, false);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
-		boolean[][] adjacentFlags = i == 0 || i == 1 ? new boolean[][] { { false, false, false }, { false, true, false }, { false, false, false } } : new boolean[][] { { false, true, false }, { false, true, false }, { false, true, false } };
+		boolean[][] adjacentFlags = i == 0 || i == 1 ? new boolean[][]{{false, false, false}, {false, true, false}, {false, false, false}} : new boolean[][]{{false, true, false}, {false, true, false}, {false, true, false}};
 		return LOTRConnectedTextures.getConnectedIconItem(this, j, adjacentFlags);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
 		brickIcons = new IIcon[brickNames.length];

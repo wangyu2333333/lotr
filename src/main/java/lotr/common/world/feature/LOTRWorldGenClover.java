@@ -1,16 +1,17 @@
 package lotr.common.world.feature;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
 
+import java.util.Random;
+
 public class LOTRWorldGenClover extends WorldGenerator {
 	@Override
 	public boolean generate(World world, Random random, int i, int j, int k) {
-		Block block = null;
+		Block block;
+		//noinspection StatementWithEmptyBody
 		while (((block = world.getBlock(i, j, k)).isAir(world, i, j, k) || block.isLeaves(world, i, j, k)) && --j > 0) {
 		}
 		for (int l = 0; l < 128; ++l) {

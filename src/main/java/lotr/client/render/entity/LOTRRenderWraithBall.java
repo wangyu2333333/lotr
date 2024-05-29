@@ -1,12 +1,11 @@
 package lotr.client.render.entity;
 
-import org.lwjgl.opengl.GL11;
-
 import lotr.common.entity.projectile.LOTREntityMarshWraithBall;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 public class LOTRRenderWraithBall extends Render {
 	public static ResourceLocation texture = new ResourceLocation("lotr:mob/wraith/marshWraith_ball.png");
@@ -29,10 +28,10 @@ public class LOTRRenderWraithBall extends Render {
 	}
 
 	public void drawSprite(Tessellator tessellator, int index) {
-		float var3 = (index % 4 * 16 + 0) / 64.0f;
+		float var3 = (index % 4 * 16) / 64.0f;
 		float var4 = (index % 4 * 16 + 16) / 64.0f;
-		float var5 = (index / 4 * 16 + 0) / 64.0f;
-		float var6 = (index / 4 * 16 + 16) / 64.0f;
+		float var5 = ((float) index / 4 * 16) / 64.0f;
+		float var6 = ((float) index / 4 * 16 + 16) / 64.0f;
 		float var7 = 1.0f;
 		float var8 = 0.5f;
 		float var9 = 0.25f;

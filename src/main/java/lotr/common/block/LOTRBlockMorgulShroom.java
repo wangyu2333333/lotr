@@ -1,11 +1,12 @@
 package lotr.common.block;
 
-import java.util.Random;
-
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.LOTRCreativeTabs;
 import net.minecraft.block.material.Material;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRBlockMorgulShroom extends LOTRBlockMordorPlant {
 	public LOTRBlockMorgulShroom() {
@@ -15,7 +16,7 @@ public class LOTRBlockMorgulShroom extends LOTRBlockMordorPlant {
 		setCreativeTab(LOTRCreativeTabs.tabFood);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public String getItemIconName() {
 		return getTextureName();

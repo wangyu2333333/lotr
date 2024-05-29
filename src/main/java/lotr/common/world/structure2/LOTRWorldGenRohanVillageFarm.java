@@ -1,11 +1,11 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import lotr.common.entity.npc.LOTREntityRohanFarmhand;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenRohanVillageFarm extends LOTRWorldGenRohanStructure {
 	public LOTRWorldGenRohanVillageFarm(boolean flag) {
@@ -15,7 +15,7 @@ public class LOTRWorldGenRohanVillageFarm extends LOTRWorldGenRohanStructure {
 	@Override
 	public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
 		int j1;
-		this.setOriginAndRotation(world, i, j, k, rotation, 6);
+		setOriginAndRotation(world, i, j, k, rotation, 6);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			int minHeight = 0;

@@ -1,8 +1,11 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRFoods;
 import lotr.common.fac.LOTRFaction;
-import lotr.common.quest.*;
+import lotr.common.quest.IPickpocketable;
+import lotr.common.quest.LOTRMiniQuest;
+import lotr.common.quest.LOTRMiniQuestFactory;
 import lotr.common.world.biome.LOTRBiomeGenBreeland;
 import lotr.common.world.structure.LOTRChestContents;
 import net.minecraft.entity.player.EntityPlayer;
@@ -46,11 +49,6 @@ public class LOTREntityBreeHobbit extends LOTREntityHobbit implements IPickpocke
 		if (rand.nextInt(6) == 0) {
 			dropChestContents(LOTRChestContents.BREE_HOUSE, 1, 2 + i);
 		}
-	}
-
-	@Override
-	public float getAlignmentBonus() {
-		return 1.0f;
 	}
 
 	@Override

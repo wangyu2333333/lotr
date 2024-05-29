@@ -1,21 +1,27 @@
 package lotr.common.block;
 
-import java.util.*;
-
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.LOTRMod;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockRailBase;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.*;
-import net.minecraft.util.*;
+import net.minecraft.item.ItemMinecart;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 public class LOTRBlockMechanisedRail extends BlockRailBase {
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon iconOn;
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon iconOff;
 	public boolean defaultPower;
 
@@ -56,7 +62,7 @@ public class LOTRBlockMechanisedRail extends BlockRailBase {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int side, int meta) {
 		return isPowerOn(meta) ? iconOn : iconOff;
 	}
@@ -74,61 +80,61 @@ public class LOTRBlockMechanisedRail extends BlockRailBase {
 		boolean flat = true;
 		int axis = 0;
 		switch (dir) {
-		case 0: {
-			k = forwardOrBack ? ++k : --k;
-			axis = 0;
-			break;
-		}
-		case 1: {
-			i = forwardOrBack ? --i : ++i;
-			axis = 0;
-			break;
-		}
-		case 2: {
-			if (forwardOrBack) {
-				--i;
-			} else {
-				++i;
-				++j;
-				flat = false;
+			case 0: {
+				k = forwardOrBack ? ++k : --k;
+				axis = 0;
+				break;
 			}
-			axis = 1;
-			break;
-		}
-		case 3: {
-			if (forwardOrBack) {
-				--i;
-				++j;
-				flat = false;
-			} else {
-				++i;
+			case 1: {
+				i = forwardOrBack ? --i : ++i;
+				axis = 0;
+				break;
 			}
-			axis = 1;
-			break;
-		}
-		case 4: {
-			if (forwardOrBack) {
-				++k;
-			} else {
-				--k;
-				++j;
-				flat = false;
+			case 2: {
+				if (forwardOrBack) {
+					--i;
+				} else {
+					++i;
+					++j;
+					flat = false;
+				}
+				axis = 1;
+				break;
 			}
-			axis = 0;
-			break;
-		}
-		case 5: {
-			if (forwardOrBack) {
-				++k;
-				++j;
-				flat = false;
-			} else {
-				--k;
+			case 3: {
+				if (forwardOrBack) {
+					--i;
+					++j;
+					flat = false;
+				} else {
+					++i;
+				}
+				axis = 1;
+				break;
 			}
-			axis = 0;
+			case 4: {
+				if (forwardOrBack) {
+					++k;
+				} else {
+					--k;
+					++j;
+					flat = false;
+				}
+				axis = 0;
+				break;
+			}
+			case 5: {
+				if (forwardOrBack) {
+					++k;
+					++j;
+					flat = false;
+				} else {
+					--k;
+				}
+				axis = 0;
+			}
 		}
-		}
-		return isPoweredRailAt(world, i, j, k, forwardOrBack, recursion, axis) ? true : flat && isPoweredRailAt(world, i, j - 1, k, forwardOrBack, recursion, axis);
+		return isPoweredRailAt(world, i, j, k, forwardOrBack, recursion, axis) || flat && isPoweredRailAt(world, i, j - 1, k, forwardOrBack, recursion, axis);
 	}
 
 	public boolean isPoweredRailAt(World world, int i, int j, int k, boolean forwardOrBack, int recursion, int axis) {
@@ -184,13 +190,13 @@ public class LOTRBlockMechanisedRail extends BlockRailBase {
 		Block.SoundType sound = setBlock.stepSound;
 		world.playSoundEffect(i + 0.5f, j + 0.5f, k + 0.5f, sound.func_150496_b(), (sound.getVolume() + 1.0f) / 2.0f, sound.getPitch() * 0.8f);
 		if (!world.isRemote) {
-			this.dropBlockAsItem(world, i, j, k, new ItemStack(LOTRMod.mechanism));
+			dropBlockAsItem(world, i, j, k, new ItemStack(LOTRMod.mechanism));
 		}
 		return true;
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public void randomDisplayTick(World world, int i, int j, int k, Random rand) {
 		int meta = world.getBlockMetadata(i, j, k);
 		boolean power = isPowerOn(meta);
@@ -201,44 +207,44 @@ public class LOTRBlockMechanisedRail extends BlockRailBase {
 			Vec3 corner3 = Vec3.createVectorHelper(0.0, 0.0, 0.0);
 			Vec3 corner4 = Vec3.createVectorHelper(0.0, 0.0, 0.0);
 			switch (dir) {
-			case 0:
-				corner1 = Vec3.createVectorHelper(-0.4, 0.0, -0.5);
-				corner2 = Vec3.createVectorHelper(-0.4, 0.0, 0.5);
-				corner3 = Vec3.createVectorHelper(0.4, 0.0, -0.5);
-				corner4 = Vec3.createVectorHelper(0.4, 0.0, 0.5);
-				break;
-			case 1:
-				corner1 = Vec3.createVectorHelper(-0.5, 0.0, -0.4);
-				corner2 = Vec3.createVectorHelper(0.5, 0.0, -0.4);
-				corner3 = Vec3.createVectorHelper(-0.5, 0.0, 0.4);
-				corner4 = Vec3.createVectorHelper(0.5, 0.0, 0.4);
-				break;
-			case 2:
-				corner1 = Vec3.createVectorHelper(-0.5, 0.0, -0.4);
-				corner2 = Vec3.createVectorHelper(0.5, 1.0, -0.4);
-				corner3 = Vec3.createVectorHelper(-0.5, 0.0, 0.4);
-				corner4 = Vec3.createVectorHelper(0.5, 1.0, 0.4);
-				break;
-			case 3:
-				corner1 = Vec3.createVectorHelper(-0.5, 1.0, -0.4);
-				corner2 = Vec3.createVectorHelper(0.5, 0.0, -0.4);
-				corner3 = Vec3.createVectorHelper(-0.5, 1.0, 0.4);
-				corner4 = Vec3.createVectorHelper(0.5, 0.0, 0.4);
-				break;
-			case 4:
-				corner1 = Vec3.createVectorHelper(-0.4, 1.0, -0.5);
-				corner2 = Vec3.createVectorHelper(-0.4, 0.0, 0.5);
-				corner3 = Vec3.createVectorHelper(0.4, 1.0, -0.5);
-				corner4 = Vec3.createVectorHelper(0.4, 0.0, 0.5);
-				break;
-			case 5:
-				corner1 = Vec3.createVectorHelper(-0.4, 0.0, -0.5);
-				corner2 = Vec3.createVectorHelper(-0.4, 1.0, 0.5);
-				corner3 = Vec3.createVectorHelper(0.4, 0.0, -0.5);
-				corner4 = Vec3.createVectorHelper(0.4, 1.0, 0.5);
-				break;
-			default:
-				break;
+				case 0:
+					corner1 = Vec3.createVectorHelper(-0.4, 0.0, -0.5);
+					corner2 = Vec3.createVectorHelper(-0.4, 0.0, 0.5);
+					corner3 = Vec3.createVectorHelper(0.4, 0.0, -0.5);
+					corner4 = Vec3.createVectorHelper(0.4, 0.0, 0.5);
+					break;
+				case 1:
+					corner1 = Vec3.createVectorHelper(-0.5, 0.0, -0.4);
+					corner2 = Vec3.createVectorHelper(0.5, 0.0, -0.4);
+					corner3 = Vec3.createVectorHelper(-0.5, 0.0, 0.4);
+					corner4 = Vec3.createVectorHelper(0.5, 0.0, 0.4);
+					break;
+				case 2:
+					corner1 = Vec3.createVectorHelper(-0.5, 0.0, -0.4);
+					corner2 = Vec3.createVectorHelper(0.5, 1.0, -0.4);
+					corner3 = Vec3.createVectorHelper(-0.5, 0.0, 0.4);
+					corner4 = Vec3.createVectorHelper(0.5, 1.0, 0.4);
+					break;
+				case 3:
+					corner1 = Vec3.createVectorHelper(-0.5, 1.0, -0.4);
+					corner2 = Vec3.createVectorHelper(0.5, 0.0, -0.4);
+					corner3 = Vec3.createVectorHelper(-0.5, 1.0, 0.4);
+					corner4 = Vec3.createVectorHelper(0.5, 0.0, 0.4);
+					break;
+				case 4:
+					corner1 = Vec3.createVectorHelper(-0.4, 1.0, -0.5);
+					corner2 = Vec3.createVectorHelper(-0.4, 0.0, 0.5);
+					corner3 = Vec3.createVectorHelper(0.4, 1.0, -0.5);
+					corner4 = Vec3.createVectorHelper(0.4, 0.0, 0.5);
+					break;
+				case 5:
+					corner1 = Vec3.createVectorHelper(-0.4, 0.0, -0.5);
+					corner2 = Vec3.createVectorHelper(-0.4, 1.0, 0.5);
+					corner3 = Vec3.createVectorHelper(0.4, 0.0, -0.5);
+					corner4 = Vec3.createVectorHelper(0.4, 1.0, 0.5);
+					break;
+				default:
+					break;
 			}
 			for (int l = 0; l < 1; ++l) {
 				float t1 = rand.nextFloat();
@@ -252,7 +258,7 @@ public class LOTRBlockMechanisedRail extends BlockRailBase {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister register) {
 		iconOn = register.registerIcon(getTextureName() + "_on");
 		blockIcon = iconOff = register.registerIcon(getTextureName() + "_off");

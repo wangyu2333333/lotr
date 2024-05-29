@@ -1,8 +1,9 @@
 package lotr.client.render.entity;
 
 import lotr.client.model.LOTRModelTroll;
-import lotr.common.entity.npc.LOTREntityMirkTroll;
-import net.minecraft.entity.*;
+import lotr.common.entity.LOTRRandomSkinEntity;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 
 public class LOTRRenderMirkTroll extends LOTRRenderTroll {
@@ -16,12 +17,12 @@ public class LOTRRenderMirkTroll extends LOTRRenderTroll {
 
 	@Override
 	public void bindTrollOutfitTexture(EntityLivingBase entity) {
-		bindTexture(mirkArmorSkins.getRandomSkin((LOTREntityMirkTroll) entity));
+		bindTexture(mirkArmorSkins.getRandomSkin((LOTRRandomSkinEntity) entity));
 	}
 
 	@Override
 	public ResourceLocation getEntityTexture(Entity entity) {
-		return mirkSkins.getRandomSkin((LOTREntityMirkTroll) entity);
+		return mirkSkins.getRandomSkin((LOTRRandomSkinEntity) entity);
 	}
 
 	@Override

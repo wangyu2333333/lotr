@@ -1,11 +1,15 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
 import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
 import lotr.common.fac.LOTRFaction;
-import lotr.common.quest.*;
+import lotr.common.quest.LOTRMiniQuest;
+import lotr.common.quest.LOTRMiniQuestFactory;
 import lotr.common.world.structure.LOTRChestContents;
-import net.minecraft.entity.*;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -83,32 +87,32 @@ public class LOTREntityDolGuldurOrc extends LOTREntityOrc {
 		data = super.onSpawnWithEgg(data);
 		int i = rand.nextInt(8);
 		switch (i) {
-		case 0:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.battleaxeDolGuldur));
-			break;
-		case 1:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.daggerDolGuldur));
-			break;
-		case 2:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.daggerDolGuldurPoisoned));
-			break;
-		case 3:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.swordDolGuldur));
-			break;
-		case 4:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.hammerDolGuldur));
-			break;
-		case 5:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.pickaxeDolGuldur));
-			break;
-		case 6:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.axeDolGuldur));
-			break;
-		case 7:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.pikeDolGuldur));
-			break;
-		default:
-			break;
+			case 0:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.battleaxeDolGuldur));
+				break;
+			case 1:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.daggerDolGuldur));
+				break;
+			case 2:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.daggerDolGuldurPoisoned));
+				break;
+			case 3:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.swordDolGuldur));
+				break;
+			case 4:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.hammerDolGuldur));
+				break;
+			case 5:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.pickaxeDolGuldur));
+				break;
+			case 6:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.axeDolGuldur));
+				break;
+			case 7:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.pikeDolGuldur));
+				break;
+			default:
+				break;
 		}
 		if (rand.nextInt(6) == 0) {
 			npcItemsInv.setSpearBackup(npcItemsInv.getMeleeWeapon());

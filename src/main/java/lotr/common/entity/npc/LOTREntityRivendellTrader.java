@@ -1,7 +1,10 @@
 package lotr.common.entity.npc;
 
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRCapes;
+import lotr.common.LOTRLevelData;
 import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -12,7 +15,7 @@ public class LOTREntityRivendellTrader extends LOTREntityRivendellElf implements
 	public LOTREntityRivendellTrader(World world) {
 		super(world);
 		tasks.addTask(2, new LOTREntityAIAttackOnCollide(this, 1.6, false));
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 		npcCape = LOTRCapes.RIVENDELL_TRADER;
 	}
 
@@ -67,7 +70,7 @@ public class LOTREntityRivendellTrader extends LOTREntityRivendellElf implements
 		return 10;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void handleHealthUpdate(byte b) {
 		if (b != 15) {

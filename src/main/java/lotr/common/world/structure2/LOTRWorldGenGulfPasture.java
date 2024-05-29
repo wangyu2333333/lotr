@@ -1,9 +1,9 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenGulfPasture extends LOTRWorldGenGulfStructure {
 	public LOTRWorldGenGulfPasture(boolean flag) {
@@ -13,7 +13,7 @@ public class LOTRWorldGenGulfPasture extends LOTRWorldGenGulfStructure {
 	@Override
 	public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
 		int j1;
-		this.setOriginAndRotation(world, i, j, k, rotation, 6);
+		setOriginAndRotation(world, i, j, k, rotation, 6);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			int minHeight = 0;

@@ -1,20 +1,31 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
 import lotr.common.entity.ai.*;
 import lotr.common.fac.LOTRFaction;
-import lotr.common.quest.*;
-import lotr.common.world.biome.*;
+import lotr.common.quest.LOTRMiniQuest;
+import lotr.common.quest.LOTRMiniQuestFactory;
+import lotr.common.world.biome.LOTRBiomeGenBlueMountains;
+import lotr.common.world.biome.LOTRBiomeGenErebor;
+import lotr.common.world.biome.LOTRBiomeGenIronHills;
+import lotr.common.world.biome.LOTRBiomeGenRedMountains;
 import lotr.common.world.structure.LOTRChestContents;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.*;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.*;
+import net.minecraft.world.EnumSkyBlock;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 
 public class LOTREntityDwarf extends LOTREntityNPC {
@@ -40,7 +51,7 @@ public class LOTREntityDwarf extends LOTREntityNPC {
 		tasks.addTask(12, new EntityAIWatchClosest2(this, LOTREntityNPC.class, 5.0f, 0.02f));
 		tasks.addTask(13, new EntityAIWatchClosest(this, EntityLiving.class, 8.0f, 0.02f));
 		tasks.addTask(14, new EntityAILookIdle(this));
-		this.addTargetTasks(true);
+		addTargetTasks(true);
 		familyInfo.marriageEntityClass = LOTREntityDwarf.class;
 		familyInfo.marriageRing = LOTRMod.dwarvenRing;
 		familyInfo.marriageAlignmentRequired = 200.0f;
@@ -96,28 +107,28 @@ public class LOTREntityDwarf extends LOTREntityNPC {
 		}
 		if (flag) {
 			int rareDropChance = 20 - i * 4;
-			if (rand.nextInt(rareDropChance = Math.max(rareDropChance, 1)) == 0) {
+			if (rand.nextInt(Math.max(rareDropChance, 1)) == 0) {
 				int randDrop = rand.nextInt(4);
 				switch (randDrop) {
-				case 0: {
-					entityDropItem(new ItemStack(Items.iron_ingot), 0.0f);
-					break;
-				}
-				case 1: {
-					entityDropItem(new ItemStack(getDwarfSteelDrop()), 0.0f);
-					break;
-				}
-				case 2: {
-					entityDropItem(new ItemStack(Items.gold_nugget, 1 + rand.nextInt(3)), 0.0f);
-					break;
-				}
-				case 3: {
-					entityDropItem(new ItemStack(LOTRMod.silverNugget, 1 + rand.nextInt(3)), 0.0f);
-				}
+					case 0: {
+						entityDropItem(new ItemStack(Items.iron_ingot), 0.0f);
+						break;
+					}
+					case 1: {
+						entityDropItem(new ItemStack(getDwarfSteelDrop()), 0.0f);
+						break;
+					}
+					case 2: {
+						entityDropItem(new ItemStack(Items.gold_nugget, 1 + rand.nextInt(3)), 0.0f);
+						break;
+					}
+					case 3: {
+						entityDropItem(new ItemStack(LOTRMod.silverNugget, 1 + rand.nextInt(3)), 0.0f);
+					}
 				}
 			}
 			int mithrilBookChance = 40 - i * 5;
-			if (rand.nextInt(mithrilBookChance = Math.max(mithrilBookChance, 1)) == 0) {
+			if (rand.nextInt(Math.max(mithrilBookChance, 1)) == 0) {
 				entityDropItem(new ItemStack(LOTRMod.mithrilBook), 0.0f);
 			}
 		}
@@ -241,7 +252,7 @@ public class LOTREntityDwarf extends LOTREntityNPC {
 	public IEntityLivingData initCreatureForHire(IEntityLivingData data) {
 		data = super.initCreatureForHire(data);
 		data = onSpawnWithEgg(data);
-		if (this.getClass() == familyInfo.marriageEntityClass && rand.nextInt(3) == 0) {
+		if (getClass() == familyInfo.marriageEntityClass && rand.nextInt(3) == 0) {
 			familyInfo.setMale(false);
 			setupNPCName();
 		}
@@ -258,7 +269,7 @@ public class LOTREntityDwarf extends LOTREntityNPC {
 
 	@Override
 	public void onArtificalSpawn() {
-		if (this.getClass() == familyInfo.marriageEntityClass) {
+		if (getClass() == familyInfo.marriageEntityClass) {
 			if (rand.nextInt(3) == 0) {
 				familyInfo.setMale(false);
 				setupNPCName();

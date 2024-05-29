@@ -1,22 +1,28 @@
 package lotr.common;
 
-import java.io.*;
-import java.util.*;
-import java.util.regex.*;
-import java.util.zip.*;
-
-import org.apache.commons.io.input.BOMInputStream;
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.common.base.Charsets;
-
 import cpw.mods.fml.common.ModContainer;
 import lotr.common.entity.npc.LOTRNames;
 import lotr.common.util.LOTRLog;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.MathHelper;
+import org.apache.commons.io.input.BOMInputStream;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 public class LOTRLore {
 	public static String newline = "\n";
@@ -42,90 +48,7 @@ public class LOTRLore {
 		isRewardable = reward;
 	}
 
-	public ItemStack createLoreBook(Random random) {
-		ItemStack itemstack = new ItemStack(Items.written_book);
-		NBTTagCompound data = new NBTTagCompound();
-		itemstack.setTagCompound(data);
-		String title = formatRandom(loreTitle, random);
-		String author = formatRandom(loreAuthor, random);
-		String text = formatRandom(loreText, random);
-		List<String> textPages = LOTRLore.organisePages(text);
-		data.setString("title", title);
-		data.setString("author", author);
-		NBTTagList pages = new NBTTagList();
-		for (String pageText : textPages) {
-			pages.appendTag(new NBTTagString(pageText));
-		}
-		data.setTag("pages", pages);
-		return itemstack;
-	}
-
-	public String formatRandom(String text, Random random) {
-		int lastIndexStart = -1;
-		do {
-			String formatted;
-			String unformatted;
-			block16: {
-				String s1;
-				int indexStart = text.indexOf("{", lastIndexStart + 1);
-				int indexEnd = text.indexOf("}");
-				lastIndexStart = indexStart;
-				if (indexStart < 0 || indexEnd <= indexStart) {
-					break;
-				}
-				unformatted = text.substring(indexStart, indexEnd + 1);
-				formatted = unformatted.substring(1, unformatted.length() - 1);
-				if (formatted.startsWith("num:")) {
-					try {
-						s1 = formatted.substring("num:".length());
-						int i1 = s1.indexOf(codeCategorySeparator);
-						String s2 = s1.substring(0, i1);
-						String s3 = s1.substring(i1 + codeCategorySeparator.length());
-						int min = Integer.parseInt(s2);
-						int max = Integer.parseInt(s3);
-						int number = MathHelper.getRandomIntegerInRange(random, min, max);
-						formatted = String.valueOf(number);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				} else if (formatted.startsWith("name:")) {
-					try {
-						String namebank = s1 = formatted.substring("name:".length());
-						if (!LOTRNames.nameBankExists(namebank)) {
-							break block16;
-						}
-						formatted = LOTRNames.getRandomName(namebank, random);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				} else if (formatted.startsWith("choose:")) {
-					try {
-						String remaining = formatted.substring("choose:".length());
-						ArrayList<String> words = new ArrayList<>();
-						while (remaining.length() > 0) {
-							String word;
-							int indexOf = remaining.indexOf("/");
-							if (indexOf >= 0) {
-								word = remaining.substring(0, indexOf);
-								remaining = remaining.substring(indexOf + "/".length());
-							} else {
-								word = remaining;
-								remaining = "";
-							}
-							words.add(word);
-						}
-						formatted = words.get(random.nextInt(words.size()));
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}
-			text = Pattern.compile(unformatted, 16).matcher(text).replaceFirst(Matcher.quoteReplacement(formatted));
-		} while (true);
-		return text;
-	}
-
-	public static LOTRLore getMultiRandomLore(List<LoreCategory> categories, Random random, boolean rewardsOnly) {
+	public static LOTRLore getMultiRandomLore(Iterable<LoreCategory> categories, Random random, boolean rewardsOnly) {
 		ArrayList<LOTRLore> allLore = new ArrayList<>();
 		for (LoreCategory c : categories) {
 			for (LOTRLore lore : c.loreList) {
@@ -142,7 +65,7 @@ public class LOTRLore {
 	}
 
 	public static void loadAllLore() {
-		HashMap<String, BufferedReader> loreReaders = new HashMap<>();
+		Map<String, BufferedReader> loreReaders = new HashMap<>();
 		ZipFile zip = null;
 		try {
 			ModContainer mc = LOTRMod.getModContainer();
@@ -160,7 +83,7 @@ public class LOTRLore {
 					int i = s.indexOf(".txt");
 					try {
 						s = s.substring(0, i);
-						BufferedReader reader = new BufferedReader(new InputStreamReader(new BOMInputStream(zip.getInputStream(entry)), Charsets.UTF_8.name()));
+						BufferedReader reader = new BufferedReader(new InputStreamReader(new BOMInputStream(zip.getInputStream(entry)), Charsets.UTF_8));
 						loreReaders.put(s, reader);
 					} catch (Exception e) {
 						LOTRLog.logger.error("Failed to load LOTR lore " + s + "from zip file");
@@ -178,7 +101,7 @@ public class LOTRLore {
 					}
 					try {
 						s = s.substring(0, i);
-						BufferedReader reader = new BufferedReader(new InputStreamReader(new BOMInputStream(new FileInputStream(file)), Charsets.UTF_8.name()));
+						BufferedReader reader = new BufferedReader(new InputStreamReader(new BOMInputStream(Files.newInputStream(file.toPath())), Charsets.UTF_8));
 						loreReaders.put(s, reader);
 					} catch (Exception e) {
 						LOTRLog.logger.error("Failed to load LOTR lore " + s + " from MCP folder");
@@ -190,11 +113,11 @@ public class LOTRLore {
 			LOTRLog.logger.error("Failed to load LOTR lore");
 			e.printStackTrace();
 		}
-		for (Map.Entry entry : loreReaders.entrySet()) {
-			String loreName = (String) entry.getKey();
-			BufferedReader reader = (BufferedReader) entry.getValue();
+		for (Map.Entry<String, BufferedReader> entry : loreReaders.entrySet()) {
+			String loreName = entry.getKey();
+			BufferedReader reader = entry.getValue();
 			try {
-				Object categoryString;
+				String categoryString;
 				String line;
 				String title = "";
 				String author = "";
@@ -214,18 +137,15 @@ public class LOTRLore {
 						}
 						if (metadata.startsWith(codeCategory)) {
 							categoryString = metadata.substring(codeCategory.length());
-							while (((String) categoryString).length() > 0) {
-								Object categoryName = null;
-								int indexOf = ((String) categoryString).indexOf(codeCategorySeparator);
+							while (!categoryString.isEmpty()) {
+								String categoryName;
+								int indexOf = categoryString.indexOf(codeCategorySeparator);
 								if (indexOf >= 0) {
-									categoryName = ((String) categoryString).substring(0, indexOf);
-									categoryString = ((String) categoryString).substring(indexOf + 1);
+									categoryName = categoryString.substring(0, indexOf);
+									categoryString = categoryString.substring(indexOf + 1);
 								} else {
 									categoryName = categoryString;
 									categoryString = "";
-								}
-								if (categoryName == null) {
-									continue;
 								}
 								if ("all".equals(categoryName)) {
 									for (LoreCategory category : LoreCategory.values()) {
@@ -236,13 +156,12 @@ public class LOTRLore {
 									}
 									continue;
 								}
-								LoreCategory category = LoreCategory.forName((String) categoryName);
+								LoreCategory category = LoreCategory.forName(categoryName);
 								if (category != null) {
 									if (categories.contains(category)) {
 										continue;
 									}
 									categories.add(category);
-									continue;
 								}
 							}
 							continue;
@@ -266,14 +185,6 @@ public class LOTRLore {
 				e.printStackTrace();
 			}
 		}
-		for (LoreCategory category : LoreCategory.values()) {
-			category.loreList.size();
-			for (LOTRLore lore : category.loreList) {
-				if (!lore.isRewardable) {
-					continue;
-				}
-			}
-		}
 		if (zip != null) {
 			try {
 				zip.close();
@@ -284,10 +195,10 @@ public class LOTRLore {
 	}
 
 	public static List<String> organisePages(String loreText) {
-		ArrayList<String> loreTextPages = new ArrayList<>();
+		List<String> loreTextPages = new ArrayList<>();
 		String remainingText = loreText;
 		ArrayList<String> splitTxtWords = new ArrayList<>();
-		while (remainingText.length() > 0) {
+		while (!remainingText.isEmpty()) {
 			String part;
 			if (remainingText.startsWith(newline)) {
 				part = newline;
@@ -297,7 +208,6 @@ public class LOTRLore {
 				remainingText = remainingText.substring(part.length());
 				continue;
 			}
-			part = "";
 			int indexOf = remainingText.indexOf(newline);
 			part = indexOf >= 0 ? remainingText.substring(0, indexOf) : remainingText;
 			Collections.addAll(splitTxtWords, StringUtils.split(part, " "));
@@ -305,9 +215,9 @@ public class LOTRLore {
 		}
 		while (!splitTxtWords.isEmpty()) {
 			int i;
-			String pageText = "";
+			StringBuilder pageText = new StringBuilder();
 			int numLines = 0;
-			String currentLine = "";
+			StringBuilder currentLine = new StringBuilder();
 			int usedWords = 0;
 			for (i = 0; i < splitTxtWords.size(); ++i) {
 				String word = splitTxtWords.get(i);
@@ -316,50 +226,133 @@ public class LOTRLore {
 				}
 				if (newline.equals(word)) {
 					if (currentLine.length() > 0) {
-						pageText = pageText + currentLine;
-						currentLine = "";
+						pageText.append(currentLine);
+						currentLine = new StringBuilder();
 						numLines++;
 						if (numLines >= 13) {
 							break;
 						}
 					}
 					++usedWords;
-					if (pageText.length() <= 0) {
+					if (pageText.length() == 0) {
 						continue;
 					}
-					pageText = pageText + word;
+					pageText.append(word);
 					numLines++;
 					if (numLines < 13) {
 						continue;
 					}
 					break;
 				}
-				currentLine = currentLine + word;
+				currentLine.append(word);
 				++usedWords;
 				if (i < splitTxtWords.size() - 1) {
-					currentLine = currentLine + " ";
+					currentLine.append(" ");
 				}
 				if (currentLine.length() < 17) {
 					continue;
 				}
-				pageText = pageText + currentLine;
-				currentLine = "";
+				pageText.append(currentLine);
+				currentLine = new StringBuilder();
 				numLines++;
 				if (numLines >= 13) {
 					break;
 				}
 			}
 			if (currentLine.length() > 0) {
-				pageText = pageText + currentLine;
-				currentLine = "";
+				pageText.append(currentLine);
 				++numLines;
 			}
 			for (i = 0; i < usedWords; ++i) {
 				splitTxtWords.remove(0);
 			}
-			loreTextPages.add(pageText);
+			loreTextPages.add(pageText.toString());
 		}
 		return loreTextPages;
+	}
+
+	public ItemStack createLoreBook(Random random) {
+		ItemStack itemstack = new ItemStack(Items.written_book);
+		NBTTagCompound data = new NBTTagCompound();
+		itemstack.setTagCompound(data);
+		String title = formatRandom(loreTitle, random);
+		String author = formatRandom(loreAuthor, random);
+		String text = formatRandom(loreText, random);
+		List<String> textPages = organisePages(text);
+		data.setString("title", title);
+		data.setString("author", author);
+		NBTTagList pages = new NBTTagList();
+		for (String pageText : textPages) {
+			pages.appendTag(new NBTTagString(pageText));
+		}
+		data.setTag("pages", pages);
+		return itemstack;
+	}
+
+	public String formatRandom(String text, Random random) {
+		int lastIndexStart = -1;
+		do {
+			String formatted;
+			String unformatted;
+			block16:
+			{
+				String s1;
+				int indexStart = text.indexOf('{', lastIndexStart + 1);
+				int indexEnd = text.indexOf('}');
+				lastIndexStart = indexStart;
+				if (indexStart < 0 || indexEnd <= indexStart) {
+					break;
+				}
+				unformatted = text.substring(indexStart, indexEnd + 1);
+				formatted = unformatted.substring(1, unformatted.length() - 1);
+				if (formatted.startsWith("num:")) {
+					try {
+						s1 = formatted.substring("num:".length());
+						int i1 = s1.indexOf(codeCategorySeparator);
+						String s2 = s1.substring(0, i1);
+						String s3 = s1.substring(i1 + codeCategorySeparator.length());
+						int min = Integer.parseInt(s2);
+						int max = Integer.parseInt(s3);
+						int number = MathHelper.getRandomIntegerInRange(random, min, max);
+						formatted = String.valueOf(number);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				} else if (formatted.startsWith("name:")) {
+					try {
+						String namebank = formatted.substring("name:".length());
+						if (!LOTRNames.nameBankExists(namebank)) {
+							break block16;
+						}
+						formatted = LOTRNames.getRandomName(namebank, random);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				} else if (formatted.startsWith("choose:")) {
+					try {
+						String remaining = formatted.substring("choose:".length());
+						ArrayList<String> words = new ArrayList<>();
+						while (!remaining.isEmpty()) {
+							String word;
+							int indexOf = remaining.indexOf('/');
+							if (indexOf >= 0) {
+								word = remaining.substring(0, indexOf);
+								remaining = remaining.substring(indexOf + "/".length());
+							} else {
+								word = remaining;
+								remaining = "";
+							}
+							words.add(word);
+						}
+						formatted = words.get(random.nextInt(words.size()));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			text = Pattern.compile(unformatted, Pattern.LITERAL).matcher(text).replaceFirst(Matcher.quoteReplacement(formatted));
+		} while (true);
+		return text;
 	}
 
 	public enum LoreCategory {
@@ -367,24 +360,24 @@ public class LOTRLore {
 
 		public static String allCode = "all";
 		public String categoryName;
-		public List<LOTRLore> loreList = new ArrayList<>();
+		public Collection<LOTRLore> loreList = new ArrayList<>();
 
 		LoreCategory(String s) {
 			categoryName = s;
 		}
 
-		public void addLore(LOTRLore lore) {
-			loreList.add(lore);
-		}
-
 		public static LoreCategory forName(String s) {
-			for (LoreCategory r : LoreCategory.values()) {
+			for (LoreCategory r : values()) {
 				if (!s.equalsIgnoreCase(r.categoryName)) {
 					continue;
 				}
 				return r;
 			}
 			return null;
+		}
+
+		public void addLore(LOTRLore lore) {
+			loreList.add(lore);
 		}
 	}
 

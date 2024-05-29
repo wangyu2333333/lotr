@@ -1,12 +1,12 @@
 package lotr.common.world.feature;
 
-import java.util.Random;
-
 import lotr.common.world.structure2.LOTRWorldGenStructureBase2;
 import net.minecraft.block.Block;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
+
+import java.util.Random;
 
 public class LOTRWorldGenBoulder extends WorldGenerator {
 	public Block id;
@@ -67,6 +67,7 @@ public class LOTRWorldGenBoulder extends WorldGenerator {
 						if (dist >= sphereWidth * sphereWidth && (dist >= (sphereWidth + 1) * (sphereWidth + 1) || random.nextInt(3) != 0)) {
 							continue;
 						}
+						//noinspection StatementWithEmptyBody
 						for (j3 = j1; j3 >= 0 && !world.getBlock(i1, j3 - 1, k1).isOpaqueCube(); --j3) {
 						}
 						setBlockAndNotifyAdequately(world, i1, j3, k1, id, meta);

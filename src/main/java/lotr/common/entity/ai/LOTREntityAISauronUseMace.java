@@ -1,18 +1,20 @@
 package lotr.common.entity.ai;
 
-import java.util.List;
-
-import lotr.common.*;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
 import lotr.common.entity.npc.LOTREntitySauron;
 import lotr.common.item.LOTRItemSauronMace;
-import net.minecraft.entity.*;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
+import java.util.List;
+
 public class LOTREntityAISauronUseMace extends EntityAIBase {
 	public LOTREntitySauron theSauron;
-	public int attackTick = 0;
+	public int attackTick;
 	public World theWorld;
 
 	public LOTREntityAISauronUseMace(LOTREntitySauron sauron) {
@@ -73,7 +75,7 @@ public class LOTREntityAISauronUseMace extends EntityAIBase {
 	@Override
 	public void updateTask() {
 		attackTick = Math.max(attackTick - 1, 0);
-		if (attackTick <= 0) {
+		if (attackTick == 0) {
 			attackTick = 40;
 			LOTRItemSauronMace.useSauronMace(theSauron.getEquipmentInSlot(0), theWorld, theSauron);
 			theSauron.setIsUsingMace(false);

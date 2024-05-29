@@ -1,23 +1,25 @@
 package lotr.common.block;
 
-import java.util.List;
-
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.LOTRCreativeTabs;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 
+import java.util.List;
+
 public abstract class LOTRBlockOreStorageBase extends Block {
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon[] oreStorageIcons;
 	public String[] oreStorageNames;
 
-	public LOTRBlockOreStorageBase() {
+	protected LOTRBlockOreStorageBase() {
 		super(Material.iron);
 		setCreativeTab(LOTRCreativeTabs.tabBlock);
 		setHardness(5.0f);
@@ -35,7 +37,7 @@ public abstract class LOTRBlockOreStorageBase extends Block {
 		return i;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
 		if (j >= oreStorageNames.length) {
@@ -44,7 +46,7 @@ public abstract class LOTRBlockOreStorageBase extends Block {
 		return oreStorageIcons[j];
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void getSubBlocks(Item item, CreativeTabs tab, List list) {
 		for (int i = 0; i < oreStorageNames.length; ++i) {
@@ -57,7 +59,7 @@ public abstract class LOTRBlockOreStorageBase extends Block {
 		return true;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
 		oreStorageIcons = new IIcon[oreStorageNames.length];

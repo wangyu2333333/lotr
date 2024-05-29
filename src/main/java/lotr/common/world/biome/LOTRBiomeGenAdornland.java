@@ -1,21 +1,36 @@
 package lotr.common.world.biome;
 
-import java.util.Random;
-
-import lotr.common.*;
-import lotr.common.entity.animal.*;
-import lotr.common.entity.npc.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRMod;
+import lotr.common.entity.animal.LOTREntityBear;
+import lotr.common.entity.animal.LOTREntityCrebain;
+import lotr.common.entity.animal.LOTREntityHorse;
+import lotr.common.entity.npc.LOTREntityBlueDwarfMerchant;
+import lotr.common.entity.npc.LOTREntityDaleMerchant;
+import lotr.common.entity.npc.LOTREntityIronHillsMerchant;
+import lotr.common.entity.npc.LOTREntityScrapTrader;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
-import lotr.common.world.feature.*;
-import lotr.common.world.map.*;
-import lotr.common.world.spawning.*;
-import lotr.common.world.structure.*;
+import lotr.common.world.feature.LOTRTreeType;
+import lotr.common.world.feature.LOTRWorldGenBlastedLand;
+import lotr.common.world.feature.LOTRWorldGenBoulder;
+import lotr.common.world.map.LOTRRoadType;
+import lotr.common.world.map.LOTRWaypoint;
+import lotr.common.world.spawning.LOTRBiomeSpawnList;
+import lotr.common.world.spawning.LOTREventSpawner;
+import lotr.common.world.spawning.LOTRInvasions;
+import lotr.common.world.spawning.LOTRSpawnList;
+import lotr.common.world.structure.LOTRWorldGenDunlendingCampfire;
+import lotr.common.world.structure.LOTRWorldGenRohanBarrow;
+import lotr.common.world.structure.LOTRWorldGenRuinedRohanWatchtower;
 import lotr.common.world.structure2.*;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraft.world.gen.feature.*;
+import net.minecraft.world.gen.feature.WorldGenMinable;
+import net.minecraft.world.gen.feature.WorldGenerator;
+
+import java.util.Random;
 
 public class LOTRBiomeGenAdornland extends LOTRBiome {
 	public WorldGenerator boulderGenStone = new LOTRWorldGenBoulder(Blocks.stone, 0, 1, 4);
@@ -42,12 +57,12 @@ public class LOTRBiomeGenAdornland extends LOTRBiome {
 		arrspawnListContainer4[0] = LOTRBiomeSpawnList.entry(LOTRSpawnList.ROHIRRIM_WARRIORS, 10);
 		npcSpawnList.newFactionList(0).add(arrspawnListContainer4);
 		addBiomeVariantSet(LOTRBiomeVariant.SET_NORMAL_OAK);
-		this.addBiomeVariant(LOTRBiomeVariant.BOULDERS_ROHAN);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_BEECH, 0.2f);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_BIRCH, 0.2f);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LARCH, 0.3f);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_PINE, 0.3f);
-		this.addBiomeVariant(LOTRBiomeVariant.ORCHARD_APPLE_PEAR, 0.5f);
+		addBiomeVariant(LOTRBiomeVariant.BOULDERS_ROHAN);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_BEECH, 0.2f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_BIRCH, 0.2f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LARCH, 0.3f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_PINE, 0.3f);
+		addBiomeVariant(LOTRBiomeVariant.ORCHARD_APPLE_PEAR, 0.5f);
 		decorator.addSoil(new WorldGenMinable(LOTRMod.rock, 2, 60, Blocks.stone), 2.0f, 0, 64);
 		decorator.setTreeCluster(12, 30);
 		decorator.willowPerChunk = 1;
@@ -91,11 +106,6 @@ public class LOTRBiomeGenAdornland extends LOTRBiome {
 		invasionSpawns.addInvasion(LOTRInvasions.ROHAN, LOTREventSpawner.EventChance.UNCOMMON);
 		invasionSpawns.addInvasion(LOTRInvasions.GUNDABAD, LOTREventSpawner.EventChance.RARE);
 		invasionSpawns.addInvasion(LOTRInvasions.GUNDABAD_WARG, LOTREventSpawner.EventChance.RARE);
-	}
-
-	@Override
-	public boolean canSpawnHostilesInDay() {
-		return false;
 	}
 
 	@Override

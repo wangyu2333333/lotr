@@ -1,9 +1,10 @@
 package lotr.client.render.entity;
 
 import lotr.client.model.LOTRModelBoar;
-import lotr.common.entity.animal.LOTREntityWildBoar;
+import lotr.common.entity.npc.LOTRNPCMount;
 import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
 
 public class LOTRRenderWildBoar extends RenderLiving {
@@ -17,13 +18,13 @@ public class LOTRRenderWildBoar extends RenderLiving {
 
 	@Override
 	public ResourceLocation getEntityTexture(Entity entity) {
-		LOTREntityWildBoar boar = (LOTREntityWildBoar) entity;
+		LOTRNPCMount boar = (LOTRNPCMount) entity;
 		return LOTRRenderHorse.getLayeredMountTexture(boar, boarSkin);
 	}
 
 	@Override
 	public int shouldRenderPass(EntityLivingBase entity, int pass, float f) {
-		if (pass == 0 && ((LOTREntityWildBoar) entity).isMountSaddled()) {
+		if (pass == 0 && ((LOTRNPCMount) entity).isMountSaddled()) {
 			bindTexture(saddleTexture);
 			return 1;
 		}

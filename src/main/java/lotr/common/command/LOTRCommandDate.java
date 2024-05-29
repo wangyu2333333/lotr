@@ -1,10 +1,13 @@
 package lotr.common.command;
 
-import java.util.List;
-
 import lotr.common.LOTRDate;
-import net.minecraft.command.*;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.IChatComponent;
+
+import java.util.List;
 
 public class LOTRCommandDate extends CommandBase {
 	@Override
@@ -31,16 +34,11 @@ public class LOTRCommandDate extends CommandBase {
 	}
 
 	@Override
-	public boolean isUsernameIndex(String[] args, int i) {
-		return false;
-	}
-
-	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
 		if (args.length >= 1 && "get".equals(args[0])) {
 			int date = LOTRDate.ShireReckoning.currentDay;
 			String dateName = LOTRDate.ShireReckoning.getShireDate().getDateName(false);
-			ChatComponentTranslation message = new ChatComponentTranslation("commands.lotr.lotrDate.get", date, dateName);
+			IChatComponent message = new ChatComponentTranslation("commands.lotr.lotrDate.get", date, dateName);
 			sender.addChatMessage(message);
 			return;
 		}

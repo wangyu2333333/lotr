@@ -1,10 +1,11 @@
 package lotr.common.util;
 
-import java.awt.Color;
-import java.util.Random;
-
-import net.minecraft.item.*;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
+
+import java.awt.*;
+import java.util.Random;
 
 public class LOTRColorUtil {
 	public static ItemStack dyeLeather(ItemStack itemstack, int color) {
@@ -14,7 +15,7 @@ public class LOTRColorUtil {
 
 	public static ItemStack dyeLeather(ItemStack itemstack, int[] colors, Random rand) {
 		int color = colors[rand.nextInt(colors.length)];
-		return LOTRColorUtil.dyeLeather(itemstack, color);
+		return dyeLeather(itemstack, color);
 	}
 
 	public static float[] lerpColors(float[] rgb0, int color1, float f) {
@@ -31,21 +32,21 @@ public class LOTRColorUtil {
 		r = MathHelper.clamp_float(r, 0.0f, 1.0f);
 		g = MathHelper.clamp_float(g, 0.0f, 1.0f);
 		b = MathHelper.clamp_float(b, 0.0f, 1.0f);
-		return new float[] { r, g, b };
+		return new float[]{r, g, b};
 	}
 
 	public static float[] lerpColors(int color0, int color1, float f) {
 		float[] rgb0 = new Color(color0).getColorComponents(null);
-		return LOTRColorUtil.lerpColors(rgb0, color1, f);
+		return lerpColors(rgb0, color1, f);
 	}
 
 	public static int lerpColors_I(float[] rgb0, int color1, float f) {
-		float[] rgb = LOTRColorUtil.lerpColors(rgb0, color1, f);
+		float[] rgb = lerpColors(rgb0, color1, f);
 		return new Color(rgb[0], rgb[1], rgb[2]).getRGB();
 	}
 
 	public static int lerpColors_I(int color0, int color1, float f) {
 		float[] rgb0 = new Color(color0).getColorComponents(null);
-		return LOTRColorUtil.lerpColors_I(rgb0, color1, f);
+		return lerpColors_I(rgb0, color1, f);
 	}
 }

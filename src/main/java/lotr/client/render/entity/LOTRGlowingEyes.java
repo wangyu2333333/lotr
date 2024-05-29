@@ -1,11 +1,10 @@
 package lotr.client.render.entity;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 public class LOTRGlowingEyes {
 	public static void renderGlowingEyes(Entity entity, ResourceLocation eyesTexture, Model model, float f, float f1, float f2, float f3, float f4, float f5) {
@@ -17,7 +16,7 @@ public class LOTRGlowingEyes {
 		int light = 15728880;
 		int lx = light % 65536;
 		int ly = light / 65536;
-		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lx / 1.0f, ly / 1.0f);
+		OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, lx, ly);
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		Minecraft.getMinecraft().getTextureManager().bindTexture(eyesTexture);
 		model.renderGlowingEyes(entity, f, f1, f2, f3, f4, f5);

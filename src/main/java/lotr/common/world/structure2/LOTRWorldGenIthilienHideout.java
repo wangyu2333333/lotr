@@ -1,9 +1,9 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
-import lotr.common.*;
-import lotr.common.entity.npc.*;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
+import lotr.common.entity.npc.LOTREntityRangerIthilien;
+import lotr.common.entity.npc.LOTREntityRangerIthilienCaptain;
 import lotr.common.item.LOTRItemBanner;
 import lotr.common.world.feature.LOTRTreeType;
 import lotr.common.world.structure.LOTRChestContents;
@@ -11,6 +11,8 @@ import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenIthilienHideout extends LOTRWorldGenStructureBase2 {
 	public LOTRWorldGenIthilienHideout(boolean flag) {
@@ -23,7 +25,7 @@ public class LOTRWorldGenIthilienHideout extends LOTRWorldGenStructureBase2 {
 		int k1;
 		int i1;
 		int i12;
-		this.setOriginAndRotation(world, i, j, k, rotation, 0);
+		setOriginAndRotation(world, i, j, k, rotation, 0);
 		int width = 5;
 		int height = 4;
 		int baseY = -(height + 2 + random.nextInt(4));
@@ -76,7 +78,8 @@ public class LOTRWorldGenIthilienHideout extends LOTRWorldGenStructureBase2 {
 		}
 		for (int pass = 0; pass <= 1; ++pass) {
 			for (i1 = -1; i1 <= 1; ++i1) {
-				block9: for (int k12 = -1; k12 <= 1; ++k12) {
+				block9:
+				for (int k12 = -1; k12 <= 1; ++k12) {
 					int i2 = Math.abs(i1);
 					int k2 = Math.abs(k12);
 					if (i1 == 0 && k12 == 0) {
@@ -85,7 +88,7 @@ public class LOTRWorldGenIthilienHideout extends LOTRWorldGenStructureBase2 {
 					if (pass == 0 && i1 == 0 && k12 == 1) {
 						for (int j1 = 0; j1 <= 3; ++j1) {
 							int j2 = ladderY + j1;
-							if (LOTRTreeType.OAK_ITHILIEN_HIDEOUT.create(notifyChanges, random).generate(world, random, getX(i1, k12), getY(j2), getZ(i1, k12))) {
+							if (LOTRTreeType.OAK_ITHILIEN_HIDEOUT.create(notifyChanges, random).generate(world, random, getX(0, 1), getY(j2), getZ(0, 1))) {
 								break;
 							}
 						}
@@ -124,18 +127,18 @@ public class LOTRWorldGenIthilienHideout extends LOTRWorldGenStructureBase2 {
 		setBlockAndMetadata(world, -2, baseY + 1, width, LOTRMod.gondorianTable, 0);
 		setBlockAndMetadata(world, 0, baseY + 1, width, Blocks.crafting_table, 0);
 		setBlockAndMetadata(world, 2, baseY + 1, width, Blocks.furnace, 2);
-		this.placeChest(world, random, width, baseY + 1, 0, LOTRMod.chestLebethron, 5, LOTRChestContents.GONDOR_FORTRESS_DRINKS);
+		placeChest(world, random, width, baseY + 1, 0, LOTRMod.chestLebethron, 5, LOTRChestContents.GONDOR_FORTRESS_DRINKS);
 		ItemStack drink = LOTRFoods.GONDOR_DRINK.getRandomBrewableDrink(random);
-		this.placeBarrel(world, random, width, baseY + 2, -3, 5, drink);
-		this.placeBarrel(world, random, width, baseY + 2, -2, 5, drink);
-		this.placeBarrel(world, random, width, baseY + 2, 2, 5, drink);
-		this.placeBarrel(world, random, width, baseY + 2, 3, 5, drink);
+		placeBarrel(world, random, width, baseY + 2, -3, 5, drink);
+		placeBarrel(world, random, width, baseY + 2, -2, 5, drink);
+		placeBarrel(world, random, width, baseY + 2, 2, 5, drink);
+		placeBarrel(world, random, width, baseY + 2, 3, 5, drink);
 		for (i1 = -3; i1 <= 3; i1 += 2) {
 			setBlockAndMetadata(world, i1, baseY + 1, -width + 1, LOTRMod.strawBed, 2);
 			setBlockAndMetadata(world, i1, baseY + 1, -width, LOTRMod.strawBed, 10);
 		}
-		this.placeChest(world, random, -width, baseY + 1, 0, LOTRMod.chestLebethron, 4, LOTRChestContents.GONDOR_FORTRESS_SUPPLIES);
-		ItemStack[] rangerArmor = { new ItemStack(LOTRMod.helmetRangerIthilien), new ItemStack(LOTRMod.bodyRangerIthilien), new ItemStack(LOTRMod.legsRangerIthilien), new ItemStack(LOTRMod.bootsRangerIthilien) };
+		placeChest(world, random, -width, baseY + 1, 0, LOTRMod.chestLebethron, 4, LOTRChestContents.GONDOR_FORTRESS_SUPPLIES);
+		ItemStack[] rangerArmor = {new ItemStack(LOTRMod.helmetRangerIthilien), new ItemStack(LOTRMod.bodyRangerIthilien), new ItemStack(LOTRMod.legsRangerIthilien), new ItemStack(LOTRMod.bootsRangerIthilien)};
 		placeArmorStand(world, -width, baseY + 2, -2, 3, rangerArmor);
 		placeArmorStand(world, -width, baseY + 2, 2, 3, rangerArmor);
 		int rangers = 2 + random.nextInt(3);

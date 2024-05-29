@@ -1,13 +1,13 @@
 package lotr.common.world.feature;
 
-import java.util.Random;
-
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenTrees;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.Random;
 
 public class LOTRWorldGenShrub extends WorldGenTrees {
 	public Block woodBlock;
@@ -26,6 +26,7 @@ public class LOTRWorldGenShrub extends WorldGenTrees {
 	@Override
 	public boolean generate(World world, Random random, int i, int j, int k) {
 		Block block;
+		//noinspection StatementWithEmptyBody
 		while (((block = world.getBlock(i, j, k)).isLeaves(world, i, j, k) || block.isAir(world, i, j, k)) && --j > 0) {
 		}
 		Block below = world.getBlock(i, j, k);

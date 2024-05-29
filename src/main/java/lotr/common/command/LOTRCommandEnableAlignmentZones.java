@@ -1,9 +1,11 @@
 package lotr.common.command;
 
-import java.util.List;
-
 import lotr.common.LOTRLevelData;
-import net.minecraft.command.*;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
+
+import java.util.List;
 
 public class LOTRCommandEnableAlignmentZones extends CommandBase {
 	@Override
@@ -27,11 +29,6 @@ public class LOTRCommandEnableAlignmentZones extends CommandBase {
 	@Override
 	public int getRequiredPermissionLevel() {
 		return 2;
-	}
-
-	@Override
-	public boolean isUsernameIndex(String[] args, int i) {
-		return false;
 	}
 
 	@Override

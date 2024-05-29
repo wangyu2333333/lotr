@@ -1,12 +1,17 @@
 package lotr.common.command;
 
-import java.util.*;
-
 import lotr.common.LOTRSpawnDamping;
-import net.minecraft.command.*;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.util.*;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LOTRCommandSpawnDamping extends CommandBase {
 	@Override
@@ -41,11 +46,6 @@ public class LOTRCommandSpawnDamping extends CommandBase {
 	}
 
 	@Override
-	public boolean isUsernameIndex(String[] args, int i) {
-		return false;
-	}
-
-	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
 		if (args.length >= 1) {
 			String option = args[0];
@@ -56,13 +56,13 @@ public class LOTRCommandSpawnDamping extends CommandBase {
 			}
 			if (args.length >= 2) {
 				String type = args[1];
-				if (!type.equals(LOTRSpawnDamping.TYPE_NPC) && EnumCreatureType.valueOf(type) == null) {
-					throw new WrongUsageException("commands.lotr.spawnDamping.noType", type);
+				if (!type.equals(LOTRSpawnDamping.TYPE_NPC)) {
+					EnumCreatureType.valueOf(type);
 				}
 				if ("set".equals(option) && args.length >= 3) {
 					float damping = (float) CommandBase.parseDoubleBounded(sender, args[2], 0.0, 1.0);
 					LOTRSpawnDamping.setSpawnDamping(type, damping);
-					CommandBase.func_152373_a(sender, this, "commands.lotr.spawnDamping.set", type, Float.valueOf(damping));
+					CommandBase.func_152373_a(sender, this, "commands.lotr.spawnDamping.set", type, damping);
 					return;
 				}
 				if ("calc".equals(option)) {
@@ -75,7 +75,7 @@ public class LOTRCommandSpawnDamping extends CommandBase {
 					int baseCap = LOTRSpawnDamping.getBaseSpawnCapForInfo(type, world);
 					int cap = LOTRSpawnDamping.getSpawnCap(type, baseCap, players);
 					int capXPlayers = cap * players;
-					ChatComponentTranslation msg = new ChatComponentTranslation("commands.lotr.spawnDamping.calc", dim, dimName, type, Float.valueOf(damping), players, expectedChunks, cap, baseCap, capXPlayers);
+					IChatComponent msg = new ChatComponentTranslation("commands.lotr.spawnDamping.calc", dim, dimName, type, damping, players, expectedChunks, cap, baseCap, capXPlayers);
 					msg.getChatStyle().setColor(EnumChatFormatting.GREEN);
 					sender.addChatMessage(msg);
 					return;

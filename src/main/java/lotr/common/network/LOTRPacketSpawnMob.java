@@ -1,8 +1,12 @@
 package lotr.common.network;
 
 import cpw.mods.fml.common.ObfuscationReflectionHelper;
-import cpw.mods.fml.common.network.internal.*;
-import cpw.mods.fml.common.network.simpleimpl.*;
+import cpw.mods.fml.common.network.internal.EntitySpawnHandler;
+import cpw.mods.fml.common.network.internal.FMLMessage;
+import cpw.mods.fml.common.network.internal.FMLRuntimeCodec;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import lotr.common.util.LOTRLog;
@@ -30,8 +34,6 @@ public class LOTRPacketSpawnMob implements IMessage {
 	}
 
 	public static class AdhocEntitySpawnHandler extends EntitySpawnHandler {
-		public AdhocEntitySpawnHandler() {
-		}
 
 		@Override
 		public void channelRead0(ChannelHandlerContext ctx, FMLMessage.EntityMessage msg) throws Exception {
@@ -49,10 +51,10 @@ public class LOTRPacketSpawnMob implements IMessage {
 			double y = 999.0;
 			double z = 999.0;
 			try {
-				modEntityID = (Integer) ObfuscationReflectionHelper.getPrivateValue(FMLMessage.EntitySpawnMessage.class, msg, "modEntityTypeId");
-				x = (Double) ObfuscationReflectionHelper.getPrivateValue(FMLMessage.EntitySpawnMessage.class, msg, "scaledX");
-				y = (Double) ObfuscationReflectionHelper.getPrivateValue(FMLMessage.EntitySpawnMessage.class, msg, "scaledY");
-				z = (Double) ObfuscationReflectionHelper.getPrivateValue(FMLMessage.EntitySpawnMessage.class, msg, "scaledZ");
+				modEntityID = ObfuscationReflectionHelper.getPrivateValue(FMLMessage.EntitySpawnMessage.class, msg, "modEntityTypeId");
+				x = ObfuscationReflectionHelper.getPrivateValue(FMLMessage.EntitySpawnMessage.class, msg, "scaledX");
+				y = ObfuscationReflectionHelper.getPrivateValue(FMLMessage.EntitySpawnMessage.class, msg, "scaledY");
+				z = ObfuscationReflectionHelper.getPrivateValue(FMLMessage.EntitySpawnMessage.class, msg, "scaledZ");
 			} catch (Exception exception) {
 			}
 			LOTRLog.logger.info("LOTR: Received mob spawn packet: " + modEntityID + "[" + x + ", " + y + ", " + z + "]");

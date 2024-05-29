@@ -1,21 +1,25 @@
 package lotr.client.render;
 
-import java.util.Random;
-
-import org.lwjgl.opengl.*;
-import org.lwjgl.util.glu.Project;
-
 import com.google.common.math.IntMath;
-
 import lotr.client.LOTRReflectionClient;
-import lotr.common.*;
+import lotr.common.LOTRConfig;
+import lotr.common.LOTRDate;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.client.renderer.*;
-import net.minecraft.util.*;
+import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Vec3;
 import net.minecraftforge.client.IRenderHandler;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GLContext;
+import org.lwjgl.util.glu.Project;
+
+import java.util.Random;
 
 public class LOTRCloudRenderer extends IRenderHandler {
 	public static ResourceLocation cloudTexture = new ResourceLocation("lotr:sky/clouds.png");
@@ -27,6 +31,24 @@ public class LOTRCloudRenderer extends IRenderHandler {
 	public static double cloudPosX;
 	public static double cloudPosZPre;
 	public static double cloudPosZ;
+
+	public static void resetClouds() {
+		cloudOpacity.reset();
+		cloudSpeed.reset();
+		cloudAngle.reset();
+	}
+
+	public static void updateClouds(WorldClient world) {
+		cloudOpacity.update(world);
+		cloudSpeed.update(world);
+		cloudAngle.update(world);
+		float angle = cloudAngle.getValue(1.0F);
+		float speed = cloudSpeed.getValue(1.0F);
+		cloudPosXPre = cloudPosX;
+		cloudPosX += MathHelper.cos(angle) * speed;
+		cloudPosZPre = cloudPosZ;
+		cloudPosZ += MathHelper.sin(angle) * speed;
+	}
 
 	@Override
 	public void render(float partialTicks, WorldClient world, Minecraft mc) {
@@ -41,7 +63,7 @@ public class LOTRCloudRenderer extends IRenderHandler {
 			GL11.glPushMatrix();
 			GL11.glLoadIdentity();
 			float fov = LOTRReflectionClient.getFOVModifier(mc.entityRenderer, partialTicks, true);
-			Project.gluPerspective(fov, mc.displayWidth / mc.displayHeight, 0.05F, cloudRange);
+			Project.gluPerspective(fov, (float) mc.displayWidth / mc.displayHeight, 0.05F, cloudRange);
 			GL11.glMatrixMode(5888);
 			GL11.glPushMatrix();
 			GL11.glDisable(2884);
@@ -91,23 +113,20 @@ public class LOTRCloudRenderer extends IRenderHandler {
 				double cloudY = world.provider.getCloudHeight() - posY + 0.33000001311302185D + pass * 50.0F;
 				tessellator.startDrawingQuads();
 				tessellator.setColorRGBA_F(r, g, b, (0.8F - pass * 0.5F) * cloudOpacity.getValue(partialTicks));
-				int interval = cloudRange;
 				int i;
-				for (i = -cloudRange; i < cloudRange; i += interval) {
+				for (i = -cloudRange; i < cloudRange; i += cloudRange) {
 					int k;
-					for (k = -cloudRange; k < cloudRange; k += interval) {
-						int xMin = i + 0;
-						int xMax = i + interval;
-						int zMin = k + 0;
-						int zMax = k + interval;
-						double uMin = (xMin + cloudX) * invScaleD;
+					for (k = -cloudRange; k < cloudRange; k += cloudRange) {
+						int xMax = i + cloudRange;
+						int zMax = k + cloudRange;
+						double uMin = (i + cloudX) * invScaleD;
 						double uMax = (xMax + cloudX) * invScaleD;
-						double vMin = (zMin + cloudZ) * invScaleD;
+						double vMin = (k + cloudZ) * invScaleD;
 						double vMax = (zMax + cloudZ) * invScaleD;
-						tessellator.addVertexWithUV(xMin, cloudY, zMax, uMin, vMax);
+						tessellator.addVertexWithUV(i, cloudY, zMax, uMin, vMax);
 						tessellator.addVertexWithUV(xMax, cloudY, zMax, uMax, vMax);
-						tessellator.addVertexWithUV(xMax, cloudY, zMin, uMax, vMin);
-						tessellator.addVertexWithUV(xMin, cloudY, zMin, uMin, vMin);
+						tessellator.addVertexWithUV(xMax, cloudY, k, uMax, vMin);
+						tessellator.addVertexWithUV(i, cloudY, k, uMin, vMin);
 					}
 				}
 				tessellator.draw();
@@ -123,24 +142,6 @@ public class LOTRCloudRenderer extends IRenderHandler {
 			GL11.glPopMatrix();
 		}
 		world.theProfiler.endSection();
-	}
-
-	public static void resetClouds() {
-		cloudOpacity.reset();
-		cloudSpeed.reset();
-		cloudAngle.reset();
-	}
-
-	public static void updateClouds(WorldClient world) {
-		cloudOpacity.update(world);
-		cloudSpeed.update(world);
-		cloudAngle.update(world);
-		float angle = cloudAngle.getValue(1.0F);
-		float speed = cloudSpeed.getValue(1.0F);
-		cloudPosXPre = cloudPosX;
-		cloudPosX += MathHelper.cos(angle) * speed;
-		cloudPosZPre = cloudPosZ;
-		cloudPosZ += MathHelper.sin(angle) * speed;
 	}
 
 	public static class CloudProperty {
@@ -162,8 +163,8 @@ public class LOTRCloudRenderer extends IRenderHandler {
 		public float getCurrentDayValue(WorldClient world) {
 			int day = LOTRDate.ShireReckoning.currentDay;
 			long seed = day * baseSeed + day + 83025820626792L;
-			LOTRCloudRenderer.cloudRand.setSeed(seed);
-			return MathHelper.randomFloatClamp(LOTRCloudRenderer.cloudRand, minValue, maxValue);
+			cloudRand.setSeed(seed);
+			return MathHelper.randomFloatClamp(cloudRand, minValue, maxValue);
 		}
 
 		public float getValue(float f) {

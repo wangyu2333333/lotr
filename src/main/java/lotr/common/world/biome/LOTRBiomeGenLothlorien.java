@@ -1,19 +1,24 @@
 package lotr.common.world.biome;
 
-import java.util.Random;
-
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRMod;
 import lotr.common.entity.animal.*;
 import lotr.common.entity.npc.LOTREntityRivendellTrader;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
 import lotr.common.world.feature.LOTRTreeType;
-import lotr.common.world.map.*;
-import lotr.common.world.spawning.*;
-import lotr.common.world.structure2.*;
+import lotr.common.world.map.LOTRRoadType;
+import lotr.common.world.map.LOTRWaypoint;
+import lotr.common.world.spawning.LOTRBiomeSpawnList;
+import lotr.common.world.spawning.LOTREventSpawner;
+import lotr.common.world.spawning.LOTRSpawnList;
+import lotr.common.world.structure2.LOTRWorldGenElfHouse;
+import lotr.common.world.structure2.LOTRWorldGenGaladhrimForge;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.gen.feature.WorldGenMinable;
+
+import java.util.Random;
 
 public class LOTRBiomeGenLothlorien extends LOTRBiome {
 	public LOTRBiomeGenLothlorien(int i, boolean major) {
@@ -50,11 +55,11 @@ public class LOTRBiomeGenLothlorien extends LOTRBiome {
 		spawnableLOTRAmbientList.add(new BiomeGenBase.SpawnListEntry(LOTREntityRabbit.class, 6, 4, 4));
 		spawnableLOTRAmbientList.add(new BiomeGenBase.SpawnListEntry(LOTREntitySwan.class, 15, 4, 8));
 		variantChance = 0.7f;
-		this.addBiomeVariant(LOTRBiomeVariant.FLOWERS);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT, 2.0f);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS_FOREST);
-		this.addBiomeVariant(LOTRBiomeVariant.CLEARING, 0.5f);
+		addBiomeVariant(LOTRBiomeVariant.FLOWERS);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT, 2.0f);
+		addBiomeVariant(LOTRBiomeVariant.HILLS);
+		addBiomeVariant(LOTRBiomeVariant.HILLS_FOREST);
+		addBiomeVariant(LOTRBiomeVariant.CLEARING, 0.5f);
 		decorator.addOre(new WorldGenMinable(LOTRMod.oreQuendite, 6), 6.0f, 0, 48);
 		enablePodzol = false;
 		decorator.treesPerChunk = 3;

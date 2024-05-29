@@ -1,25 +1,43 @@
 package lotr.common.quest;
 
-import java.util.*;
-
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
+import lotr.common.LOTRPlayerData;
 import lotr.common.entity.npc.LOTREntityNPC;
-import lotr.common.fac.*;
+import lotr.common.fac.LOTRAlignmentValues;
+import lotr.common.fac.LOTRFaction;
 import lotr.common.item.LOTRItemLeatherHat;
 import net.minecraft.command.IEntitySelector;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.*;
-import net.minecraft.util.*;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.StatCollector;
+import net.minecraft.util.Vec3;
+
+import java.util.*;
 
 public class LOTRMiniQuestPickpocket extends LOTRMiniQuestCollectBase {
 	public LOTRFaction pickpocketFaction;
-	public Set<UUID> pickpocketedEntityIDs = new HashSet<>();
+	public Collection<UUID> pickpocketedEntityIDs = new HashSet<>();
 
 	public LOTRMiniQuestPickpocket(LOTRPlayerData pd) {
 		super(pd);
+	}
+
+	public static ItemStack createPickpocketIcon() {
+		ItemStack hat = new ItemStack(LOTRMod.leatherHat);
+		LOTRItemLeatherHat.setHatColor(hat, 0);
+		LOTRItemLeatherHat.setFeatherColor(hat, 16777215);
+		return hat;
 	}
 
 	@Override
@@ -39,7 +57,7 @@ public class LOTRMiniQuestPickpocket extends LOTRMiniQuestCollectBase {
 
 	@Override
 	public ItemStack getQuestIcon() {
-		return LOTRMiniQuestPickpocket.createPickpocketIcon();
+		return createPickpocketIcon();
 	}
 
 	@Override
@@ -58,7 +76,7 @@ public class LOTRMiniQuestPickpocket extends LOTRMiniQuestCollectBase {
 		Vec3 targetEyes = Vec3.createVectorHelper(target.posX, target.boundingBox.minY + target.getEyeHeight(), target.posZ);
 		Vec3 disp = Vec3.createVectorHelper(targetEyes.xCoord - watcherEyes.xCoord, targetEyes.yCoord - watcherEyes.yCoord, targetEyes.zCoord - watcherEyes.zCoord);
 		double dot = disp.normalize().dotProduct(look.normalize());
-		if (dot >= MathHelper.cos((float) Math.toRadians(130.0) / 2.0f)) {
+		if (dot >= MathHelper.cos(2.2689280275926285f / 2.0f)) {
 			return watcher.getEntitySenses().canSee(target);
 		}
 		return false;
@@ -74,6 +92,7 @@ public class LOTRMiniQuestPickpocket extends LOTRMiniQuestCollectBase {
 		return super.isValidQuest() && pickpocketFaction != null;
 	}
 
+	@SuppressWarnings("Convert2Lambda")
 	@Override
 	public boolean onInteractOther(EntityPlayer entityplayer, LOTREntityNPC npc) {
 		if (entityplayer.isSneaking() && entityplayer.getHeldItem() == null && npc.getFaction() == pickpocketFaction && npc instanceof IPickpocketable) {
@@ -171,9 +190,6 @@ public class LOTRMiniQuestPickpocket extends LOTRMiniQuestCollectBase {
 		NBTTagList ids = nbt.getTagList("PickpocketedIDs", 8);
 		for (int i = 0; i < ids.tagCount(); ++i) {
 			UUID id = UUID.fromString(ids.getStringTagAt(i));
-			if (id == null) {
-				continue;
-			}
 			pickpocketedEntityIDs.add(id);
 		}
 	}
@@ -195,7 +211,7 @@ public class LOTRMiniQuestPickpocket extends LOTRMiniQuestCollectBase {
 			double vx = MathHelper.cos(ang) * hSpeed;
 			double vz = MathHelper.sin(ang) * hSpeed;
 			double vy = MathHelper.getRandomDoubleInRange(rand, 0.1, 0.25) * upSpeed;
-			LOTRMod.proxy.spawnParticle(particle, x += MathHelper.cos(ang) * w, y, z += MathHelper.sin(ang) * w, vx, vy, vz);
+			LOTRMod.proxy.spawnParticle(particle, x + MathHelper.cos(ang) * w, y, z + MathHelper.sin(ang) * w, vx, vy, vz);
 		}
 	}
 
@@ -210,13 +226,6 @@ public class LOTRMiniQuestPickpocket extends LOTRMiniQuestCollectBase {
 		nbt.setTag("PickpocketedIDs", ids);
 	}
 
-	public static ItemStack createPickpocketIcon() {
-		ItemStack hat = new ItemStack(LOTRMod.leatherHat);
-		LOTRItemLeatherHat.setHatColor(hat, 0);
-		LOTRItemLeatherHat.setFeatherColor(hat, 16777215);
-		return hat;
-	}
-
 	public static class QFPickpocket<Q extends LOTRMiniQuestPickpocket> extends LOTRMiniQuest.QuestFactoryBase<Q> {
 		public LOTRFaction pickpocketFaction;
 		public int minTarget;
@@ -228,10 +237,10 @@ public class LOTRMiniQuestPickpocket extends LOTRMiniQuestCollectBase {
 
 		@Override
 		public Q createQuest(LOTREntityNPC npc, Random rand) {
-			LOTRMiniQuestPickpocket quest = super.createQuest(npc, rand);
-			quest.pickpocketFaction = this.pickpocketFaction;
-			quest.collectTarget = MathHelper.getRandomIntegerInRange(rand, this.minTarget, this.maxTarget);
-			return (Q) quest;
+			Q quest = super.createQuest(npc, rand);
+			quest.pickpocketFaction = pickpocketFaction;
+			quest.collectTarget = MathHelper.getRandomIntegerInRange(rand, minTarget, maxTarget);
+			return quest;
 		}
 
 		@Override
@@ -240,9 +249,9 @@ public class LOTRMiniQuestPickpocket extends LOTRMiniQuestCollectBase {
 		}
 
 		public QFPickpocket setPickpocketFaction(LOTRFaction f, int min, int max) {
-			this.pickpocketFaction = f;
-			this.minTarget = min;
-			this.maxTarget = max;
+			pickpocketFaction = f;
+			minTarget = min;
+			maxTarget = max;
 			return this;
 		}
 	}

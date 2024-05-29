@@ -1,16 +1,21 @@
 package lotr.common.world.biome;
 
-import java.util.Random;
-
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRMod;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
-import lotr.common.world.feature.*;
+import lotr.common.world.feature.LOTRTreeType;
+import lotr.common.world.feature.LOTRWorldGenBoulder;
 import lotr.common.world.map.LOTRWaypoint;
-import lotr.common.world.spawning.*;
-import lotr.common.world.structure2.*;
+import lotr.common.world.spawning.LOTRBiomeSpawnList;
+import lotr.common.world.spawning.LOTREventSpawner;
+import lotr.common.world.spawning.LOTRSpawnList;
+import lotr.common.world.structure2.LOTRWorldGenGondorStructure;
+import lotr.common.world.structure2.LOTRWorldGenLebenninWatchfort;
 import lotr.common.world.village.LOTRVillageGenGondor;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
+
+import java.util.Random;
 
 public class LOTRBiomeGenLebennin extends LOTRBiomeGenGondor {
 	public WorldGenerator boulderGen = new LOTRWorldGenBoulder(LOTRMod.rock, 1, 2, 5);
@@ -54,17 +59,17 @@ public class LOTRBiomeGenLebennin extends LOTRBiomeGenGondor {
 		arrspawnListContainer7[0] = LOTRBiomeSpawnList.entry(LOTRSpawnList.HALF_TROLLS, 10);
 		npcSpawnList.newFactionList(0).add(arrspawnListContainer7);
 		clearBiomeVariants();
-		this.addBiomeVariant(LOTRBiomeVariant.FLOWERS);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
-		this.addBiomeVariant(LOTRBiomeVariant.STEPPE);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS_FOREST);
-		this.addBiomeVariant(LOTRBiomeVariant.DENSEFOREST_OAK);
-		this.addBiomeVariant(LOTRBiomeVariant.SHRUBLAND_OAK);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_BEECH, 0.5f);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_BIRCH, 0.5f);
-		this.addBiomeVariant(LOTRBiomeVariant.ORCHARD_APPLE_PEAR, 1.0f);
+		addBiomeVariant(LOTRBiomeVariant.FLOWERS);
+		addBiomeVariant(LOTRBiomeVariant.FOREST);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
+		addBiomeVariant(LOTRBiomeVariant.STEPPE);
+		addBiomeVariant(LOTRBiomeVariant.HILLS);
+		addBiomeVariant(LOTRBiomeVariant.HILLS_FOREST);
+		addBiomeVariant(LOTRBiomeVariant.DENSEFOREST_OAK);
+		addBiomeVariant(LOTRBiomeVariant.SHRUBLAND_OAK);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_BEECH, 0.5f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_BIRCH, 0.5f);
+		addBiomeVariant(LOTRBiomeVariant.ORCHARD_APPLE_PEAR, 1.0f);
 		decorator.treesPerChunk = 0;
 		decorator.flowersPerChunk = 3;
 		decorator.grassPerChunk = 12;

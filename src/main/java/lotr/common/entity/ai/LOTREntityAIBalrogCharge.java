@@ -1,16 +1,19 @@
 package lotr.common.entity.ai;
 
-import java.util.List;
-
 import lotr.common.entity.npc.LOTREntityBalrog;
-import net.minecraft.entity.*;
-import net.minecraft.util.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
+
+import java.util.List;
 
 public class LOTREntityAIBalrogCharge extends LOTREntityAIAttackOnCollide {
 	public LOTREntityBalrog theBalrog;
 	public float chargeDist;
 	public int frustrationTime;
-	public boolean hitChargeTarget = false;
+	public boolean hitChargeTarget;
 	public int chargingTick;
 
 	public LOTREntityAIBalrogCharge(LOTREntityBalrog balrog, double speed, float dist, int fr) {

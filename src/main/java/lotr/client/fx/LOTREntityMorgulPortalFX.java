@@ -1,6 +1,7 @@
 package lotr.client.fx;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.particle.EntitySpellParticleFX;
 import net.minecraft.world.World;
 
@@ -22,7 +23,7 @@ public class LOTREntityMorgulPortalFX extends EntitySpellParticleFX {
 		return 1.0f;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public int getBrightnessForRender(float f) {
 		return 15728880;
@@ -31,7 +32,7 @@ public class LOTREntityMorgulPortalFX extends EntitySpellParticleFX {
 	@Override
 	public void onUpdate() {
 		super.onUpdate();
-		particleAlpha = 0.5f + 0.5f * ((float) particleAge / (float) particleMaxAge);
+		particleAlpha = 0.5f + 0.5f * ((float) particleAge / particleMaxAge);
 		motionX *= 1.1;
 		motionZ *= 1.1;
 	}

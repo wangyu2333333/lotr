@@ -1,14 +1,19 @@
 package lotr.common.command;
 
-import java.util.List;
-
 import com.mojang.authlib.GameProfile;
-
-import lotr.common.*;
-import lotr.common.network.*;
-import net.minecraft.command.*;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRPlayerData;
+import lotr.common.network.LOTRPacketAlignmentSee;
+import lotr.common.network.LOTRPacketHandler;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerNotFoundException;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+
+import java.util.List;
 
 public class LOTRCommandAlignmentSee extends CommandBase {
 	@Override
@@ -51,7 +56,7 @@ public class LOTRCommandAlignmentSee extends CommandBase {
 			}
 			if (sender instanceof EntityPlayerMP) {
 				LOTRPlayerData playerData = LOTRLevelData.getData(profile.getId());
-				LOTRPacketAlignmentSee packet = new LOTRPacketAlignmentSee(username, playerData);
+				IMessage packet = new LOTRPacketAlignmentSee(username, playerData);
 				LOTRPacketHandler.networkWrapper.sendTo(packet, (EntityPlayerMP) sender);
 				return;
 			}

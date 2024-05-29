@@ -1,29 +1,34 @@
 package lotr.common.network;
 
-import java.io.IOException;
-import java.util.UUID;
-
 import com.google.common.base.Charsets;
 import com.mojang.authlib.GameProfile;
-
 import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.network.simpleimpl.*;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import lotr.common.*;
-import lotr.common.fellowship.*;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
+import lotr.common.LOTRPlayerData;
+import lotr.common.LOTRTitle;
+import lotr.common.fellowship.LOTRFellowship;
+import lotr.common.fellowship.LOTRFellowshipClient;
 import lotr.common.util.LOTRLog;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 
+import java.io.IOException;
+import java.util.UUID;
+
 public abstract class LOTRPacketFellowshipPartialUpdate implements IMessage {
 	public UUID fellowshipID;
 
-	public LOTRPacketFellowshipPartialUpdate() {
+	protected LOTRPacketFellowshipPartialUpdate() {
 	}
 
-	public LOTRPacketFellowshipPartialUpdate(LOTRFellowship fs) {
+	protected LOTRPacketFellowshipPartialUpdate(LOTRFellowship fs) {
 		fellowshipID = fs.getFellowshipID();
 	}
 
@@ -120,28 +125,28 @@ public abstract class LOTRPacketFellowshipPartialUpdate implements IMessage {
 		}
 	}
 
-	public static abstract class Handler<P extends LOTRPacketFellowshipPartialUpdate> implements IMessageHandler<P, IMessage> {
+	public abstract static class Handler<P extends LOTRPacketFellowshipPartialUpdate> implements IMessageHandler<P, IMessage> {
 		@Override
 		public IMessage onMessage(P packet, MessageContext context) {
 			EntityPlayer entityplayer = LOTRMod.proxy.getClientPlayer();
 			LOTRPlayerData pd = LOTRLevelData.getData(entityplayer);
-			LOTRFellowshipClient fellowship = pd.getClientFellowshipByID(((LOTRPacketFellowshipPartialUpdate) packet).fellowshipID);
+			LOTRFellowshipClient fellowship = pd.getClientFellowshipByID(packet.fellowshipID);
 			if (fellowship != null) {
 				packet.updateClient(fellowship);
 			} else {
-				LOTRLog.logger.warn("Client couldn't find fellowship for ID " + ((LOTRPacketFellowshipPartialUpdate) packet).fellowshipID);
+				LOTRLog.logger.warn("Client couldn't find fellowship for ID " + packet.fellowshipID);
 			}
 			return null;
 		}
 	}
 
-	public static abstract class OnePlayerUpdate extends LOTRPacketFellowshipPartialUpdate {
+	public abstract static class OnePlayerUpdate extends LOTRPacketFellowshipPartialUpdate {
 		public GameProfile playerProfile;
 
-		public OnePlayerUpdate() {
+		protected OnePlayerUpdate() {
 		}
 
-		public OnePlayerUpdate(LOTRFellowship fs, UUID player) {
+		protected OnePlayerUpdate(LOTRFellowship fs, UUID player) {
 			super(fs);
 			playerProfile = LOTRPacketFellowship.getPlayerProfileWithUsername(player);
 		}

@@ -1,13 +1,15 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
-import lotr.common.entity.npc.*;
+import lotr.common.entity.npc.LOTREntityHarnedorFarmer;
+import lotr.common.entity.npc.LOTREntityHarnedorFarmhand;
 import net.minecraft.block.Block;
-import net.minecraft.init.*;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenHarnedorFarm extends LOTRWorldGenHarnedorStructure {
 	public Block crop1Block;
@@ -22,7 +24,7 @@ public class LOTRWorldGenHarnedorFarm extends LOTRWorldGenHarnedorStructure {
 	@Override
 	public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
 		int j1;
-		this.setOriginAndRotation(world, i, j, k, rotation, 5);
+		setOriginAndRotation(world, i, j, k, rotation, 5);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			int minHeight = 0;
@@ -70,8 +72,9 @@ public class LOTRWorldGenHarnedorFarm extends LOTRWorldGenHarnedorStructure {
 		associateBlockAlias("CROP1", crop1Block);
 		associateBlockAlias("CROP2", crop2Block);
 		generateStrScan(world, random, 0, 0, 0);
-		this.placeSkull(world, random, 0, 4, 0);
-		block6: for (int i1 : new int[] { -2, 2 }) {
+		placeSkull(world, random, 0, 4, 0);
+		block6:
+		for (int i1 : new int[]{-2, 2}) {
 			j1 = 0;
 			for (int step = 0; step < 6; ++step) {
 				int j2;
@@ -131,24 +134,24 @@ public class LOTRWorldGenHarnedorFarm extends LOTRWorldGenHarnedorStructure {
 		} else {
 			randomCrop = random.nextInt(4);
 			switch (randomCrop) {
-			case 0:
-				crop1Block = Blocks.carrots;
-				seed1 = Items.carrot;
-				break;
-			case 1:
-				crop1Block = Blocks.potatoes;
-				seed1 = Items.potato;
-				break;
-			case 2:
-				crop1Block = LOTRMod.lettuceCrop;
-				seed1 = LOTRMod.lettuce;
-				break;
-			case 3:
-				crop1Block = LOTRMod.turnipCrop;
-				seed1 = LOTRMod.turnip;
-				break;
-			default:
-				break;
+				case 0:
+					crop1Block = Blocks.carrots;
+					seed1 = Items.carrot;
+					break;
+				case 1:
+					crop1Block = Blocks.potatoes;
+					seed1 = Items.potato;
+					break;
+				case 2:
+					crop1Block = LOTRMod.lettuceCrop;
+					seed1 = LOTRMod.lettuce;
+					break;
+				case 3:
+					crop1Block = LOTRMod.turnipCrop;
+					seed1 = LOTRMod.turnip;
+					break;
+				default:
+					break;
 			}
 		}
 		if (random.nextBoolean()) {
@@ -157,24 +160,24 @@ public class LOTRWorldGenHarnedorFarm extends LOTRWorldGenHarnedorStructure {
 		} else {
 			randomCrop = random.nextInt(4);
 			switch (randomCrop) {
-			case 0:
-				crop2Block = Blocks.carrots;
-				seed2 = Items.carrot;
-				break;
-			case 1:
-				crop2Block = Blocks.potatoes;
-				seed2 = Items.potato;
-				break;
-			case 2:
-				crop2Block = LOTRMod.lettuceCrop;
-				seed2 = LOTRMod.lettuce;
-				break;
-			case 3:
-				crop2Block = LOTRMod.turnipCrop;
-				seed2 = LOTRMod.turnip;
-				break;
-			default:
-				break;
+				case 0:
+					crop2Block = Blocks.carrots;
+					seed2 = Items.carrot;
+					break;
+				case 1:
+					crop2Block = Blocks.potatoes;
+					seed2 = Items.potato;
+					break;
+				case 2:
+					crop2Block = LOTRMod.lettuceCrop;
+					seed2 = LOTRMod.lettuce;
+					break;
+				case 3:
+					crop2Block = LOTRMod.turnipCrop;
+					seed2 = LOTRMod.turnip;
+					break;
+				default:
+					break;
 			}
 		}
 	}

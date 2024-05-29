@@ -1,18 +1,25 @@
 package lotr.common.tileentity;
 
-import java.util.*;
-
-import org.apache.commons.lang3.StringUtils;
-
-import lotr.common.fellowship.*;
+import lotr.common.fellowship.LOTRFellowship;
+import lotr.common.fellowship.LOTRFellowshipData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.*;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.chunk.Chunk;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.UUID;
 
 public class LOTRTileEntityBeacon extends TileEntity {
 	public int ticksExisted;
@@ -22,7 +29,7 @@ public class LOTRTileEntityBeacon extends TileEntity {
 	public long stateChangeTime = -1L;
 	public String beaconName;
 	public UUID beaconFellowshipID;
-	public List<EntityPlayer> editingPlayers = new ArrayList<>();
+	public Collection<EntityPlayer> editingPlayers = new ArrayList<>();
 
 	public void addEditingPlayer(EntityPlayer entityplayer) {
 		if (!editingPlayers.contains(entityplayer)) {
@@ -32,6 +39,12 @@ public class LOTRTileEntityBeacon extends TileEntity {
 
 	public String getBeaconName() {
 		return beaconName;
+	}
+
+	public void setBeaconName(String name) {
+		beaconName = name;
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		markDirty();
 	}
 
 	@Override
@@ -46,11 +59,26 @@ public class LOTRTileEntityBeacon extends TileEntity {
 	}
 
 	public boolean isFullyLit() {
-		return isLit() && litCounter == 100;
+		return isLit && litCounter == 100;
 	}
 
 	public boolean isLit() {
 		return isLit;
+	}
+
+	public void setLit(boolean flag) {
+		boolean wasLit = isLit;
+		isLit = flag;
+		if (isLit) {
+			unlitCounter = 0;
+		} else {
+			litCounter = 0;
+		}
+		updateLight();
+		stateChangeTime = worldObj.getTotalWorldTime();
+		if (wasLit && !isLit) {
+			sendFellowshipMessage(false);
+		}
 	}
 
 	public boolean isPlayerEditing(EntityPlayer entityplayer) {
@@ -86,7 +114,7 @@ public class LOTRTileEntityBeacon extends TileEntity {
 			if (StringUtils.isBlank(beaconMessageName)) {
 				beaconMessageName = fs.getName();
 			}
-			ChatComponentTranslation message = new ChatComponentTranslation(lit ? "container.lotr.beacon.lit" : "container.lotr.beacon.unlit", beaconMessageName);
+			IChatComponent message = new ChatComponentTranslation(lit ? "container.lotr.beacon.lit" : "container.lotr.beacon.unlit", beaconMessageName);
 			message.getChatStyle().setColor(EnumChatFormatting.YELLOW);
 			for (UUID player : fs.getAllPlayerUUIDs()) {
 				EntityPlayer entityplayer = worldObj.func_152378_a(player);
@@ -98,32 +126,11 @@ public class LOTRTileEntityBeacon extends TileEntity {
 		}
 	}
 
-	public void setBeaconName(String name) {
-		beaconName = name;
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-		markDirty();
-	}
-
 	public void setFellowship(LOTRFellowship fs) {
 		beaconFellowshipID = fs != null ? fs.getFellowshipID() : null;
 		beaconFellowshipID = fs == null ? null : fs.getFellowshipID();
 		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
 		markDirty();
-	}
-
-	public void setLit(boolean flag) {
-		boolean wasLit = isLit;
-		isLit = flag;
-		if (!isLit) {
-			litCounter = 0;
-		} else {
-			unlitCounter = 0;
-		}
-		updateLight();
-		stateChangeTime = worldObj.getTotalWorldTime();
-		if (wasLit && !isLit) {
-			sendFellowshipMessage(false);
-		}
 	}
 
 	@Override
@@ -148,7 +155,7 @@ public class LOTRTileEntityBeacon extends TileEntity {
 				boolean spreadLit = isLit && litCounter >= 100;
 				spreadUnlit = !isLit && unlitCounter >= 100;
 				if (spreadLit || spreadUnlit) {
-					ArrayList<LOTRTileEntityBeacon> nearbyTiles = new ArrayList<>();
+					Collection<LOTRTileEntityBeacon> nearbyTiles = new ArrayList<>();
 					int range = 88;
 					int chunkRange = range >> 4;
 					int chunkX = xCoord >> 4;
@@ -194,7 +201,7 @@ public class LOTRTileEntityBeacon extends TileEntity {
 				}
 			}
 		}
-		HashSet<EntityPlayer> removePlayers = new HashSet<>();
+		Collection<EntityPlayer> removePlayers = new HashSet<>();
 		for (EntityPlayer entityplayer : editingPlayers) {
 			if (!entityplayer.isDead) {
 				continue;

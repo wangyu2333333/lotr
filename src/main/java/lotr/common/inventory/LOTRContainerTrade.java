@@ -1,7 +1,8 @@
 package lotr.common.inventory;
 
 import lotr.common.entity.npc.*;
-import net.minecraft.entity.player.*;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -80,7 +81,7 @@ public class LOTRContainerTrade extends Container {
 				if (!mergeItemStack(itemstack1, 27, 63, true)) {
 					return null;
 				}
-			} else if (i >= 9 && i < 18 || (i >= 18 && i < 27 ? !mergeItemStack(itemstack1, 27, 63, true) : sellable ? !mergeItemStack(itemstack1, 18, 27, false) : i >= 27 && i < 54 ? !mergeItemStack(itemstack1, 54, 63, false) : i >= 54 && i < 63 && !mergeItemStack(itemstack1, 27, 54, false))) {
+			} else if (i < 18 || (i < 27 ? !mergeItemStack(itemstack1, 27, 63, true) : sellable ? !mergeItemStack(itemstack1, 18, 27, false) : i < 54 ? !mergeItemStack(itemstack1, 54, 63, false) : i < 63 && !mergeItemStack(itemstack1, 27, 54, false))) {
 				return null;
 			}
 			if (itemstack1.stackSize == 0) {

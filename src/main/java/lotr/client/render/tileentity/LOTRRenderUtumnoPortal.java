@@ -1,10 +1,9 @@
 package lotr.client.render.tileentity;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
+import org.lwjgl.opengl.GL11;
 
 public class LOTRRenderUtumnoPortal extends TileEntitySpecialRenderer {
 	@Override
@@ -22,7 +21,7 @@ public class LOTRRenderUtumnoPortal extends TileEntitySpecialRenderer {
 			GL11.glTranslatef((float) d + 0.5f, (float) d1 + 1.0f + i * 0.5f, (float) d2 + 0.5f);
 			Tessellator tessellator = Tessellator.instance;
 			tessellator.startDrawingQuads();
-			tessellator.setColorRGBA_F(0.0f, 0.0f, 0.0f, (float) (passes - i) / (float) passes);
+			tessellator.setColorRGBA_F(0.0f, 0.0f, 0.0f, (float) (passes - i) / passes);
 			double width = 0.5;
 			tessellator.addVertexWithUV(width, 0.0, width, 0.0, 0.0);
 			tessellator.addVertexWithUV(width, 0.0, -width, 0.0, 0.0);

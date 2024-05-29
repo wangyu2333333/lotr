@@ -1,11 +1,10 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import com.google.common.math.IntMath;
-
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenGondorFortWallCorner extends LOTRWorldGenGondorStructure {
 	public LOTRWorldGenGondorFortWallCorner(boolean flag) {
@@ -14,7 +13,7 @@ public class LOTRWorldGenGondorFortWallCorner extends LOTRWorldGenGondorStructur
 
 	@Override
 	public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
-		this.setOriginAndRotation(world, i, j, k, rotation, 0);
+		setOriginAndRotation(world, i, j, k, rotation, 0);
 		setupRandomBlocks(random);
 		for (int l = -8; l <= 8; ++l) {
 			int j1;

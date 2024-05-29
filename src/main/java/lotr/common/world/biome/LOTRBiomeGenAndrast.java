@@ -1,18 +1,23 @@
 package lotr.common.world.biome;
 
-import java.util.Random;
-
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRMod;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
-import lotr.common.world.feature.*;
+import lotr.common.world.feature.LOTRTreeType;
+import lotr.common.world.feature.LOTRWorldGenBoulder;
 import lotr.common.world.spawning.LOTREventSpawner;
-import lotr.common.world.structure.*;
-import lotr.common.world.structure2.*;
+import lotr.common.world.structure.LOTRWorldGenGondorRuin;
+import lotr.common.world.structure.LOTRWorldGenGondorRuins;
+import lotr.common.world.structure.LOTRWorldGenRuinedGondorTower;
+import lotr.common.world.structure2.LOTRWorldGenGondorObelisk;
+import lotr.common.world.structure2.LOTRWorldGenSmallStoneRuin;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.NoiseGeneratorPerlin;
 import net.minecraft.world.gen.feature.WorldGenerator;
+
+import java.util.Random;
 
 public class LOTRBiomeGenAndrast extends LOTRBiomeGenGondor {
 	public static NoiseGeneratorPerlin noiseDirt = new NoiseGeneratorPerlin(new Random(285939985023633003L), 1);
@@ -25,16 +30,16 @@ public class LOTRBiomeGenAndrast extends LOTRBiomeGenGondor {
 		npcSpawnList.clear();
 		clearBiomeVariants();
 		variantChance = 0.5f;
-		this.addBiomeVariant(LOTRBiomeVariant.FLOWERS);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS_FOREST);
-		this.addBiomeVariant(LOTRBiomeVariant.DEADFOREST_OAK);
-		this.addBiomeVariant(LOTRBiomeVariant.SHRUBLAND_OAK);
-		this.addBiomeVariant(LOTRBiomeVariant.SCRUBLAND, 3.0f);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS_SCRUBLAND);
-		this.addBiomeVariant(LOTRBiomeVariant.WASTELAND, 3.0f);
+		addBiomeVariant(LOTRBiomeVariant.FLOWERS);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
+		addBiomeVariant(LOTRBiomeVariant.FOREST);
+		addBiomeVariant(LOTRBiomeVariant.HILLS);
+		addBiomeVariant(LOTRBiomeVariant.HILLS_FOREST);
+		addBiomeVariant(LOTRBiomeVariant.DEADFOREST_OAK);
+		addBiomeVariant(LOTRBiomeVariant.SHRUBLAND_OAK);
+		addBiomeVariant(LOTRBiomeVariant.SCRUBLAND, 3.0f);
+		addBiomeVariant(LOTRBiomeVariant.HILLS_SCRUBLAND);
+		addBiomeVariant(LOTRBiomeVariant.WASTELAND, 3.0f);
 		decorator.setTreeCluster(10, 30);
 		decorator.treesPerChunk = 0;
 		decorator.flowersPerChunk = 3;
@@ -119,11 +124,6 @@ public class LOTRBiomeGenAndrast extends LOTRBiomeGenGondor {
 	@Override
 	public LOTRMusicRegion.Sub getBiomeMusic() {
 		return LOTRMusicRegion.PUKEL.getSubregion("andrast");
-	}
-
-	@Override
-	public float getChanceToSpawnAnimals() {
-		return 0.25f;
 	}
 
 	@Override

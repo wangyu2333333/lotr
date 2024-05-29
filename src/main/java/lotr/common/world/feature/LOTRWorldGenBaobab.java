@@ -1,15 +1,15 @@
 package lotr.common.world.feature;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.*;
+import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenAbstractTree;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.Random;
 
 public class LOTRWorldGenBaobab extends WorldGenAbstractTree {
 	public Block woodBlock = LOTRMod.wood4;
@@ -58,7 +58,7 @@ public class LOTRWorldGenBaobab extends WorldGenAbstractTree {
 						flag = false;
 					}
 					Block below = world.getBlock(i1, j - 1, k1);
-					boolean isSoil = below.canSustainPlant((IBlockAccess) world, i, j - 1, k, ForgeDirection.UP, (IPlantable) Blocks.sapling);
+					boolean isSoil = below.canSustainPlant(world, i, j - 1, k, ForgeDirection.UP, (IPlantable) Blocks.sapling);
 					if (isSoil) {
 						continue;
 					}
@@ -89,7 +89,7 @@ public class LOTRWorldGenBaobab extends WorldGenAbstractTree {
 			if (j12 % xSlope == 0) {
 				if (xSlope > 0) {
 					++i;
-				} else if (xSlope < 0) {
+				} else {
 					--i;
 				}
 			}
@@ -98,9 +98,6 @@ public class LOTRWorldGenBaobab extends WorldGenAbstractTree {
 			}
 			if (zSlope > 0) {
 				++k;
-				continue;
-			}
-			if (zSlope >= 0) {
 				continue;
 			}
 			--k;

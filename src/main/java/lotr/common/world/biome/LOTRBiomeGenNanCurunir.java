@@ -1,19 +1,28 @@
 package lotr.common.world.biome;
 
-import java.util.Random;
-
-import lotr.common.*;
-import lotr.common.entity.animal.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRMod;
+import lotr.common.entity.animal.LOTREntityCrebain;
+import lotr.common.entity.animal.LOTREntityRabbit;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
-import lotr.common.world.feature.*;
-import lotr.common.world.map.*;
-import lotr.common.world.spawning.*;
+import lotr.common.world.feature.LOTRTreeType;
+import lotr.common.world.feature.LOTRWorldGenBlastedLand;
+import lotr.common.world.feature.LOTRWorldGenBoulder;
+import lotr.common.world.feature.LOTRWorldGenSkullPile;
+import lotr.common.world.map.LOTRWaypoint;
+import lotr.common.world.map.LOTRWorldGenIsengardWalls;
+import lotr.common.world.spawning.LOTRBiomeSpawnList;
+import lotr.common.world.spawning.LOTREventSpawner;
+import lotr.common.world.spawning.LOTRInvasions;
+import lotr.common.world.spawning.LOTRSpawnList;
 import lotr.common.world.structure2.*;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.gen.feature.WorldGenerator;
+
+import java.util.Random;
 
 public class LOTRBiomeGenNanCurunir extends LOTRBiome {
 	public WorldGenerator boulderGen = new LOTRWorldGenBoulder(Blocks.stone, 0, 1, 3);
@@ -49,9 +58,9 @@ public class LOTRBiomeGenNanCurunir extends LOTRBiome {
 		arrspawnListContainer6[0] = LOTRBiomeSpawnList.entry(LOTRSpawnList.GONDOR_SOLDIERS, 10);
 		npcSpawnList.newFactionList(0).add(arrspawnListContainer6);
 		npcSpawnList.conquestGainRate = 0.2f;
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS);
-		this.addBiomeVariant(LOTRBiomeVariant.DEADFOREST_OAK);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
+		addBiomeVariant(LOTRBiomeVariant.HILLS);
+		addBiomeVariant(LOTRBiomeVariant.DEADFOREST_OAK);
 		decorator.treesPerChunk = 0;
 		decorator.willowPerChunk = 1;
 		decorator.logsPerChunk = 1;

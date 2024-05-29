@@ -1,14 +1,19 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
 import lotr.common.entity.ai.*;
 import lotr.common.fac.LOTRFaction;
 import lotr.common.world.biome.*;
 import net.minecraft.block.Block;
-import net.minecraft.entity.*;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.*;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
@@ -16,7 +21,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 
 public abstract class LOTREntityNearHaradrimBase extends LOTREntityMan {
-	public LOTREntityNearHaradrimBase(World world) {
+	protected LOTREntityNearHaradrimBase(World world) {
 		super(world);
 		setSize(0.6f, 1.8f);
 		getNavigator().setAvoidsWater(true);
@@ -33,7 +38,7 @@ public abstract class LOTREntityNearHaradrimBase extends LOTREntityMan {
 		tasks.addTask(7, new EntityAIWatchClosest2(this, LOTREntityNPC.class, 5.0f, 0.02f));
 		tasks.addTask(8, new EntityAIWatchClosest(this, EntityLiving.class, 8.0f, 0.02f));
 		tasks.addTask(9, new EntityAILookIdle(this));
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 	}
 
 	@Override
@@ -45,11 +50,6 @@ public abstract class LOTREntityNearHaradrimBase extends LOTREntityMan {
 
 	public EntityAIBase createHaradrimAttackAI() {
 		return new LOTREntityAIAttackOnCollide(this, 1.5, true);
-	}
-
-	@Override
-	public LOTRNPCMount createMountToRide() {
-		return super.createMountToRide();
 	}
 
 	@Override
@@ -90,9 +90,7 @@ public abstract class LOTREntityNearHaradrimBase extends LOTREntityMan {
 			int k = MathHelper.floor_double(posZ);
 			BiomeGenBase biome = worldObj.getBiomeGenForCoords(i, k);
 			Block block = worldObj.getBlock(i, j - 1, k);
-			if (j > 62 && (block == biome.topBlock || block == Blocks.grass || block == Blocks.sand)) {
-				return true;
-			}
+			return j > 62 && (block == biome.topBlock || block == Blocks.grass || block == Blocks.sand);
 		}
 		return false;
 	}
@@ -146,7 +144,4 @@ public abstract class LOTREntityNearHaradrimBase extends LOTREntityMan {
 		familyInfo.setMale(rand.nextBoolean());
 	}
 
-	@Override
-	public void setupNPCName() {
-	}
 }

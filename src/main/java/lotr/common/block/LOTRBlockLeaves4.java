@@ -1,11 +1,14 @@
 package lotr.common.block;
 
-import java.util.*;
-
 import lotr.common.LOTRMod;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class LOTRBlockLeaves4 extends LOTRBlockLeavesBase {
 	public LOTRBlockLeaves4() {
@@ -13,7 +16,7 @@ public class LOTRBlockLeaves4 extends LOTRBlockLeavesBase {
 	}
 
 	@Override
-	public void addSpecialLeafDrops(ArrayList drops, World world, int i, int j, int k, int meta, int fortune) {
+	public void addSpecialLeafDrops(List drops, World world, int i, int j, int k, int meta, int fortune) {
 		if ((meta & 3) == 0 && world.rand.nextInt(calcFortuneModifiedDropChance(20, fortune)) == 0) {
 			drops.add(new ItemStack(LOTRMod.chestnut));
 		}

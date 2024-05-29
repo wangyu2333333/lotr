@@ -1,19 +1,24 @@
 package lotr.common.entity.npc;
 
-import java.util.List;
-
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
+import lotr.common.LOTRShields;
 import lotr.common.entity.LOTREntityNPCRespawner;
 import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
 import lotr.common.fac.LOTRFaction;
-import lotr.common.quest.*;
+import lotr.common.quest.LOTRMiniQuest;
+import lotr.common.quest.LOTRMiniQuestFactory;
 import lotr.common.world.structure.LOTRChestContents;
-import net.minecraft.entity.*;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 public class LOTREntityUrukHai extends LOTREntityOrc {
 	public LOTREntityUrukHai(World world) {
@@ -114,28 +119,28 @@ public class LOTREntityUrukHai extends LOTREntityOrc {
 		data = super.onSpawnWithEgg(data);
 		int i = rand.nextInt(8);
 		switch (i) {
-		case 0:
-		case 1:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.scimitarUruk));
-			break;
-		case 2:
-		case 3:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.pikeUruk));
-			break;
-		case 4:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.battleaxeUruk));
-			break;
-		case 5:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.daggerUruk));
-			break;
-		case 6:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.daggerUrukPoisoned));
-			break;
-		case 7:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.hammerUruk));
-			break;
-		default:
-			break;
+			case 0:
+			case 1:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.scimitarUruk));
+				break;
+			case 2:
+			case 3:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.pikeUruk));
+				break;
+			case 4:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.battleaxeUruk));
+				break;
+			case 5:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.daggerUruk));
+				break;
+			case 6:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.daggerUrukPoisoned));
+				break;
+			case 7:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.hammerUruk));
+				break;
+			default:
+				break;
 		}
 		if (rand.nextInt(6) == 0) {
 			npcItemsInv.setSpearBackup(npcItemsInv.getMeleeWeapon());

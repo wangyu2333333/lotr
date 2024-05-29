@@ -1,25 +1,31 @@
 package lotr.client.gui;
 
-import java.util.List;
-
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import lotr.client.render.LOTRRenderShield;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRShields;
+import lotr.common.network.LOTRPacketHandler;
+import lotr.common.network.LOTRPacketSelectShield;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.StatCollector;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import lotr.client.render.LOTRRenderShield;
-import lotr.common.*;
-import lotr.common.network.*;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.*;
-import net.minecraft.util.*;
+import java.util.List;
 
 public class LOTRGuiShields extends LOTRGuiMenuBase {
 	public static ModelBiped playerModel = new ModelBiped();
 	public static int currentShieldTypeID;
 	public static int currentShieldID;
+
 	static {
-		LOTRGuiShields.playerModel.isChild = false;
+		playerModel.isChild = false;
 	}
+
 	public int modelX;
 	public int modelY;
 	public float modelRotation;
@@ -48,13 +54,13 @@ public class LOTRGuiShields extends LOTRGuiMenuBase {
 				updateCurrentShield(-1, 0);
 			} else if (button == shieldSelect) {
 				updateCurrentShield(0, 0);
-				LOTRPacketSelectShield packet = new LOTRPacketSelectShield(currentShield);
+				IMessage packet = new LOTRPacketSelectShield(currentShield);
 				LOTRPacketHandler.networkWrapper.sendToServer(packet);
 			} else if (button == shieldRight) {
 				updateCurrentShield(1, 0);
 			} else if (button == shieldRemove) {
 				updateCurrentShield(0, 0);
-				LOTRPacketSelectShield packet = new LOTRPacketSelectShield(null);
+				IMessage packet = new LOTRPacketSelectShield(null);
 				LOTRPacketHandler.networkWrapper.sendToServer(packet);
 			} else if (button == changeCategory) {
 				updateCurrentShield(0, 1);
@@ -93,7 +99,7 @@ public class LOTRGuiShields extends LOTRGuiMenuBase {
 		drawDefaultBackground();
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		String s = StatCollector.translateToLocal("lotr.gui.shields.title");
-		this.drawCenteredString(s, guiLeft + xSize / 2, guiTop - 30, 16777215);
+		drawCenteredString(s, guiLeft + xSize / 2, guiTop - 30, 16777215);
 		GL11.glEnable(2903);
 		RenderHelper.enableStandardItemLighting();
 		GL11.glPushMatrix();
@@ -119,12 +125,12 @@ public class LOTRGuiShields extends LOTRGuiMenuBase {
 		int x = guiLeft + xSize / 2;
 		int y = guiTop + 145;
 		s = currentShield.getShieldName();
-		this.drawCenteredString(s, x, y, 16777215);
+		drawCenteredString(s, x, y, 16777215);
 		y += fontRendererObj.FONT_HEIGHT * 2;
 		List desc = fontRendererObj.listFormattedStringToWidth(currentShield.getShieldDesc(), 220);
 		for (Object element : desc) {
 			s = (String) element;
-			this.drawCenteredString(s, x, y, 16777215);
+			drawCenteredString(s, x, y, 16777215);
 			y += fontRendererObj.FONT_HEIGHT;
 		}
 		shieldLeft.enabled = canGoLeft();

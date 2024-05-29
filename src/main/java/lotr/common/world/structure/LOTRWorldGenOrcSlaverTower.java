@@ -1,13 +1,15 @@
 package lotr.common.world.structure;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
-import lotr.common.entity.npc.*;
+import lotr.common.entity.npc.LOTREntityMordorOrc;
+import lotr.common.entity.npc.LOTREntityMordorOrcSlaver;
+import lotr.common.entity.npc.LOTREntityOrc;
 import lotr.common.world.biome.LOTRBiomeGenNurn;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenOrcSlaverTower extends LOTRWorldGenStructureBase {
 	public LOTRWorldGenOrcSlaverTower(boolean flag) {
@@ -30,21 +32,21 @@ public class LOTRWorldGenOrcSlaverTower extends LOTRWorldGenStructureBase {
 			rotation = usingPlayerRotation();
 		}
 		switch (rotation) {
-		case 0: {
-			++k;
-			break;
-		}
-		case 1: {
-			--i;
-			break;
-		}
-		case 2: {
-			--k;
-			break;
-		}
-		case 3: {
-			++i;
-		}
+			case 0: {
+				++k;
+				break;
+			}
+			case 1: {
+				--i;
+				break;
+			}
+			case 2: {
+				--k;
+				break;
+			}
+			case 3: {
+				++i;
+			}
 		}
 		if (restrictions) {
 			for (i1 = i - 3; i1 <= i + 3; ++i1) {

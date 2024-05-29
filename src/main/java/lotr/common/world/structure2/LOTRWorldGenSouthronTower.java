@@ -1,12 +1,15 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
-import lotr.common.*;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
 import lotr.common.entity.LOTREntityNPCRespawner;
-import lotr.common.entity.npc.*;
+import lotr.common.entity.npc.LOTREntityNearHaradrimArcher;
+import lotr.common.entity.npc.LOTREntityNearHaradrimBase;
+import lotr.common.entity.npc.LOTREntityNearHaradrimWarrior;
 import lotr.common.world.structure.LOTRChestContents;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenSouthronTower extends LOTRWorldGenSouthronStructure {
 	public LOTRWorldGenSouthronTower(boolean flag) {
@@ -22,7 +25,7 @@ public class LOTRWorldGenSouthronTower extends LOTRWorldGenSouthronStructure {
 		int j1;
 		int k1;
 		int i1;
-		this.setOriginAndRotation(world, i, j, k, rotation, 3);
+		setOriginAndRotation(world, i, j, k, rotation, 3);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			for (i1 = -3; i1 <= 3; ++i1) {
@@ -57,9 +60,9 @@ public class LOTRWorldGenSouthronTower extends LOTRWorldGenSouthronStructure {
 		associateBlockAlias("TRAPDOOR", trapdoorBlock);
 		associateBlockAlias("GATE_METAL", gateMetalBlock);
 		generateStrScan(world, random, 0, 0, 0);
-		this.placeChest(world, random, -1, 1, -1, LOTRMod.chestBasket, 4, LOTRChestContents.NEAR_HARAD_TOWER);
-		this.placeMug(world, random, -1, 2, 1, 0, LOTRFoods.SOUTHRON_DRINK);
-		this.placeBarrel(world, random, 1, 2, 1, 2, LOTRFoods.SOUTHRON_DRINK);
+		placeChest(world, random, -1, 1, -1, LOTRMod.chestBasket, 4, LOTRChestContents.NEAR_HARAD_TOWER);
+		placeMug(world, random, -1, 2, 1, 0, LOTRFoods.SOUTHRON_DRINK);
+		placeBarrel(world, random, 1, 2, 1, 2, LOTRFoods.SOUTHRON_DRINK);
 		placeWeaponRack(world, -1, 8, 0, 5, getRandomHaradWeapon(random));
 		placeWeaponRack(world, 1, 8, 0, 7, getRandomHaradWeapon(random));
 		placeWallBanner(world, 0, 14, -3, bannerType, 2);

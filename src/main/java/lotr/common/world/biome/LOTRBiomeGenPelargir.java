@@ -1,17 +1,22 @@
 package lotr.common.world.biome;
 
-import java.util.Random;
-
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRMod;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
-import lotr.common.world.feature.*;
+import lotr.common.world.feature.LOTRTreeType;
+import lotr.common.world.feature.LOTRWorldGenBoulder;
 import lotr.common.world.map.LOTRWaypoint;
-import lotr.common.world.spawning.*;
-import lotr.common.world.structure2.*;
+import lotr.common.world.spawning.LOTRBiomeSpawnList;
+import lotr.common.world.spawning.LOTREventSpawner;
+import lotr.common.world.spawning.LOTRSpawnList;
+import lotr.common.world.structure2.LOTRWorldGenGondorStructure;
+import lotr.common.world.structure2.LOTRWorldGenPelargirWatchfort;
 import lotr.common.world.village.LOTRVillageGenGondor;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
+
+import java.util.Random;
 
 public class LOTRBiomeGenPelargir extends LOTRBiomeGenGondor {
 	public WorldGenerator boulderGen = new LOTRWorldGenBoulder(LOTRMod.whiteSandstone, 0, 1, 3);
@@ -58,13 +63,13 @@ public class LOTRBiomeGenPelargir extends LOTRBiomeGenGondor {
 		npcSpawnList.conquestGainRate = 0.5f;
 		clearBiomeVariants();
 		variantChance = 0.3f;
-		this.addBiomeVariant(LOTRBiomeVariant.FLOWERS);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS_FOREST);
-		this.addBiomeVariant(LOTRBiomeVariant.SHRUBLAND_OAK);
-		this.addBiomeVariant(LOTRBiomeVariant.ORCHARD_OLIVE, 0.5f);
-		this.addBiomeVariant(LOTRBiomeVariant.ORCHARD_ALMOND, 0.5f);
+		addBiomeVariant(LOTRBiomeVariant.FLOWERS);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
+		addBiomeVariant(LOTRBiomeVariant.HILLS);
+		addBiomeVariant(LOTRBiomeVariant.HILLS_FOREST);
+		addBiomeVariant(LOTRBiomeVariant.SHRUBLAND_OAK);
+		addBiomeVariant(LOTRBiomeVariant.ORCHARD_OLIVE, 0.5f);
+		addBiomeVariant(LOTRBiomeVariant.ORCHARD_ALMOND, 0.5f);
 		decorator.setTreeCluster(6, 50);
 		decorator.treesPerChunk = 0;
 		decorator.flowersPerChunk = 4;

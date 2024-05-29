@@ -4,7 +4,8 @@ import lotr.common.entity.ai.LOTREntityAIFarm;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
@@ -16,7 +17,7 @@ public class LOTREntityGondorFarmhand extends LOTREntityGondorMan implements LOT
 		super(world);
 		tasks.addTask(3, new LOTREntityAIFarm(this, 1.0, 1.0f));
 		targetTasks.taskEntries.clear();
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 	}
 
 	@Override

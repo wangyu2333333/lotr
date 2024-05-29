@@ -1,15 +1,15 @@
 package lotr.common.world.feature;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.*;
+import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenAbstractTree;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.Random;
 
 public class LOTRWorldGenAlmond extends WorldGenAbstractTree {
 	public int minHeight = 4;
@@ -52,7 +52,7 @@ public class LOTRWorldGenAlmond extends WorldGenAbstractTree {
 			}
 			boolean canGrow = true;
 			Block below = world.getBlock(i, j - 1, k);
-			if (!below.canSustainPlant((IBlockAccess) world, i, j - 1, k, ForgeDirection.UP, (IPlantable) Blocks.sapling)) {
+			if (!below.canSustainPlant(world, i, j - 1, k, ForgeDirection.UP, (IPlantable) Blocks.sapling)) {
 				canGrow = false;
 			}
 			if (canGrow) {

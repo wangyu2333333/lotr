@@ -1,15 +1,18 @@
 package lotr.common.block;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.client.render.LOTRConnectedTextures;
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.IIcon;
-import net.minecraft.world.*;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 
 public class LOTRBlockGateDwarven extends LOTRBlockGate {
 	public LOTRBlockGateDwarven() {
@@ -20,7 +23,7 @@ public class LOTRBlockGateDwarven extends LOTRBlockGate {
 		setFullBlock();
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(IBlockAccess world, int i, int j, int k, int side) {
 		boolean open = LOTRBlockGate.isGateOpen(world, i, j, k);
@@ -30,7 +33,7 @@ public class LOTRBlockGateDwarven extends LOTRBlockGate {
 		return Blocks.stone.getIcon(side, 0);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
 		return Blocks.stone.getIcon(i, 0);
@@ -45,7 +48,7 @@ public class LOTRBlockGateDwarven extends LOTRBlockGate {
 		return flag;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
 		LOTRConnectedTextures.registerNonConnectedGateIcons(iconregister, this, 0, Blocks.stone.getIcon(0, 0).getIconName());

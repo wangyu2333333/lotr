@@ -1,18 +1,20 @@
 package lotr.common.network;
 
-import java.util.UUID;
-
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import io.netty.buffer.ByteBuf;
-import lotr.common.fellowship.*;
+import lotr.common.fellowship.LOTRFellowship;
+import lotr.common.fellowship.LOTRFellowshipClient;
+import lotr.common.fellowship.LOTRFellowshipData;
+
+import java.util.UUID;
 
 public abstract class LOTRPacketFellowshipDo implements IMessage {
 	public UUID fellowshipID;
 
-	public LOTRPacketFellowshipDo() {
+	protected LOTRPacketFellowshipDo() {
 	}
 
-	public LOTRPacketFellowshipDo(LOTRFellowshipClient fsClient) {
+	protected LOTRPacketFellowshipDo(LOTRFellowshipClient fsClient) {
 		fellowshipID = fsClient.getFellowshipID();
 	}
 

@@ -1,19 +1,24 @@
 package lotr.common.world.biome;
 
-import java.util.Random;
-
 import lotr.common.LOTRAchievement;
 import lotr.common.entity.animal.LOTREntityHorse;
 import lotr.common.entity.npc.*;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
-import lotr.common.world.feature.*;
-import lotr.common.world.map.*;
-import lotr.common.world.spawning.*;
+import lotr.common.world.feature.LOTRTreeType;
+import lotr.common.world.feature.LOTRWorldGenBoulder;
+import lotr.common.world.map.LOTRRoadType;
+import lotr.common.world.map.LOTRWaypoint;
+import lotr.common.world.spawning.LOTRBiomeSpawnList;
+import lotr.common.world.spawning.LOTREventSpawner;
+import lotr.common.world.spawning.LOTRInvasions;
+import lotr.common.world.spawning.LOTRSpawnList;
 import lotr.common.world.structure2.*;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.gen.feature.WorldGenerator;
+
+import java.util.Random;
 
 public class LOTRBiomeGenDale extends LOTRBiome {
 	public WorldGenerator boulderGen = new LOTRWorldGenBoulder(Blocks.stone, 0, 1, 3);
@@ -53,11 +58,11 @@ public class LOTRBiomeGenDale extends LOTRBiome {
 		arrspawnListContainer6[3] = LOTRBiomeSpawnList.entry(LOTRSpawnList.EASTERLINGS, 5).setConquestThreshold(200.0f);
 		npcSpawnList.newFactionList(0).add(arrspawnListContainer6);
 		addBiomeVariantSet(LOTRBiomeVariant.SET_NORMAL_OAK_SPRUCE);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LARCH, 0.4f);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_PINE, 0.4f);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_MAPLE, 0.4f);
-		this.addBiomeVariant(LOTRBiomeVariant.ORCHARD_APPLE_PEAR, 0.5f);
-		this.addBiomeVariant(LOTRBiomeVariant.ORCHARD_PLUM, 0.5f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LARCH, 0.4f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_PINE, 0.4f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_MAPLE, 0.4f);
+		addBiomeVariant(LOTRBiomeVariant.ORCHARD_APPLE_PEAR, 0.5f);
+		addBiomeVariant(LOTRBiomeVariant.ORCHARD_PLUM, 0.5f);
 		decorator.setTreeCluster(8, 20);
 		decorator.willowPerChunk = 1;
 		decorator.flowersPerChunk = 2;

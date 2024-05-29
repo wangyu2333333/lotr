@@ -3,15 +3,16 @@ package lotr.common.world.biome;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
 import lotr.common.world.feature.LOTRTreeType;
 import lotr.common.world.map.LOTRRoadType;
-import lotr.common.world.spawning.*;
+import lotr.common.world.spawning.LOTREventSpawner;
+import lotr.common.world.spawning.LOTRInvasions;
 
 public class LOTRBiomeGenFarHaradJungleEdge extends LOTRBiomeGenFarHaradJungle {
 	public LOTRBiomeGenFarHaradJungleEdge(int i, boolean major) {
 		super(i, major);
 		obsidianGravelRarity = 200;
 		clearBiomeVariants();
-		this.addBiomeVariant(LOTRBiomeVariant.FLOWERS);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS);
+		addBiomeVariant(LOTRBiomeVariant.FLOWERS);
+		addBiomeVariant(LOTRBiomeVariant.HILLS);
 		decorator.treesPerChunk = 4;
 		decorator.vinesPerChunk = 10;
 		decorator.melonPerChunk = 0.03f;

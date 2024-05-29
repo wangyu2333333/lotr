@@ -1,16 +1,23 @@
 package lotr.common.item;
 
-import java.util.*;
-
-import lotr.common.*;
-import lotr.common.enchant.*;
+import lotr.common.LOTRBannerProtection;
+import lotr.common.LOTRMod;
+import lotr.common.enchant.LOTREnchantment;
+import lotr.common.enchant.LOTREnchantmentHelper;
 import net.minecraft.block.BlockLeavesBase;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.*;
+import net.minecraft.item.EnumAction;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class LOTRItemBalrogWhip extends LOTRItemSword {
 	public LOTRItemBalrogWhip() {
@@ -20,7 +27,7 @@ public class LOTRItemBalrogWhip extends LOTRItemSword {
 	}
 
 	public void checkIncompatibleModifiers(ItemStack itemstack) {
-		for (LOTREnchantment ench : new LOTREnchantment[] { LOTREnchantment.fire, LOTREnchantment.chill }) {
+		for (LOTREnchantment ench : new LOTREnchantment[]{LOTREnchantment.fire, LOTREnchantment.chill}) {
 			if (!LOTREnchantmentHelper.hasEnchant(itemstack, ench)) {
 				continue;
 			}
@@ -69,7 +76,7 @@ public class LOTRItemBalrogWhip extends LOTRItemSword {
 		Vec3 sight = position.addVector(look.xCoord * range, look.yCoord * range, look.zCoord * range);
 		float sightWidth = 1.0f;
 		List list = world.getEntitiesWithinAABBExcludingEntity(user, user.boundingBox.addCoord(look.xCoord * range, look.yCoord * range, look.zCoord * range).expand(sightWidth, sightWidth, sightWidth));
-		ArrayList<EntityLivingBase> whipTargets = new ArrayList<>();
+		Collection<EntityLivingBase> whipTargets = new ArrayList<>();
 		for (Object element : list) {
 			EntityLivingBase entity;
 			Entity obj = (Entity) element;

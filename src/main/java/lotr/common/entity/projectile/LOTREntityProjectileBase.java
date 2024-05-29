@@ -1,43 +1,51 @@
 package lotr.common.entity.projectile;
 
-import java.util.List;
-
 import cpw.mods.fml.common.registry.IThrowableEntity;
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.item.LOTRWeaponStats;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EntityTracker;
+import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.*;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.play.server.*;
+import net.minecraft.network.play.server.S0DPacketCollectItem;
+import net.minecraft.network.play.server.S2BPacketChangeGameState;
 import net.minecraft.util.*;
-import net.minecraft.world.*;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+
+import java.util.List;
 
 public abstract class LOTREntityProjectileBase extends Entity implements IThrowableEntity, IProjectile {
 	public int xTile = -1;
 	public int yTile = -1;
 	public int zTile = -1;
 	public Block inTile;
-	public int inData = 0;
-	public boolean inGround = false;
-	public int shake = 0;
+	public int inData;
+	public boolean inGround;
+	public int shake;
 	public Entity shootingEntity;
 	public int ticksInGround;
-	public int ticksInAir = 0;
-	public int canBePickedUp = 0;
-	public int knockbackStrength = 0;
+	public int ticksInAir;
+	public int canBePickedUp;
+	public int knockbackStrength;
 
-	public LOTREntityProjectileBase(World world) {
+	protected LOTREntityProjectileBase(World world) {
 		super(world);
 		setSize(0.5f, 0.5f);
 	}
 
-	public LOTREntityProjectileBase(World world, EntityLivingBase entityliving, EntityLivingBase target, ItemStack item, float charge, float inaccuracy) {
+	protected LOTREntityProjectileBase(World world, EntityLivingBase entityliving, EntityLivingBase target, ItemStack item, float charge, float inaccuracy) {
 		super(world);
 		setProjectileItem(item);
 		shootingEntity = entityliving;
@@ -62,7 +70,7 @@ public abstract class LOTREntityProjectileBase extends Entity implements IThrowa
 		}
 	}
 
-	public LOTREntityProjectileBase(World world, EntityLivingBase entityliving, ItemStack item, float charge) {
+	protected LOTREntityProjectileBase(World world, EntityLivingBase entityliving, ItemStack item, float charge) {
 		super(world);
 		setProjectileItem(item);
 		shootingEntity = entityliving;
@@ -82,7 +90,7 @@ public abstract class LOTREntityProjectileBase extends Entity implements IThrowa
 		setThrowableHeading(motionX, motionY, motionZ, charge * 1.5f, 1.0f);
 	}
 
-	public LOTREntityProjectileBase(World world, ItemStack item, double d, double d1, double d2) {
+	protected LOTREntityProjectileBase(World world, ItemStack item, double d, double d1, double d2) {
 		super(world);
 		setProjectileItem(item);
 		setSize(0.5f, 0.5f);
@@ -138,12 +146,20 @@ public abstract class LOTREntityProjectileBase extends Entity implements IThrowa
 		return dataWatcher.getWatchableObjectByte(17) == 1;
 	}
 
+	public void setIsCritical(boolean flag) {
+		dataWatcher.updateObject(17, (byte) (flag ? 1 : 0));
+	}
+
 	public float getKnockbackFactor() {
 		return 1.0f;
 	}
 
 	public ItemStack getProjectileItem() {
 		return dataWatcher.getWatchableObjectItemStack(18);
+	}
+
+	public void setProjectileItem(ItemStack item) {
+		dataWatcher.updateObject(18, item);
 	}
 
 	@Override
@@ -160,7 +176,12 @@ public abstract class LOTREntityProjectileBase extends Entity implements IThrowa
 		return shootingEntity;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@Override
+	public void setThrower(Entity entity) {
+		shootingEntity = entity;
+	}
+
+	@SideOnly(Side.CLIENT)
 	@Override
 	public boolean isInRangeToRenderDist(double d) {
 		double d1 = boundingBox.getAverageEdgeLength() * 4.0;
@@ -283,15 +304,15 @@ public abstract class LOTREntityProjectileBase extends Entity implements IThrowa
 					int damageInt = MathHelper.ceiling_double_int(getBaseImpactDamage(hitEntity, itemstack));
 					int fireAspect = 0;
 					if (itemstack != null) {
-						knockbackStrength = shootingEntity instanceof EntityLivingBase && hitEntity instanceof EntityLivingBase ? (knockbackStrength += EnchantmentHelper.getKnockbackModifier((EntityLivingBase) shootingEntity, (EntityLivingBase) hitEntity)) : (knockbackStrength += LOTRWeaponStats.getTotalKnockback(itemstack));
+						knockbackStrength = shootingEntity instanceof EntityLivingBase && hitEntity instanceof EntityLivingBase ? knockbackStrength + EnchantmentHelper.getKnockbackModifier((EntityLivingBase) shootingEntity, (EntityLivingBase) hitEntity) : knockbackStrength + LOTRWeaponStats.getTotalKnockback(itemstack);
 					}
 					if (getIsCritical()) {
 						damageInt += rand.nextInt(damageInt / 2 + 2);
 					}
-					double[] prevMotion = { hitEntity.motionX, hitEntity.motionY, hitEntity.motionZ };
+					double[] prevMotion = {hitEntity.motionX, hitEntity.motionY, hitEntity.motionZ};
 					DamageSource damagesource = getDamageSource();
 					if (hitEntity.attackEntityFrom(damagesource, damageInt)) {
-						double[] newMotion = { hitEntity.motionX, hitEntity.motionY, hitEntity.motionZ };
+						double[] newMotion = {hitEntity.motionX, hitEntity.motionY, hitEntity.motionZ};
 						float kbf = getKnockbackFactor();
 						hitEntity.motionX = prevMotion[0] + (newMotion[0] - prevMotion[0]) * kbf;
 						hitEntity.motionY = prevMotion[1] + (newMotion[1] - prevMotion[1]) * kbf;
@@ -304,9 +325,6 @@ public abstract class LOTREntityProjectileBase extends Entity implements IThrowa
 							EntityLivingBase hitEntityLiving = (EntityLivingBase) hitEntity;
 							if (knockbackStrength > 0 && (knockback = MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ)) > 0.0f) {
 								hitEntityLiving.addVelocity(motionX * knockbackStrength * 0.6 / knockback, 0.1, motionZ * knockbackStrength * 0.6 / knockback);
-							}
-							if (fireAspect > 0) {
-								hitEntityLiving.setFire(fireAspect * 4);
 							}
 							if (shootingEntity instanceof EntityLivingBase) {
 								EnchantmentHelper.func_151384_a(hitEntityLiving, shootingEntity);
@@ -412,14 +430,6 @@ public abstract class LOTREntityProjectileBase extends Entity implements IThrowa
 		}
 	}
 
-	public void setIsCritical(boolean flag) {
-		dataWatcher.updateObject(17, (byte) (flag ? 1 : 0));
-	}
-
-	public void setProjectileItem(ItemStack item) {
-		dataWatcher.updateObject(18, item);
-	}
-
 	@Override
 	public void setThrowableHeading(double d, double d1, double d2, float f, float f1) {
 		float f2 = MathHelper.sqrt_double(d * d + d1 * d1 + d2 * d2);
@@ -439,11 +449,6 @@ public abstract class LOTREntityProjectileBase extends Entity implements IThrowa
 	}
 
 	@Override
-	public void setThrower(Entity entity) {
-		shootingEntity = entity;
-	}
-
-	@Override
 	public void setVelocity(double d, double d1, double d2) {
 		motionX = d;
 		motionY = d1;
@@ -452,8 +457,6 @@ public abstract class LOTREntityProjectileBase extends Entity implements IThrowa
 			float f = MathHelper.sqrt_double(d * d + d2 * d2);
 			prevRotationYaw = rotationYaw = (float) (Math.atan2(d, d2) * 180.0 / 3.141592653589793);
 			prevRotationPitch = rotationPitch = (float) (Math.atan2(d1, f) * 180.0 / 3.141592653589793);
-			prevRotationPitch = rotationPitch;
-			prevRotationYaw = rotationYaw;
 			setLocationAndAngles(posX, posY, posZ, rotationYaw, rotationPitch);
 			ticksInGround = 0;
 		}

@@ -1,15 +1,16 @@
 package lotr.common;
 
-import java.util.*;
-
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.eventhandler.Event;
 import lotr.common.entity.npc.LOTREntityGandalf;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
+
+import java.util.*;
 
 public class LOTRGreyWandererTracker {
 	public static Map<UUID, Integer> activeGreyWanderers = new HashMap<>();
@@ -17,7 +18,7 @@ public class LOTRGreyWandererTracker {
 
 	public static void addNewWanderer(UUID id) {
 		activeGreyWanderers.put(id, 3600);
-		LOTRGreyWandererTracker.markDirty();
+		markDirty();
 	}
 
 	public static boolean isWandererActive(UUID id) {
@@ -33,7 +34,6 @@ public class LOTRGreyWandererTracker {
 				UUID id = UUID.fromString(nbt.getString("ID"));
 				int cd = nbt.getInteger("CD");
 				activeGreyWanderers.put(id, cd);
-				continue;
 			} catch (Exception e) {
 				FMLLog.severe("Error loading LOTR data: invalid Grey Wanderer");
 				e.printStackTrace();
@@ -52,10 +52,11 @@ public class LOTRGreyWandererTracker {
 		}
 		if (!world.playerEntities.isEmpty() && --spawnCooldown <= 0) {
 			spawnCooldown = 2400;
-			ArrayList players = new ArrayList(world.playerEntities);
+			List players = new ArrayList(world.playerEntities);
 			Collections.shuffle(players);
 			Random rand = world.rand;
-			block0: for (Object obj : players) {
+			block0:
+			for (Object obj : players) {
 				EntityPlayer entityplayer = (EntityPlayer) obj;
 				if (LOTRLevelData.getData(entityplayer).hasAnyGWQuest()) {
 					continue;
@@ -81,7 +82,7 @@ public class LOTRGreyWandererTracker {
 					wanderer.liftBannerRestrictions = false;
 					world.spawnEntityInWorld(wanderer);
 					wanderer.onSpawnWithEgg(null);
-					LOTRGreyWandererTracker.addNewWanderer(wanderer.getUniqueID());
+					addNewWanderer(wanderer.getUniqueID());
 					wanderer.arriveAt(entityplayer);
 					break block0;
 				}
@@ -106,14 +107,15 @@ public class LOTRGreyWandererTracker {
 	public static void setWandererActive(UUID id) {
 		if (activeGreyWanderers.containsKey(id)) {
 			activeGreyWanderers.put(id, 3600);
-			LOTRGreyWandererTracker.markDirty();
+			markDirty();
 		}
 	}
 
 	public static void updateCooldowns() {
-		HashSet<UUID> removes = new HashSet<>();
-		for (UUID id : activeGreyWanderers.keySet()) {
-			int cd = activeGreyWanderers.get(id);
+		Collection<UUID> removes = new HashSet<>();
+		for (Map.Entry<UUID, Integer> entry : activeGreyWanderers.entrySet()) {
+			UUID id = entry.getKey();
+			int cd = entry.getValue();
 			cd--;
 			activeGreyWanderers.put(id, cd);
 			if (cd > 0) {
@@ -125,7 +127,7 @@ public class LOTRGreyWandererTracker {
 			for (UUID id : removes) {
 				activeGreyWanderers.remove(id);
 			}
-			LOTRGreyWandererTracker.markDirty();
+			markDirty();
 		}
 	}
 }

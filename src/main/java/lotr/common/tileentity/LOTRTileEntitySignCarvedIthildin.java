@@ -1,6 +1,7 @@
 package lotr.common.tileentity;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class LOTRTileEntitySignCarvedIthildin extends LOTRTileEntitySignCarved {
 	public LOTRDwarvenGlowLogic glowLogic = new LOTRDwarvenGlowLogic().setPlayerRange(8);
@@ -12,7 +13,7 @@ public class LOTRTileEntitySignCarvedIthildin extends LOTRTileEntitySignCarved {
 		return glowLogic.getGlowBrightness(worldObj, xCoord, yCoord, zCoord, f);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public double getMaxRenderDistanceSquared() {
 		return 1024.0;

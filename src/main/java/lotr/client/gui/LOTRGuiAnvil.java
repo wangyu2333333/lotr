@@ -1,36 +1,46 @@
 package lotr.client.gui;
 
-import java.util.List;
-
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import lotr.common.enchant.LOTREnchantmentHelper;
 import lotr.common.entity.npc.LOTREntityNPC;
 import lotr.common.inventory.LOTRContainerAnvil;
-import lotr.common.network.*;
-import net.minecraft.client.gui.*;
+import lotr.common.network.LOTRPacketAnvilEngraveOwner;
+import lotr.common.network.LOTRPacketAnvilReforge;
+import lotr.common.network.LOTRPacketAnvilRename;
+import lotr.common.network.LOTRPacketHandler;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.opengl.GL11;
+
+import java.util.List;
 
 public class LOTRGuiAnvil extends GuiContainer {
 	public static ResourceLocation anvilTexture = new ResourceLocation("lotr:gui/anvil.png");
 	public static int[] colorCodes = new int[16];
+
 	static {
 		for (int i = 0; i < 16; ++i) {
 			int baseBrightness = (i >> 3 & 1) * 85;
 			int r = (i >> 2 & 1) * 170 + baseBrightness;
 			int g = (i >> 1 & 1) * 170 + baseBrightness;
-			int b = (i >> 0 & 1) * 170 + baseBrightness;
+			int b = (i & 1) * 170 + baseBrightness;
 			if (i == 6) {
 				r += 85;
 			}
-			LOTRGuiAnvil.colorCodes[i] = (r & 0xFF) << 16 | (g & 0xFF) << 8 | b & 0xFF;
+			colorCodes[i] = (r & 0xFF) << 16 | (g & 0xFF) << 8 | b & 0xFF;
 		}
 	}
+
 	public LOTRContainerAnvil theAnvil;
 	public ItemStack prevItemStack;
 	public GuiButton buttonReforge;
@@ -58,11 +68,11 @@ public class LOTRGuiAnvil extends GuiContainer {
 			if (button == buttonReforge) {
 				ItemStack inputItem2 = theAnvil.invInput.getStackInSlot(0);
 				if (inputItem2 != null && theAnvil.reforgeCost > 0 && theAnvil.hasMaterialOrCoinAmount(theAnvil.reforgeCost)) {
-					LOTRPacketAnvilReforge packet = new LOTRPacketAnvilReforge();
+					IMessage packet = new LOTRPacketAnvilReforge();
 					LOTRPacketHandler.networkWrapper.sendToServer(packet);
 				}
 			} else if (button == buttonEngraveOwner && theAnvil.invInput.getStackInSlot(0) != null && theAnvil.engraveOwnerCost > 0 && theAnvil.hasMaterialOrCoinAmount(theAnvil.engraveOwnerCost)) {
-				LOTRPacketAnvilEngraveOwner packet = new LOTRPacketAnvilEngraveOwner();
+				IMessage packet = new LOTRPacketAnvilEngraveOwner();
 				LOTRPacketHandler.networkWrapper.sendToServer(packet);
 			}
 		}
@@ -128,7 +138,7 @@ public class LOTRGuiAnvil extends GuiContainer {
 			}
 		}
 		if (costText != null) {
-			int colorF = 0xFF000000 | (color & 0xFCFCFC) >> 2 | color & 0xFF000000;
+			int colorF = 0xFF000000 | (color & 0xFCFCFC) >> 2;
 			int x = xSize - 8 - fontRendererObj.getStringWidth(costText);
 			int y = 94;
 			if (fontRendererObj.getUnicodeFlag()) {
@@ -155,7 +165,7 @@ public class LOTRGuiAnvil extends GuiContainer {
 	@Override
 	public void drawScreen(int i, int j, float f) {
 		float z;
-		Object tooltip;
+		String tooltip;
 		ItemStack inputItem = theAnvil.invInput.getStackInSlot(0);
 		boolean canReforge = inputItem != null && LOTREnchantmentHelper.isReforgeable(inputItem) && theAnvil.reforgeCost > 0;
 		boolean canEngrave = inputItem != null && LOTREnchantmentHelper.isReforgeable(inputItem) && theAnvil.engraveOwnerCost > 0;
@@ -166,7 +176,7 @@ public class LOTRGuiAnvil extends GuiContainer {
 		if (buttonReforge.visible && buttonReforge.func_146115_a()) {
 			z = zLevel;
 			tooltip = StatCollector.translateToLocal("container.lotr.anvil.reforge");
-			drawCreativeTabHoveringText((String) tooltip, i - 12, j + 24);
+			drawCreativeTabHoveringText(tooltip, i - 12, j + 24);
 			GL11.glDisable(2896);
 			GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			zLevel = z;
@@ -174,7 +184,7 @@ public class LOTRGuiAnvil extends GuiContainer {
 		if (buttonEngraveOwner.visible && buttonEngraveOwner.func_146115_a()) {
 			z = zLevel;
 			tooltip = StatCollector.translateToLocal("container.lotr.anvil.engraveOwner");
-			drawCreativeTabHoveringText((String) tooltip, i - fontRendererObj.getStringWidth((String) tooltip), j + 24);
+			drawCreativeTabHoveringText(tooltip, i - fontRendererObj.getStringWidth(tooltip), j + 24);
 			GL11.glDisable(2896);
 			GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			zLevel = z;
@@ -241,7 +251,7 @@ public class LOTRGuiAnvil extends GuiContainer {
 			}
 		}
 		theAnvil.updateItemName(rename);
-		LOTRPacketAnvilRename packet = new LOTRPacketAnvilRename(rename);
+		IMessage packet = new LOTRPacketAnvilRename(rename);
 		LOTRPacketHandler.networkWrapper.sendToServer(packet);
 	}
 

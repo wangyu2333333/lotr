@@ -1,9 +1,12 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
-import lotr.common.entity.ai.*;
+import lotr.common.LOTRMod;
+import lotr.common.LOTRShields;
+import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
+import lotr.common.entity.ai.LOTREntityAIRangedAttack;
 import lotr.common.entity.projectile.LOTREntityThrowingAxe;
-import net.minecraft.entity.*;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -70,10 +73,10 @@ public class LOTREntityLossarnachAxeman extends LOTREntityGondorSoldier {
 		setCurrentItemOrArmor(1, new ItemStack(LOTRMod.bootsLossarnach));
 		setCurrentItemOrArmor(2, new ItemStack(LOTRMod.legsLossarnach));
 		setCurrentItemOrArmor(3, new ItemStack(LOTRMod.bodyLossarnach));
-		if (rand.nextInt(3) != 0) {
-			setCurrentItemOrArmor(4, new ItemStack(LOTRMod.helmetLossarnach));
-		} else {
+		if (rand.nextInt(3) == 0) {
 			setCurrentItemOrArmor(4, null);
+		} else {
+			setCurrentItemOrArmor(4, new ItemStack(LOTRMod.helmetLossarnach));
 		}
 		return data;
 	}

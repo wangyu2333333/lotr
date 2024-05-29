@@ -1,25 +1,35 @@
 package lotr.common.entity.animal;
 
-import java.util.List;
-
-import lotr.common.*;
-import lotr.common.entity.*;
-import lotr.common.entity.ai.*;
-import lotr.common.entity.npc.*;
+import lotr.common.LOTRMod;
+import lotr.common.LOTRReflection;
+import lotr.common.entity.LOTREntities;
+import lotr.common.entity.LOTREntityUtils;
+import lotr.common.entity.ai.LOTREntityAIHiredHorseRemainStill;
+import lotr.common.entity.ai.LOTREntityAIHorseFollowHiringPlayer;
+import lotr.common.entity.ai.LOTREntityAIHorseMoveToRiderTarget;
+import lotr.common.entity.npc.LOTREntityNPC;
+import lotr.common.entity.npc.LOTRNPCMount;
 import lotr.common.item.LOTRItemMountArmor;
-import lotr.common.world.biome.*;
+import lotr.common.world.biome.LOTRBiomeGenDorEnErnil;
+import lotr.common.world.biome.LOTRBiomeGenRohan;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.*;
+import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.ai.EntityAIHurtByTarget;
+import net.minecraft.entity.ai.EntityAIPanic;
+import net.minecraft.entity.ai.EntityAITasks;
 import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.AnimalChest;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
+
+import java.util.List;
 
 public class LOTREntityHorse extends EntityHorse implements LOTRNPCMount {
 	public boolean isMoving;
@@ -74,7 +84,7 @@ public class LOTREntityHorse extends EntityHorse implements LOTRNPCMount {
 			for (Object element : list) {
 				LOTREntityHorse mount;
 				Entity entity = (Entity) element;
-				if (entity.getClass() != this.getClass() || (mount = (LOTREntityHorse) entity).isChild() || mount.isTame()) {
+				if (entity.getClass() != getClass() || (mount = (LOTREntityHorse) entity).isChild() || mount.isTame()) {
 					continue;
 				}
 				mount.setAttackTarget((EntityLivingBase) attacker);
@@ -103,7 +113,7 @@ public class LOTREntityHorse extends EntityHorse implements LOTRNPCMount {
 	@Override
 	public EntityAgeable createChild(EntityAgeable otherParent) {
 		EntityHorse superChild = (EntityHorse) super.createChild(otherParent);
-		LOTREntityHorse child = (LOTREntityHorse) EntityList.createEntityByName(LOTREntities.getStringFromClass(this.getClass()), worldObj);
+		LOTREntityHorse child = (LOTREntityHorse) EntityList.createEntityByName(LOTREntities.getStringFromClass(getClass()), worldObj);
 		child.setHorseType(superChild.getHorseType());
 		child.setHorseVariant(superChild.getHorseVariant());
 		double maxHealth = getChildAttribute(this, otherParent, SharedMonsterAttributes.maxHealth, 3.0);
@@ -116,7 +126,7 @@ public class LOTREntityHorse extends EntityHorse implements LOTRNPCMount {
 		double moveSpeed = getChildAttribute(this, otherParent, SharedMonsterAttributes.movementSpeed, 0.03);
 		moveSpeed = clampChildSpeed(moveSpeed);
 		child.getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(moveSpeed);
-		if (isTame() && ((LOTREntityHorse) otherParent).isTame()) {
+		if (isTame() && ((EntityHorse) otherParent).isTame()) {
 			child.setHorseTamed(true);
 		}
 		return child;
@@ -142,9 +152,24 @@ public class LOTREntityHorse extends EntityHorse implements LOTRNPCMount {
 	}
 
 	@Override
+	public void setBelongsToNPC(boolean flag) {
+		dataWatcher.updateObject(25, flag ? (byte) 1 : 0);
+		if (flag) {
+			setHorseTamed(true);
+			setHorseSaddled(true);
+			if (getGrowingAge() < 0) {
+				setGrowingAge(0);
+			}
+			if (getClass() == LOTREntityHorse.class) {
+				setHorseType(0);
+			}
+		}
+	}
+
+	@Override
 	public float getBlockPathWeight(int i, int j, int k) {
 		if (getBelongsToNPC() && riddenByEntity instanceof LOTREntityNPC) {
-			return ((LOTREntityNPC) riddenByEntity).getBlockPathWeight(i, j, k);
+			return ((EntityCreature) riddenByEntity).getBlockPathWeight(i, j, k);
 		}
 		return super.getBlockPathWeight(i, j, k);
 	}
@@ -161,7 +186,7 @@ public class LOTREntityHorse extends EntityHorse implements LOTRNPCMount {
 
 	@Override
 	public String getCommandSenderName() {
-		if (this.getClass() == LOTREntityHorse.class) {
+		if (getClass() == LOTREntityHorse.class) {
 			return super.getCommandSenderName();
 		}
 		if (hasCustomNameTag()) {
@@ -175,10 +200,20 @@ public class LOTREntityHorse extends EntityHorse implements LOTRNPCMount {
 		return dataWatcher.getWatchableObjectByte(26) == 1;
 	}
 
+	public void setMountable(boolean flag) {
+		dataWatcher.updateObject(26, flag ? (byte) 1 : 0);
+	}
+
 	public ItemStack getMountArmor() {
 		int ID = dataWatcher.getWatchableObjectInt(27);
 		byte meta = dataWatcher.getWatchableObjectByte(28);
 		return new ItemStack(Item.getItemById(ID), 1, meta);
+	}
+
+	public void setMountArmor(ItemStack itemstack) {
+		LOTRReflection.getHorseInv(this).setInventorySlotContents(1, itemstack);
+		LOTRReflection.setupHorseInv(this);
+		setMountArmorWatched(itemstack);
 	}
 
 	@Override
@@ -275,6 +310,10 @@ public class LOTREntityHorse extends EntityHorse implements LOTRNPCMount {
 		return dataWatcher.getWatchableObjectByte(29) == 1;
 	}
 
+	public void setMountEnraged(boolean flag) {
+		dataWatcher.updateObject(29, flag ? (byte) 1 : 0);
+	}
+
 	public boolean isMountHostile() {
 		return false;
 	}
@@ -355,7 +394,7 @@ public class LOTREntityHorse extends EntityHorse implements LOTRNPCMount {
 		int i = MathHelper.floor_double(posX);
 		int k = MathHelper.floor_double(posZ);
 		BiomeGenBase biome = worldObj.getBiomeGenForCoords(i, k);
-		if (this.getClass() == LOTREntityHorse.class) {
+		if (getClass() == LOTREntityHorse.class) {
 			float healthBoost = 0.0f;
 			float speedBoost = 0.0f;
 			float jumpAdd = 0.0f;
@@ -371,12 +410,12 @@ public class LOTREntityHorse extends EntityHorse implements LOTRNPCMount {
 			}
 			if (healthBoost > 0.0f) {
 				double maxHealth = getEntityAttribute(SharedMonsterAttributes.maxHealth).getAttributeValue();
-				getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(maxHealth *= 1.0f + rand.nextFloat() * healthBoost);
+				getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(maxHealth * (1.0f + rand.nextFloat() * healthBoost));
 				setHealth(getMaxHealth());
 			}
 			if (speedBoost > 0.0f) {
 				double movementSpeed = getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue();
-				getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(movementSpeed *= 1.0f + rand.nextFloat() * speedBoost);
+				getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(movementSpeed * (1.0f + rand.nextFloat() * speedBoost));
 			}
 			double jumpStrength = getEntityAttribute(LOTRReflection.getHorseJumpStrength()).getAttributeValue();
 			double jumpLimit = Math.max(jumpStrength, 1.0);
@@ -446,34 +485,9 @@ public class LOTREntityHorse extends EntityHorse implements LOTRNPCMount {
 		setHorseTamed(true);
 	}
 
-	@Override
-	public void setBelongsToNPC(boolean flag) {
-		dataWatcher.updateObject(25, flag ? (byte) 1 : 0);
-		if (flag) {
-			setHorseTamed(true);
-			setHorseSaddled(true);
-			if (getGrowingAge() < 0) {
-				setGrowingAge(0);
-			}
-			if (this.getClass() == LOTREntityHorse.class) {
-				setHorseType(0);
-			}
-		}
-	}
-
 	public void setChestedForWorldGen() {
 		setChested(true);
 		LOTRReflection.setupHorseInv(this);
-	}
-
-	public void setMountable(boolean flag) {
-		dataWatcher.updateObject(26, flag ? (byte) 1 : 0);
-	}
-
-	public void setMountArmor(ItemStack itemstack) {
-		LOTRReflection.getHorseInv(this).setInventorySlotContents(1, itemstack);
-		LOTRReflection.setupHorseInv(this);
-		setMountArmorWatched(itemstack);
 	}
 
 	public void setMountArmorWatched(ItemStack itemstack) {
@@ -484,10 +498,6 @@ public class LOTREntityHorse extends EntityHorse implements LOTRNPCMount {
 			dataWatcher.updateObject(27, Item.getIdFromItem(itemstack.getItem()));
 			dataWatcher.updateObject(28, (byte) itemstack.getItemDamage());
 		}
-	}
-
-	public void setMountEnraged(boolean flag) {
-		dataWatcher.updateObject(29, flag ? (byte) 1 : 0);
 	}
 
 	@Override

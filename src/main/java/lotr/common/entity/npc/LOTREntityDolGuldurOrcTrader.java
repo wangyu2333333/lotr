@@ -1,6 +1,8 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -9,7 +11,7 @@ import net.minecraft.world.World;
 public class LOTREntityDolGuldurOrcTrader extends LOTREntityDolGuldurOrc implements LOTRTradeable.Smith {
 	public LOTREntityDolGuldurOrcTrader(World world) {
 		super(world);
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 	}
 
 	@Override

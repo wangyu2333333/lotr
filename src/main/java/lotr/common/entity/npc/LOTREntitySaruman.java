@@ -1,19 +1,28 @@
 package lotr.common.entity.npc;
 
-import java.util.*;
-
-import lotr.common.*;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
 import lotr.common.entity.ai.LOTREntityAIEat;
 import lotr.common.entity.animal.LOTREntityRabbit;
 import lotr.common.fac.LOTRFaction;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.init.*;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.S27PacketExplosion;
-import net.minecraft.util.*;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LOTREntitySaruman extends LOTREntityNPC {
 	public LOTREntityRabbit targetingRabbit;
@@ -27,7 +36,7 @@ public class LOTREntitySaruman extends LOTREntityNPC {
 		tasks.addTask(0, new EntityAISwimming(this));
 		tasks.addTask(1, new EntityAIOpenDoor(this, true));
 		tasks.addTask(2, new EntityAIWander(this, 1.0));
-		tasks.addTask(3, new LOTREntityAIEat(this, new LOTRFoods(new ItemStack[] { new ItemStack(Blocks.log) }), 200));
+		tasks.addTask(3, new LOTREntityAIEat(this, new LOTRFoods(new ItemStack[]{new ItemStack(Blocks.log)}), 200));
 		tasks.addTask(4, new EntityAIWatchClosest(this, EntityLivingBase.class, 20.0f, 0.05f));
 		tasks.addTask(5, new EntityAILookIdle(this));
 	}
@@ -141,9 +150,7 @@ public class LOTREntitySaruman extends LOTREntityNPC {
 				}
 			}
 			if (targetingRabbit != null) {
-				if (!targetingRabbit.isEntityAlive()) {
-					targetingRabbit = null;
-				} else {
+				if (targetingRabbit.isEntityAlive()) {
 					getNavigator().tryMoveToEntityLiving(targetingRabbit, 1.0);
 					if (getDistanceToEntity(targetingRabbit) < 1.0) {
 						Entity entityToMount = this;
@@ -153,6 +160,8 @@ public class LOTREntitySaruman extends LOTREntityNPC {
 						targetingRabbit.mountEntity(entityToMount);
 						targetingRabbit = null;
 					}
+				} else {
+					targetingRabbit = null;
 				}
 			}
 		}

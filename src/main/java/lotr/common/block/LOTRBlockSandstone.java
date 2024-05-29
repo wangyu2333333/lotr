@@ -1,6 +1,7 @@
 package lotr.common.block;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.LOTRCreativeTabs;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -8,9 +9,9 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
 
 public class LOTRBlockSandstone extends Block {
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon iconTop;
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon iconBottom;
 
 	public LOTRBlockSandstone() {
@@ -20,7 +21,7 @@ public class LOTRBlockSandstone extends Block {
 		setHardness(0.8f);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
 		if (i == 0) {
@@ -32,7 +33,7 @@ public class LOTRBlockSandstone extends Block {
 		return blockIcon;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
 		super.registerBlockIcons(iconregister);

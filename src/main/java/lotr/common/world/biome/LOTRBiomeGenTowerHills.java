@@ -2,8 +2,10 @@ package lotr.common.world.biome;
 
 import lotr.common.LOTRAchievement;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
-import lotr.common.world.spawning.*;
-import lotr.common.world.structure2.*;
+import lotr.common.world.spawning.LOTRBiomeSpawnList;
+import lotr.common.world.spawning.LOTRSpawnList;
+import lotr.common.world.structure2.LOTRWorldGenRangerCamp;
+import lotr.common.world.structure2.LOTRWorldGenTowerHillsTower;
 
 public class LOTRBiomeGenTowerHills extends LOTRBiomeGenLindon {
 	public LOTRBiomeGenTowerHills(int i, boolean major) {
@@ -27,8 +29,8 @@ public class LOTRBiomeGenTowerHills extends LOTRBiomeGenLindon {
 		npcSpawnList.newFactionList(0).add(arrspawnListContainer4);
 		npcSpawnList.conquestGainRate = 0.5f;
 		clearBiomeVariants();
-		this.addBiomeVariant(LOTRBiomeVariant.FLOWERS);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
+		addBiomeVariant(LOTRBiomeVariant.FLOWERS);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
 		decorator.clearRandomStructures();
 		decorator.addRandomStructure(new LOTRWorldGenTowerHillsTower(false), 600);
 		decorator.addRandomStructure(new LOTRWorldGenRangerCamp(false), 800);

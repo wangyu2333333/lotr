@@ -1,28 +1,44 @@
 package lotr.client.render.entity;
 
-import java.util.*;
-
-import org.lwjgl.opengl.GL11;
-
 import lotr.client.LOTRTextures;
 import lotr.client.model.LOTRModelWarg;
 import lotr.common.LOTRMod;
 import lotr.common.entity.item.LOTREntityOrcBomb;
-import lotr.common.entity.npc.*;
+import lotr.common.entity.npc.LOTREntityNPC;
+import lotr.common.entity.npc.LOTREntityWarg;
+import lotr.common.entity.npc.LOTREntityWargBombardier;
+import lotr.common.entity.npc.LOTRNPCMount;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.OpenGlHelper;
-import net.minecraft.client.renderer.entity.*;
-import net.minecraft.entity.*;
+import net.minecraft.client.renderer.entity.RenderLiving;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LOTRRenderWarg extends RenderLiving {
 	public static Map wargSkins = new HashMap();
 	public static ResourceLocation wargSaddle = new ResourceLocation("lotr:mob/warg/saddle.png");
 	public LOTRModelWarg saddleModel = new LOTRModelWarg(0.5f);
-	public LOTRModelWarg eyesModel = new LOTRModelWarg(0.05f);
+	public LOTRGlowingEyes.Model eyesModel = new LOTRModelWarg(0.05f);
 
 	public LOTRRenderWarg() {
 		super(new LOTRModelWarg(), 0.5f);
+	}
+
+	public static ResourceLocation getWargSkin(LOTREntityWarg.WargType type) {
+		String s = type.textureName();
+		ResourceLocation wargSkin = (ResourceLocation) wargSkins.get(s);
+		if (wargSkin == null) {
+			wargSkin = new ResourceLocation("lotr:mob/warg/" + s + ".png");
+			wargSkins.put(s, wargSkin);
+		}
+		return wargSkin;
 	}
 
 	@Override
@@ -35,7 +51,7 @@ public class LOTRRenderWarg extends RenderLiving {
 			int i = entity.getBrightnessForRender(f1);
 			int j = i % 65536;
 			int k = i / 65536;
-			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j / 1.0f, k / 1.0f);
+			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j, k);
 			GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			LOTRRenderOrcBomb bombRenderer = (LOTRRenderOrcBomb) RenderManager.instance.getEntityClassRenderObject(LOTREntityOrcBomb.class);
@@ -45,7 +61,7 @@ public class LOTRRenderWarg extends RenderLiving {
 			GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		}
 		super.doRender(entity, d, d1, d2, f, f1);
-		if (Minecraft.isGuiEnabled() && ((LOTREntityWarg) entity).hiredNPCInfo.getHiringPlayer() == renderManager.livingPlayer) {
+		if (Minecraft.isGuiEnabled() && ((LOTREntityNPC) entity).hiredNPCInfo.getHiringPlayer() == renderManager.livingPlayer) {
 			LOTRNPCRendering.renderHiredIcon(entity, d, d1 + 0.5, d2);
 			LOTRNPCRendering.renderNPCHealthBar(entity, d, d1 + 0.5, d2);
 		}
@@ -54,7 +70,7 @@ public class LOTRRenderWarg extends RenderLiving {
 	@Override
 	public ResourceLocation getEntityTexture(Entity entity) {
 		LOTREntityWarg warg = (LOTREntityWarg) entity;
-		ResourceLocation skin = LOTRRenderWarg.getWargSkin(warg.getWargType());
+		ResourceLocation skin = getWargSkin(warg.getWargType());
 		return LOTRRenderHorse.getLayeredMountTexture(warg, skin);
 	}
 
@@ -70,28 +86,18 @@ public class LOTRRenderWarg extends RenderLiving {
 	public void renderModel(EntityLivingBase entity, float f, float f1, float f2, float f3, float f4, float f5) {
 		super.renderModel(entity, f, f1, f2, f3, f4, f5);
 		LOTREntityWarg warg = (LOTREntityWarg) entity;
-		ResourceLocation eyes = LOTRTextures.getEyesTexture(LOTRRenderWarg.getWargSkin(warg.getWargType()), new int[][] { { 100, 12 }, { 108, 12 } }, 2, 1);
+		ResourceLocation eyes = LOTRTextures.getEyesTexture(getWargSkin(warg.getWargType()), new int[][]{{100, 12}, {108, 12}}, 2, 1);
 		LOTRGlowingEyes.renderGlowingEyes(entity, eyes, eyesModel, f, f1, f2, f3, f4, f5);
 	}
 
 	@Override
 	public int shouldRenderPass(EntityLivingBase entity, int pass, float f) {
-		LOTREntityWarg warg = (LOTREntityWarg) entity;
+		LOTRNPCMount warg = (LOTRNPCMount) entity;
 		if (pass == 0 && warg.isMountSaddled()) {
 			bindTexture(wargSaddle);
 			setRenderPassModel(saddleModel);
 			return 1;
 		}
 		return super.shouldRenderPass(entity, pass, f);
-	}
-
-	public static ResourceLocation getWargSkin(LOTREntityWarg.WargType type) {
-		String s = type.textureName();
-		ResourceLocation wargSkin = (ResourceLocation) wargSkins.get(s);
-		if (wargSkin == null) {
-			wargSkin = new ResourceLocation("lotr:mob/warg/" + s + ".png");
-			wargSkins.put(s, wargSkin);
-		}
-		return wargSkin;
 	}
 }

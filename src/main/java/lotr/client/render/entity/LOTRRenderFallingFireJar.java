@@ -1,15 +1,15 @@
 package lotr.client.render.entity;
 
-import org.lwjgl.opengl.GL11;
-
 import lotr.common.block.LOTRBlockRhunFireJar;
 import net.minecraft.block.Block;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderFallingBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import org.lwjgl.opengl.GL11;
 
 public class LOTRRenderFallingFireJar extends RenderFallingBlock {
 	public static RenderBlocks renderBlocks = new RenderBlocks();
@@ -28,7 +28,7 @@ public class LOTRRenderFallingFireJar extends RenderFallingBlock {
 				GL11.glTranslatef((float) d, (float) d1, (float) d2);
 				bindEntityTexture(entity);
 				GL11.glDisable(2896);
-				LOTRRenderFallingFireJar.renderBlocks.blockAccess = world;
+				renderBlocks.blockAccess = world;
 				Tessellator tessellator = Tessellator.instance;
 				tessellator.startDrawingQuads();
 				tessellator.setTranslation((-i) - 0.5f, (-j) - 0.5f, (-k) - 0.5f);

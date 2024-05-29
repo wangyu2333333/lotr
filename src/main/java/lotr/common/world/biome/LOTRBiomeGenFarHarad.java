@@ -1,19 +1,21 @@
 package lotr.common.world.biome;
 
-import java.util.Random;
-
 import lotr.common.entity.animal.*;
 import lotr.common.world.LOTRWorldChunkManager;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
-import lotr.common.world.feature.*;
+import lotr.common.world.feature.LOTRTreeType;
+import lotr.common.world.feature.LOTRWorldGenDoubleFlower;
 import lotr.common.world.map.LOTRWaypoint;
 import lotr.common.world.spawning.LOTREventSpawner;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraft.world.gen.feature.*;
+import net.minecraft.world.gen.feature.WorldGenAbstractTree;
+import net.minecraft.world.gen.feature.WorldGenerator;
+
+import java.util.Random;
 
 public abstract class LOTRBiomeGenFarHarad extends LOTRBiome {
-	public LOTRBiomeGenFarHarad(int i, boolean major) {
+	protected LOTRBiomeGenFarHarad(int i, boolean major) {
 		super(i, major);
 		spawnableCreatureList.clear();
 		spawnableCreatureList.add(new BiomeGenBase.SpawnListEntry(LOTREntityLion.class, 4, 2, 4));

@@ -1,15 +1,21 @@
 package lotr.common.network;
 
-import java.util.*;
-
-import cpw.mods.fml.common.network.simpleimpl.*;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import lotr.common.*;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
+import lotr.common.LOTRPlayerData;
 import lotr.common.fac.LOTRFaction;
+
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class LOTRPacketAlignment implements IMessage {
 	public UUID player;
-	public Map<LOTRFaction, Float> alignmentMap = new HashMap<>();
+	public Map<LOTRFaction, Float> alignmentMap = new EnumMap<>(LOTRFaction.class);
 	public boolean hideAlignment;
 
 	public LOTRPacketAlignment() {
@@ -28,7 +34,7 @@ public class LOTRPacketAlignment implements IMessage {
 	@Override
 	public void fromBytes(ByteBuf data) {
 		player = new UUID(data.readLong(), data.readLong());
-		byte factionID = 0;
+		byte factionID;
 		while ((factionID = data.readByte()) >= 0) {
 			LOTRFaction f = LOTRFaction.forID(factionID);
 			float alignment = data.readFloat();

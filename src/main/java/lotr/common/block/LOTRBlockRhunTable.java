@@ -1,6 +1,7 @@
 package lotr.common.block;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.LOTRMod;
 import lotr.common.fac.LOTRFaction;
 import net.minecraft.block.Block;
@@ -9,7 +10,7 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
 
 public class LOTRBlockRhunTable extends LOTRBlockCraftingTable {
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon[] tableIcons;
 
 	public LOTRBlockRhunTable() {
@@ -18,7 +19,7 @@ public class LOTRBlockRhunTable extends LOTRBlockCraftingTable {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int i, int j) {
 		if (i == 1) {
 			return tableIcons[1];
@@ -30,7 +31,7 @@ public class LOTRBlockRhunTable extends LOTRBlockCraftingTable {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconregister) {
 		tableIcons = new IIcon[2];
 		tableIcons[0] = iconregister.registerIcon(getTextureName() + "_side");

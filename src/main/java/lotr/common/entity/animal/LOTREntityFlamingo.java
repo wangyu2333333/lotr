@@ -2,20 +2,25 @@ package lotr.common.entity.animal;
 
 import lotr.common.LOTRMod;
 import lotr.common.entity.LOTREntities;
-import net.minecraft.entity.*;
+import net.minecraft.entity.EntityAgeable;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.*;
-import net.minecraft.item.*;
-import net.minecraft.util.*;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 public class LOTREntityFlamingo extends EntityAnimal {
 	public static int NECK_TIME = 20;
 	public static int FISHING_TIME = 160;
 	public static int FISHING_TIME_TOTAL = 200;
-	public boolean field_753_a = false;
+	public boolean field_753_a;
 	public float field_752_b;
 	public float destPos;
 	public float field_757_d;
@@ -138,16 +143,16 @@ public class LOTREntityFlamingo extends EntityAnimal {
 			setFishingTick(200, 200);
 		}
 		if (getFishingTickCur() > 0) {
-			if (!worldObj.isRemote) {
-				int cur = getFishingTickCur();
-				setFishingTick(cur, cur - 1);
-			} else {
+			if (worldObj.isRemote) {
 				for (int i = 0; i < 3; ++i) {
 					double d = posX + MathHelper.getRandomDoubleInRange(rand, -0.3, 0.3);
 					double d1 = boundingBox.minY + MathHelper.getRandomDoubleInRange(rand, -0.3, 0.3);
 					double d2 = posZ + MathHelper.getRandomDoubleInRange(rand, -0.3, 0.3);
 					worldObj.spawnParticle("bubble", d, d1, d2, 0.0, 0.0, 0.0);
 				}
+			} else {
+				int cur = getFishingTickCur();
+				setFishingTick(cur, cur - 1);
 			}
 		}
 		if (!worldObj.isRemote && isInLove() && getFishingTickCur() > 20) {

@@ -1,14 +1,17 @@
 package lotr.common.world.village;
 
-import java.util.Random;
-
 import lotr.common.entity.LOTREntityNPCRespawner;
-import lotr.common.entity.npc.*;
+import lotr.common.entity.npc.LOTREntityHarnedhrim;
+import lotr.common.entity.npc.LOTREntityHarnedorArcher;
+import lotr.common.entity.npc.LOTREntityHarnedorWarrior;
+import lotr.common.entity.npc.LOTRNames;
 import lotr.common.world.biome.LOTRBiome;
 import lotr.common.world.map.LOTRRoadType;
 import lotr.common.world.structure2.*;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRVillageGenHarnedor extends LOTRVillageGen {
 	public boolean isRuinedVillage;
@@ -29,6 +32,11 @@ public class LOTRVillageGenHarnedor extends LOTRVillageGen {
 	public LOTRVillageGenHarnedor setRuined() {
 		isRuinedVillage = true;
 		return this;
+	}
+
+	public enum VillageType {
+		VILLAGE, FORTRESS
+
 	}
 
 	public static class Instance extends LOTRVillageGen.AbstractInstance<LOTRVillageGenHarnedor> {
@@ -55,7 +63,6 @@ public class LOTRVillageGenHarnedor extends LOTRVillageGen {
 		@Override
 		public LOTRRoadType getPath(Random random, int i, int k) {
 			int i1 = Math.abs(i);
-			Math.abs(k);
 			if (villageType == VillageType.VILLAGE) {
 				if (isRuined && random.nextInt(4) == 0) {
 					return null;
@@ -97,7 +104,7 @@ public class LOTRVillageGenHarnedor extends LOTRVillageGen {
 		}
 
 		public void setupFortress(Random random) {
-			this.addStructure(new LOTRWorldGenNPCRespawner(false) {
+			addStructure(new LOTRWorldGenNPCRespawner(false) {
 
 				@Override
 				public void setupRespawner(LOTREntityNPCRespawner spawner) {
@@ -107,16 +114,16 @@ public class LOTRVillageGenHarnedor extends LOTRVillageGen {
 					spawner.setBlockEnemySpawnRange(50);
 				}
 			}, 0, 0, 0);
-			this.addStructure(new LOTRWorldGenHarnedorFort(false), 0, -12, 0, true);
-			this.addStructure(new LOTRWorldGenHarnedorTower(false), -24, -24, 0, true);
-			this.addStructure(new LOTRWorldGenHarnedorTower(false), 24, -24, 0, true);
-			this.addStructure(new LOTRWorldGenHarnedorTower(false), -24, 24, 2, true);
-			this.addStructure(new LOTRWorldGenHarnedorTower(false), 24, 24, 2, true);
+			addStructure(new LOTRWorldGenHarnedorFort(false), 0, -12, 0, true);
+			addStructure(new LOTRWorldGenHarnedorTower(false), -24, -24, 0, true);
+			addStructure(new LOTRWorldGenHarnedorTower(false), 24, -24, 0, true);
+			addStructure(new LOTRWorldGenHarnedorTower(false), -24, 24, 2, true);
+			addStructure(new LOTRWorldGenHarnedorTower(false), 24, 24, 2, true);
 			for (int l = -1; l <= 1; ++l) {
 				int k = l * 10;
 				int i = 24;
-				this.addStructure(new LOTRWorldGenNearHaradTent(false), -i, k, 1, true);
-				this.addStructure(new LOTRWorldGenNearHaradTent(false), i, k, 3, true);
+				addStructure(new LOTRWorldGenNearHaradTent(false), -i, k, 1, true);
+				addStructure(new LOTRWorldGenNearHaradTent(false), i, k, 3, true);
 			}
 			int rSq = 1764;
 			int rMax = 43;
@@ -132,14 +139,14 @@ public class LOTRVillageGenHarnedor extends LOTRVillageGen {
 					if (i1 == 5 && k < 0) {
 						palisade.setTall();
 					}
-					this.addStructure(palisade, i, k, 0);
+					addStructure(palisade, i, k, 0);
 				}
 			}
 		}
 
 		public void setupVillage(Random random) {
 			if (!isRuined) {
-				this.addStructure(new LOTRWorldGenNPCRespawner(false) {
+				addStructure(new LOTRWorldGenNPCRespawner(false) {
 
 					@Override
 					public void setupRespawner(LOTREntityNPCRespawner spawner) {
@@ -149,7 +156,7 @@ public class LOTRVillageGenHarnedor extends LOTRVillageGen {
 						spawner.setBlockEnemySpawnRange(64);
 					}
 				}, 0, 0, 0);
-				this.addStructure(new LOTRWorldGenNPCRespawner(false) {
+				addStructure(new LOTRWorldGenNPCRespawner(false) {
 
 					@Override
 					public void setupRespawner(LOTREntityNPCRespawner spawner) {
@@ -161,11 +168,11 @@ public class LOTRVillageGenHarnedor extends LOTRVillageGen {
 				}, 0, 0, 0);
 			}
 			if (isRuined) {
-				this.addStructure(new LOTRWorldGenHarnedorTavernRuined(false), 3, -7, 0, true);
+				addStructure(new LOTRWorldGenHarnedorTavernRuined(false), 3, -7, 0, true);
 			} else if (random.nextBoolean()) {
-				this.addStructure(new LOTRWorldGenHarnedorMarket(false), 0, -8, 0, true);
+				addStructure(new LOTRWorldGenHarnedorMarket(false), 0, -8, 0, true);
 			} else {
-				this.addStructure(new LOTRWorldGenHarnedorTavern(false), 3, -7, 0, true);
+				addStructure(new LOTRWorldGenHarnedorTavern(false), 3, -7, 0, true);
 			}
 			float frac = 1.0f / numOuterHouses;
 			float turn = 0.0f;
@@ -190,7 +197,7 @@ public class LOTRVillageGenHarnedor extends LOTRVillageGen {
 				if (palisade && k < 0 && Math.abs(i) < 10) {
 					continue;
 				}
-				this.addStructure(getRandomHouse(random), i, k, r);
+				addStructure(getRandomHouse(random), i, k, r);
 			}
 			if (!isRuined) {
 				int numFarms = numOuterHouses * 2;
@@ -218,21 +225,21 @@ public class LOTRVillageGenHarnedor extends LOTRVillageGen {
 						continue;
 					}
 					if (random.nextInt(3) == 0) {
-						this.addStructure(new LOTRWorldGenHayBales(false), i, k, r);
+						addStructure(new LOTRWorldGenHayBales(false), i, k, r);
 						continue;
 					}
 					if (random.nextInt(3) == 0) {
-						this.addStructure(new LOTRWorldGenHarnedorPasture(false), i, k, r);
+						addStructure(new LOTRWorldGenHarnedorPasture(false), i, k, r);
 						continue;
 					}
-					this.addStructure(new LOTRWorldGenHarnedorFarm(false), i, k, r);
+					addStructure(new LOTRWorldGenHarnedorFarm(false), i, k, r);
 				}
 			}
 			if (!isRuined) {
 				if (palisade) {
-					this.addStructure(new LOTRWorldGenHarnedorVillageSign(false).setSignText(villageName), 5 * (random.nextBoolean() ? 1 : -1), -56, 0, true);
+					addStructure(new LOTRWorldGenHarnedorVillageSign(false).setSignText(villageName), 5 * (random.nextBoolean() ? 1 : -1), -56, 0, true);
 				} else {
-					this.addStructure(new LOTRWorldGenHarnedorVillageSign(false).setSignText(villageName), 0, -16, 0, true);
+					addStructure(new LOTRWorldGenHarnedorVillageSign(false).setSignText(villageName), 0, -16, 0, true);
 				}
 			}
 			if (palisade) {
@@ -258,7 +265,7 @@ public class LOTRVillageGenHarnedor extends LOTRVillageGen {
 						if (i1 == 5 && k < 0) {
 							palisade.setTall();
 						}
-						this.addStructure(palisade, i, k, 0);
+						addStructure(palisade, i, k, 0);
 					}
 				}
 			}
@@ -271,11 +278,6 @@ public class LOTRVillageGenHarnedor extends LOTRVillageGen {
 			numOuterHouses = MathHelper.getRandomIntegerInRange(random, 5, 8);
 			palisade = random.nextInt(3) != 0;
 		}
-
-	}
-
-	public enum VillageType {
-		VILLAGE, FORTRESS;
 
 	}
 

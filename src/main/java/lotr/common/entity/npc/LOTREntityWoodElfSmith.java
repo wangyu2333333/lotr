@@ -1,6 +1,7 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -8,7 +9,7 @@ import net.minecraft.world.World;
 public class LOTREntityWoodElfSmith extends LOTREntityWoodElf implements LOTRTradeable.Smith {
 	public LOTREntityWoodElfSmith(World world) {
 		super(world);
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 	}
 
 	@Override

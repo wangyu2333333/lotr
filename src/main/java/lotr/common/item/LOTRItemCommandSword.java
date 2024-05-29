@@ -1,18 +1,27 @@
 package lotr.common.item;
 
-import java.util.*;
-
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import lotr.common.*;
+import lotr.common.LOTRMod;
+import lotr.common.LOTRSquadrons;
 import lotr.common.entity.ai.LOTREntityAINearestAttackableTargetBasic;
 import lotr.common.entity.npc.LOTREntityNPC;
-import lotr.common.network.*;
+import lotr.common.network.LOTRPacketHandler;
+import lotr.common.network.LOTRPacketLocationFX;
 import net.minecraft.command.IEntitySelector;
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.item.*;
-import net.minecraft.util.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class LOTRItemCommandSword extends LOTRItemSword implements LOTRSquadrons.SquadronItem {
 	public LOTRItemCommandSword() {
@@ -21,6 +30,7 @@ public class LOTRItemCommandSword extends LOTRItemSword implements LOTRSquadrons
 		lotrWeaponDamage = 1.0f;
 	}
 
+	@SuppressWarnings("Convert2Lambda")
 	public void command(EntityPlayer entityplayer, World world, ItemStack itemstack, MovingObjectPosition hitTarget) {
 		entityplayer.setRevengeTarget(null);
 		List spreadTargets = new ArrayList();
@@ -54,8 +64,8 @@ public class LOTRItemCommandSword extends LOTRItemSword implements LOTRSquadrons
 				}
 			}
 			if (!validTargets.isEmpty()) {
-				LOTREntityAINearestAttackableTargetBasic.TargetSorter sorter = new LOTREntityAINearestAttackableTargetBasic.TargetSorter(npc);
-				Collections.sort(validTargets, sorter);
+				Comparator<Entity> sorter = new LOTREntityAINearestAttackableTargetBasic.TargetSorter(npc);
+				validTargets.sort(sorter);
 				EntityLivingBase target = validTargets.get(0);
 				npc.hiredNPCInfo.commandSwordAttack(target);
 				npc.hiredNPCInfo.wasAttackCommanded = true;
@@ -64,10 +74,10 @@ public class LOTRItemCommandSword extends LOTRItemSword implements LOTRSquadrons
 			}
 			npc.hiredNPCInfo.commandSwordCancel();
 		}
-		if (anyAttackCommanded && hitTarget != null) {
+		if (anyAttackCommanded) {
 			Vec3 vec = hitTarget.hitVec;
-			LOTRPacketLocationFX packet = new LOTRPacketLocationFX(LOTRPacketLocationFX.Type.SWORD_COMMAND, vec.xCoord, vec.yCoord, vec.zCoord);
-			LOTRPacketHandler.networkWrapper.sendTo((IMessage) packet, (EntityPlayerMP) entityplayer);
+			IMessage packet = new LOTRPacketLocationFX(LOTRPacketLocationFX.Type.SWORD_COMMAND, vec.xCoord, vec.yCoord, vec.zCoord);
+			LOTRPacketHandler.networkWrapper.sendTo(packet, (EntityPlayerMP) entityplayer);
 		}
 	}
 

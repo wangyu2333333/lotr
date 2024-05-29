@@ -1,7 +1,5 @@
 package lotr.common.world.mapgen;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import lotr.common.world.LOTRChunkProvider;
 import lotr.common.world.biome.LOTRBiome;
@@ -12,8 +10,26 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.gen.MapGenBase;
 
+import java.util.Random;
+
 public class LOTRMapGenCaves extends MapGenBase {
 	public LOTRChunkProvider.ChunkFlags chunkFlags;
+
+	public static boolean isTerrainBlock(Block block, BiomeGenBase biome) {
+		if (block == biome.topBlock || block == biome.fillerBlock) {
+			return true;
+		}
+		if (block == Blocks.grass || block == Blocks.dirt || block == Blocks.sand || block == LOTRMod.whiteSand || block == Blocks.gravel || block == LOTRMod.mudGrass || block == LOTRMod.mud) {
+			return true;
+		}
+		if (block == LOTRMod.dirtPath) {
+			return true;
+		}
+		if (block == Blocks.stone || block == LOTRMod.rock || block == Blocks.sandstone || block == LOTRMod.redSandstone || block == LOTRMod.whiteSandstone) {
+			return true;
+		}
+		return block == LOTRMod.mordorDirt || block == LOTRMod.mordorGravel;
+	}
 
 	public int caveRarity() {
 		return 10;
@@ -49,7 +65,7 @@ public class LOTRMapGenCaves extends MapGenBase {
 				break;
 			}
 		}
-		dig = LOTRMapGenCaves.isTerrainBlock(block, biome) || block.getMaterial().isLiquid();
+		dig = isTerrainBlock(block, biome) || block.getMaterial().isLiquid();
 		if (belowVillageOrRoad) {
 			dig = false;
 		}
@@ -129,7 +145,7 @@ public class LOTRMapGenCaves extends MapGenBase {
 			par6 += MathHelper.cos(angle) * var33;
 			par8 += var34;
 			par10 += MathHelper.sin(angle) * var33;
-			par14 = var28 ? (par14 *= 0.92f) : (par14 *= 0.7f);
+			par14 = var28 ? par14 * 0.92f : par14 * 0.7f;
 			par14 += var24 * 0.1f;
 			angle += var23 * 0.1f;
 			var24 *= 0.9f;
@@ -169,7 +185,7 @@ public class LOTRMapGenCaves extends MapGenBase {
 						for (int var43 = var56; !anyWater && var43 < var40; ++var43) {
 							for (int var44 = var38 + 1; !anyWater && var44 >= var57 - 1; --var44) {
 								var45 = (var42 * 16 + var43) * 256 + var44;
-								if (var44 < 0 || var44 >= 256) {
+								if (var44 >= 256) {
 									continue;
 								}
 								if (blockArray[var45] == Blocks.flowing_water || blockArray[var45] == Blocks.water) {
@@ -218,21 +234,5 @@ public class LOTRMapGenCaves extends MapGenBase {
 
 	public int getCaveGenerationHeight() {
 		return rand.nextInt(rand.nextInt(120) + 8);
-	}
-
-	public static boolean isTerrainBlock(Block block, BiomeGenBase biome) {
-		if (block == biome.topBlock || block == biome.fillerBlock) {
-			return true;
-		}
-		if (block == Blocks.grass || block == Blocks.dirt || block == Blocks.sand || block == LOTRMod.whiteSand || block == Blocks.gravel || block == LOTRMod.mudGrass || block == LOTRMod.mud) {
-			return true;
-		}
-		if (block == LOTRMod.dirtPath) {
-			return true;
-		}
-		if (block == Blocks.stone || block == LOTRMod.rock || block == Blocks.sandstone || block == LOTRMod.redSandstone || block == LOTRMod.whiteSandstone) {
-			return true;
-		}
-		return block == LOTRMod.mordorDirt || block == LOTRMod.mordorGravel;
 	}
 }

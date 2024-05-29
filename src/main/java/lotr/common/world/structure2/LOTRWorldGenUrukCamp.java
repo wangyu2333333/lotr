@@ -1,11 +1,11 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import lotr.common.entity.LOTREntityNPCRespawner;
 import lotr.common.entity.npc.*;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenUrukCamp extends LOTRWorldGenCampBase {
 	public LOTRWorldGenUrukCamp(boolean flag) {
@@ -31,7 +31,7 @@ public class LOTRWorldGenUrukCamp extends LOTRWorldGenCampBase {
 		respawner.setSpawnClasses(LOTREntityUrukHai.class, LOTREntityUrukHaiCrossbower.class);
 		respawner.setCheckRanges(24, -12, 12, 12);
 		respawner.setSpawnRanges(8, -4, 4, 16);
-		this.placeNPCRespawner(respawner, world, i, j, k);
+		placeNPCRespawner(respawner, world, i, j, k);
 	}
 
 	@Override

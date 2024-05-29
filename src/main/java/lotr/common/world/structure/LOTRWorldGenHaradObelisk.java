@@ -1,11 +1,11 @@
 package lotr.common.world.structure;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenHaradObelisk extends LOTRWorldGenStructureBase {
 	public LOTRWorldGenHaradObelisk(boolean flag) {
@@ -26,21 +26,21 @@ public class LOTRWorldGenHaradObelisk extends LOTRWorldGenStructureBase {
 			rotation = usingPlayerRotation();
 		}
 		switch (rotation) {
-		case 0: {
-			k += 8;
-			break;
-		}
-		case 1: {
-			i -= 8;
-			break;
-		}
-		case 2: {
-			k -= 8;
-			break;
-		}
-		case 3: {
-			i += 8;
-		}
+			case 0: {
+				k += 8;
+				break;
+			}
+			case 1: {
+				i -= 8;
+				break;
+			}
+			case 2: {
+				k -= 8;
+				break;
+			}
+			case 3: {
+				i += 8;
+			}
 		}
 		if (restrictions) {
 			for (i1 = i - 7; i1 <= i + 7; ++i1) {

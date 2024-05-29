@@ -1,19 +1,21 @@
 package lotr.client.render.tileentity;
 
-import org.lwjgl.opengl.GL11;
-
 import lotr.client.model.*;
 import lotr.client.render.LOTRRenderBlocks;
 import lotr.common.LOTRMod;
 import lotr.common.item.LOTRItemMug;
 import lotr.common.tileentity.LOTRTileEntityMug;
 import net.minecraft.client.model.ModelBase;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.RenderBlocks;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 public class LOTRRenderMug extends TileEntitySpecialRenderer {
 	public static ResourceLocation mugTexture = new ResourceLocation("lotr:item/mug.png");
@@ -37,8 +39,8 @@ public class LOTRRenderMug extends TileEntitySpecialRenderer {
 
 	public void renderLiquid(IIcon icon, int uvMin, int uvMax, double yMin, double yMax, float scale) {
 		double edge = 0.001;
-		double xzMin = (double) uvMin * (double) scale;
-		double xzMax = (double) uvMax * (double) scale;
+		double xzMin = (double) uvMin * scale;
+		double xzMax = (double) uvMax * scale;
 		float dxz = 0.5f - (uvMin + uvMax) / 2.0f * scale;
 		yMin = 16.0 - yMin;
 		yMax = 16.0 - yMax;
@@ -47,7 +49,7 @@ public class LOTRRenderMug extends TileEntitySpecialRenderer {
 		GL11.glPushMatrix();
 		GL11.glTranslatef(dxz, -0.5f, dxz);
 		renderBlocks.setOverrideBlockTexture(icon);
-		LOTRRenderBlocks.renderStandardInvBlock(renderBlocks, LOTRMod.mugBlock, xzMin += edge, yMax -= edge, xzMin, xzMax -= edge, yMin += edge, xzMax);
+		LOTRRenderBlocks.renderStandardInvBlock(renderBlocks, LOTRMod.mugBlock, xzMin += edge, yMax - edge, xzMin, xzMax -= edge, yMin + edge, xzMax);
 		renderBlocks.clearOverrideBlockTexture();
 		GL11.glPopMatrix();
 	}
@@ -84,21 +86,21 @@ public class LOTRRenderMug extends TileEntitySpecialRenderer {
 		GL11.glScalef(mugScale, mugScale, mugScale);
 		float scale = 0.0625f;
 		switch (mug.getBlockMetadata()) {
-		case 0: {
-			GL11.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-			break;
-		}
-		case 1: {
-			GL11.glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
-			break;
-		}
-		case 2: {
-			GL11.glRotatef(270.0f, 0.0f, 1.0f, 0.0f);
-			break;
-		}
-		case 3: {
-			GL11.glRotatef(0.0f, 0.0f, 1.0f, 0.0f);
-		}
+			case 0: {
+				GL11.glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
+				break;
+			}
+			case 1: {
+				GL11.glRotatef(180.0f, 0.0f, 1.0f, 0.0f);
+				break;
+			}
+			case 2: {
+				GL11.glRotatef(270.0f, 0.0f, 1.0f, 0.0f);
+				break;
+			}
+			case 3: {
+				GL11.glRotatef(0.0f, 0.0f, 1.0f, 0.0f);
+			}
 		}
 		if (vessel == LOTRItemMug.Vessel.SKULL || vessel == LOTRItemMug.Vessel.HORN || vessel == LOTRItemMug.Vessel.HORN_GOLD) {
 			GL11.glRotatef(-90.0f, 0.0f, 1.0f, 0.0f);

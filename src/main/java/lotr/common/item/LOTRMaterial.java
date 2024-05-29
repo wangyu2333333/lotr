@@ -1,16 +1,20 @@
 package lotr.common.item;
 
-import java.util.*;
-
 import lotr.common.LOTRMod;
-import net.minecraft.init.*;
-import net.minecraft.item.*;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.EnumHelper;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 public class LOTRMaterial {
-	public static float[] protectionBase = { 0.14f, 0.4f, 0.32f, 0.14f };
+	public static float[] protectionBase = {0.14f, 0.4f, 0.32f, 0.14f};
 	public static float maxProtection = 25.0f;
-	public static List<LOTRMaterial> allLOTRMaterials = new ArrayList<>();
+	public static Collection<LOTRMaterial> allLOTRMaterials = new ArrayList<>();
 	public static LOTRMaterial ANCIENT_HARAD = new LOTRMaterial("ANCIENT_HARAD").setUses(450).setDamage(2.5f).setProtection(0.6f).setHarvestLevel(2).setSpeed(6.0f).setEnchantability(10);
 	public static LOTRMaterial ANGMAR = new LOTRMaterial("ANGMAR").setUses(350).setDamage(2.5f).setProtection(0.6f).setHarvestLevel(2).setSpeed(6.0f).setEnchantability(8).setManFlesh();
 	public static LOTRMaterial ARNOR = new LOTRMaterial("ARNOR").setUses(450).setDamage(2.5f).setProtection(0.6f).setHarvestLevel(2).setSpeed(6.0f).setEnchantability(10);
@@ -78,94 +82,20 @@ public class LOTRMaterial {
 	public static LOTRMaterial WOOD_ELVEN = new LOTRMaterial("WOOD_ELVEN").setUses(500).setDamage(3.0f).setProtection(0.6f).setHarvestLevel(2).setSpeed(9.0f).setEnchantability(15);
 	public static LOTRMaterial WOOD_ELVEN_SCOUT = new LOTRMaterial("WOOD_ELVEN_SCOUT").setUses(300).setDamage(0.0f).setProtection(0.4f).setHarvestLevel(0).setSpeed(0.0f).setEnchantability(15);
 	public String materialName;
-	public boolean undamageable = false;
+	public boolean undamageable;
 	public int uses;
 	public float damage;
 	public int[] protection;
 	public int harvestLevel;
 	public float speed;
 	public int enchantability;
-	public boolean canHarvestManFlesh = false;
+	public boolean canHarvestManFlesh;
 	public Item.ToolMaterial toolMaterial;
 	public ItemArmor.ArmorMaterial armorMaterial;
 
 	public LOTRMaterial(String name) {
 		materialName = "LOTR_" + name;
 		allLOTRMaterials.add(this);
-	}
-
-	public boolean canHarvestManFlesh() {
-		return canHarvestManFlesh;
-	}
-
-	public boolean isDamageable() {
-		return !undamageable;
-	}
-
-	public void setCraftingItem(Item item) {
-		this.setCraftingItems(item, item);
-	}
-
-	public void setCraftingItems(Item toolItem, Item armorItem) {
-		toToolMaterial().setRepairItem(new ItemStack(toolItem));
-		toArmorMaterial().customCraftingMaterial = armorItem;
-	}
-
-	public LOTRMaterial setDamage(float f) {
-		damage = f;
-		return this;
-	}
-
-	public LOTRMaterial setEnchantability(int i) {
-		enchantability = i;
-		return this;
-	}
-
-	public LOTRMaterial setHarvestLevel(int i) {
-		harvestLevel = i;
-		return this;
-	}
-
-	public LOTRMaterial setManFlesh() {
-		canHarvestManFlesh = true;
-		return this;
-	}
-
-	public LOTRMaterial setProtection(float f) {
-		protection = new int[protectionBase.length];
-		for (int i = 0; i < protection.length; ++i) {
-			protection[i] = Math.round(protectionBase[i] * f * maxProtection);
-		}
-		return this;
-	}
-
-	public LOTRMaterial setSpeed(float f) {
-		speed = f;
-		return this;
-	}
-
-	public LOTRMaterial setUndamageable() {
-		undamageable = true;
-		return this;
-	}
-
-	public LOTRMaterial setUses(int i) {
-		uses = i;
-		return this;
-	}
-
-	public ItemArmor.ArmorMaterial toArmorMaterial() {
-		if (armorMaterial == null) {
-			armorMaterial = EnumHelper.addArmorMaterial(materialName, Math.round(uses * 0.06f), protection, enchantability);
-		}
-		return armorMaterial;
-	}
-
-	public Item.ToolMaterial toToolMaterial() {
-		if (toolMaterial == null) {
-			toolMaterial = EnumHelper.addToolMaterial(materialName, harvestLevel, uses, speed, damage, enchantability);
-		}
-		return toolMaterial;
 	}
 
 	public static ItemArmor.ArmorMaterial getArmorMaterialByName(String name) {
@@ -236,5 +166,79 @@ public class LOTRMaterial {
 		BLACK_URUK.setCraftingItem(LOTRMod.blackUrukSteel);
 		UTUMNO.setCraftingItem(LOTRMod.orcSteel);
 		HALF_TROLL.setCraftingItems(Items.flint, LOTRMod.gemsbokHide);
+	}
+
+	public boolean canHarvestManFlesh() {
+		return canHarvestManFlesh;
+	}
+
+	public boolean isDamageable() {
+		return !undamageable;
+	}
+
+	public void setCraftingItem(Item item) {
+		setCraftingItems(item, item);
+	}
+
+	public void setCraftingItems(Item toolItem, Item armorItem) {
+		toToolMaterial().setRepairItem(new ItemStack(toolItem));
+		toArmorMaterial().customCraftingMaterial = armorItem;
+	}
+
+	public LOTRMaterial setDamage(float f) {
+		damage = f;
+		return this;
+	}
+
+	public LOTRMaterial setEnchantability(int i) {
+		enchantability = i;
+		return this;
+	}
+
+	public LOTRMaterial setHarvestLevel(int i) {
+		harvestLevel = i;
+		return this;
+	}
+
+	public LOTRMaterial setManFlesh() {
+		canHarvestManFlesh = true;
+		return this;
+	}
+
+	public LOTRMaterial setProtection(float f) {
+		protection = new int[protectionBase.length];
+		for (int i = 0; i < protection.length; ++i) {
+			protection[i] = Math.round(protectionBase[i] * f * maxProtection);
+		}
+		return this;
+	}
+
+	public LOTRMaterial setSpeed(float f) {
+		speed = f;
+		return this;
+	}
+
+	public LOTRMaterial setUndamageable() {
+		undamageable = true;
+		return this;
+	}
+
+	public LOTRMaterial setUses(int i) {
+		uses = i;
+		return this;
+	}
+
+	public ItemArmor.ArmorMaterial toArmorMaterial() {
+		if (armorMaterial == null) {
+			armorMaterial = EnumHelper.addArmorMaterial(materialName, Math.round(uses * 0.06f), protection, enchantability);
+		}
+		return armorMaterial;
+	}
+
+	public Item.ToolMaterial toToolMaterial() {
+		if (toolMaterial == null) {
+			toolMaterial = EnumHelper.addToolMaterial(materialName, harvestLevel, uses, speed, damage, enchantability);
+		}
+		return toolMaterial;
 	}
 }

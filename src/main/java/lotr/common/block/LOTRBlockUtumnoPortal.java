@@ -1,19 +1,23 @@
 package lotr.common.block;
 
-import java.util.*;
-
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.LOTRDimension;
 import lotr.common.tileentity.LOTRTileEntityUtumnoPortal;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
+
+import java.util.List;
+import java.util.Random;
 
 public class LOTRBlockUtumnoPortal extends BlockContainer {
 	public LOTRBlockUtumnoPortal() {
@@ -32,13 +36,13 @@ public class LOTRBlockUtumnoPortal extends BlockContainer {
 		return new LOTRTileEntityUtumnoPortal();
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
 		return Blocks.portal.getIcon(i, j);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public Item getItem(World world, int i, int j, int k) {
 		return Item.getItemById(0);
@@ -75,7 +79,7 @@ public class LOTRBlockUtumnoPortal extends BlockContainer {
 		return 0;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
 	}

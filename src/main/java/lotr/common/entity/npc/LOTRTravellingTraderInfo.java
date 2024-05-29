@@ -1,17 +1,24 @@
 package lotr.common.entity.npc;
 
-import java.util.*;
-
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.*;
-import net.minecraft.util.*;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.MathHelper;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.UUID;
 
 public class LOTRTravellingTraderInfo {
 	public LOTREntityNPC theEntity;
 	public LOTRTravellingTrader theTrader;
 	public int timeUntilDespawn = -1;
-	public List escortUUIDs = new ArrayList();
+	public Collection escortUUIDs = new ArrayList();
 
 	public LOTRTravellingTraderInfo(LOTRTravellingTrader entity) {
 		theEntity = (LOTREntityNPC) entity;
@@ -70,7 +77,7 @@ public class LOTRTravellingTraderInfo {
 		}
 	}
 
-	public void startVisiting(EntityPlayer entityplayer) {
+	public void startVisiting(ICommandSender entityplayer) {
 		ChatComponentText componentName;
 		timeUntilDespawn = 24000;
 		if (theEntity.worldObj.playerEntities.size() <= 1) {

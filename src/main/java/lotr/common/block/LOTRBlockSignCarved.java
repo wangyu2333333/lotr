@@ -1,16 +1,20 @@
 package lotr.common.block;
 
-import java.util.Random;
-
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.LOTRMod;
 import lotr.common.tileentity.LOTRTileEntitySign;
 import lotr.common.util.LOTRCommonIcons;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockSign;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
+import net.minecraft.util.Facing;
+import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRBlockSignCarved extends BlockSign {
 	public LOTRBlockSignCarved(Class<? extends LOTRTileEntitySign> cls) {
@@ -19,13 +23,13 @@ public class LOTRBlockSignCarved extends BlockSign {
 		setHardness(0.5f);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
 		return LOTRCommonIcons.iconEmptyBlock;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public Item getItem(World world, int i, int j, int k) {
 		if (this == LOTRMod.signCarvedIthildin) {

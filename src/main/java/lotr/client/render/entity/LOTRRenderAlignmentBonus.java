@@ -1,17 +1,23 @@
 package lotr.client.render.entity;
 
-import org.lwjgl.opengl.GL11;
-
-import lotr.client.*;
+import lotr.client.LOTRClientProxy;
+import lotr.client.LOTRTickHandlerClient;
 import lotr.client.fx.LOTREntityAlignmentBonus;
-import lotr.common.*;
-import lotr.common.fac.*;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRPlayerData;
+import lotr.common.fac.LOTRAlignmentBonusMap;
+import lotr.common.fac.LOTRAlignmentValues;
+import lotr.common.fac.LOTRFaction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityClientPlayerMP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.*;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
+
+import java.util.Map;
 
 public class LOTRRenderAlignmentBonus extends Render {
 	public LOTRRenderAlignmentBonus() {
@@ -39,12 +45,13 @@ public class LOTRRenderAlignmentBonus extends Render {
 				renderFaction = viewingFaction;
 			} else if (factionBonusMap.size() == 1 && mainFaction.isPlayableAlignmentFaction()) {
 				renderFaction = mainFaction;
-			} else if (mainFaction.isPlayableAlignmentFaction() && bonusParticle.prevMainAlignment >= 0.0f && factionBonusMap.get(mainFaction).floatValue() < 0.0f) {
+			} else if (mainFaction.isPlayableAlignmentFaction() && bonusParticle.prevMainAlignment >= 0.0f && factionBonusMap.get(mainFaction) < 0.0f) {
 				renderFaction = mainFaction;
 			} else {
 				float alignment;
-				for (LOTRFaction faction : factionBonusMap.keySet()) {
-					if (!faction.isPlayableAlignmentFaction() || factionBonusMap.get(faction).floatValue() <= 0.0f) {
+				for (Map.Entry<LOTRFaction, Float> entry : factionBonusMap.entrySet()) {
+					LOTRFaction faction = entry.getKey();
+					if (!faction.isPlayableAlignmentFaction() || entry.getValue() <= 0.0f) {
 						continue;
 					}
 					alignment = playerData.getAlignment(faction);
@@ -54,11 +61,12 @@ public class LOTRRenderAlignmentBonus extends Render {
 					renderFaction = faction;
 				}
 				if (renderFaction == null) {
-					if (mainFaction.isPlayableAlignmentFaction() && factionBonusMap.get(mainFaction).floatValue() < 0.0f) {
+					if (mainFaction.isPlayableAlignmentFaction() && factionBonusMap.get(mainFaction) < 0.0f) {
 						renderFaction = mainFaction;
 					} else {
-						for (LOTRFaction faction : factionBonusMap.keySet()) {
-							if (!faction.isPlayableAlignmentFaction() || factionBonusMap.get(faction).floatValue() >= 0.0f) {
+						for (Map.Entry<LOTRFaction, Float> entry : factionBonusMap.entrySet()) {
+							LOTRFaction faction = entry.getKey();
+							if (!faction.isPlayableAlignmentFaction() || entry.getValue() >= 0.0f) {
 								continue;
 							}
 							alignment = playerData.getAlignment(faction);
@@ -72,14 +80,14 @@ public class LOTRRenderAlignmentBonus extends Render {
 			}
 		}
 		if (renderFaction != null) {
-			float alignBonus = factionBonusMap.containsKey(renderFaction) ? factionBonusMap.get(renderFaction) : 0.0f;
+			float alignBonus = factionBonusMap.getOrDefault(renderFaction, 0.0f);
 			boolean showAlign = alignBonus != 0.0f;
 			float conqBonus = bonusParticle.conquestBonus;
 			if (showAlign || showConquest) {
 				String title = bonusParticle.name;
 				boolean isViewingFaction = renderFaction == viewingFaction;
-				boolean showTitle = showAlign || showConquest && !bonusParticle.isHiredKill;
-				float particleHealth = (float) bonusParticle.particleAge / (float) bonusParticle.particleMaxAge;
+				boolean showTitle = showAlign || !bonusParticle.isHiredKill;
+				float particleHealth = (float) bonusParticle.particleAge / bonusParticle.particleMaxAge;
 				float alpha = particleHealth < 0.75f ? 1.0f : (1.0f - particleHealth) / 0.25f;
 				GL11.glPushMatrix();
 				GL11.glTranslatef((float) d, (float) d1, (float) d2);

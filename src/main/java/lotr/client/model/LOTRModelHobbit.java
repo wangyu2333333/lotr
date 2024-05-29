@@ -1,10 +1,9 @@
 package lotr.client.model;
 
-import org.lwjgl.opengl.GL11;
-
 import lotr.common.entity.npc.LOTREntityNPC;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
+import org.lwjgl.opengl.GL11;
 
 public class LOTRModelHobbit extends LOTRModelBiped {
 	public ModelRenderer bipedChest;
@@ -32,11 +31,11 @@ public class LOTRModelHobbit extends LOTRModelBiped {
 		if (!isArmor) {
 			ModelRenderer rightFoot = new ModelRenderer(this, 40, 32);
 			rightFoot.addBox(-2.0f, 10.0f, -5.0f, 4, 2, 3, f);
-			rightFoot.rotateAngleY = (float) Math.toRadians(10.0);
+			rightFoot.rotateAngleY = 0.17453292519943295f;
 			bipedRightLeg.addChild(rightFoot);
 			ModelRenderer leftFoot = new ModelRenderer(this, 40, 32);
 			leftFoot.addBox(-2.0f, 10.0f, -5.0f, 4, 2, 3, f);
-			leftFoot.rotateAngleY = (float) Math.toRadians(-10.0);
+			leftFoot.rotateAngleY = -0.17453292519943295f;
 			bipedLeftLeg.addChild(leftFoot);
 		}
 		bipedHead.rotationPointY += 4.0f;

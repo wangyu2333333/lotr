@@ -1,9 +1,11 @@
 package lotr.common.block;
 
-import java.util.*;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRConfig;
+import lotr.common.LOTRDimension;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
 import lotr.common.fac.LOTRFaction;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -12,15 +14,23 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.Teleporter;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
+
+import java.util.List;
+import java.util.Random;
 
 public abstract class LOTRBlockPortal extends BlockContainer {
 	public LOTRFaction[] portalFactions;
 	public Class teleporterClass;
 
-	public LOTRBlockPortal(LOTRFaction[] factions, Class c) {
+	protected LOTRBlockPortal(LOTRFaction[] factions, Class c) {
 		super(Material.portal);
 		portalFactions = factions;
 		teleporterClass = c;
@@ -54,13 +64,13 @@ public abstract class LOTRBlockPortal extends BlockContainer {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int i, int j) {
 		return Blocks.portal.getIcon(i, j);
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public Item getItem(World world, int i, int j, int k) {
 		return Item.getItemById(0);
 	}
@@ -127,7 +137,7 @@ public abstract class LOTRBlockPortal extends BlockContainer {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public void randomDisplayTick(World world, int i, int j, int k, Random random) {
 		if (random.nextInt(100) == 0) {
 			world.playSound(i + 0.5, j + 0.5, k + 0.5, "portal.portal", 0.5f, random.nextFloat() * 0.4f + 0.8f, false);
@@ -135,7 +145,7 @@ public abstract class LOTRBlockPortal extends BlockContainer {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconregister) {
 	}
 
@@ -153,9 +163,9 @@ public abstract class LOTRBlockPortal extends BlockContainer {
 	public abstract void setPlayerInPortal(EntityPlayer var1);
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public boolean shouldSideBeRendered(IBlockAccess world, int i, int j, int k, int side) {
-		return side != 0 ? false : super.shouldSideBeRendered(world, i, j, k, side);
+		return side == 0 && super.shouldSideBeRendered(world, i, j, k, side);
 	}
 
 	public void transferEntity(Entity entity, World world) {

@@ -1,15 +1,19 @@
 package lotr.common.inventory;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.recipe.LOTRMillstoneRecipes;
 import lotr.common.tileentity.LOTRTileEntityMillstone;
-import net.minecraft.entity.player.*;
-import net.minecraft.inventory.*;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 public class LOTRContainerMillstone extends Container {
 	public LOTRTileEntityMillstone theMillstone;
-	public int currentMillTime = 0;
+	public int currentMillTime;
 	public boolean isMilling;
 
 	public LOTRContainerMillstone(InventoryPlayer inv, LOTRTileEntityMillstone millstone) {
@@ -68,7 +72,7 @@ public class LOTRContainerMillstone extends Container {
 					return null;
 				}
 				slot.onSlotChange(itemstack1, itemstack);
-			} else if (i != 0 ? LOTRMillstoneRecipes.getMillingResult(itemstack1) != null ? !mergeItemStack(itemstack1, 0, 1, false) : i >= 2 && i < 29 ? !mergeItemStack(itemstack1, 29, 38, false) : i >= 29 && i < 38 && !mergeItemStack(itemstack1, 2, 29, false) : !mergeItemStack(itemstack1, 2, 38, false)) {
+			} else if (i != 0 ? LOTRMillstoneRecipes.getMillingResult(itemstack1) != null ? !mergeItemStack(itemstack1, 0, 1, false) : i < 29 ? !mergeItemStack(itemstack1, 29, 38, false) : i < 38 && !mergeItemStack(itemstack1, 2, 29, false) : !mergeItemStack(itemstack1, 2, 38, false)) {
 				return null;
 			}
 			if (itemstack1.stackSize == 0) {
@@ -84,7 +88,7 @@ public class LOTRContainerMillstone extends Container {
 		return itemstack;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void updateProgressBar(int i, int j) {
 		if (i == 0) {

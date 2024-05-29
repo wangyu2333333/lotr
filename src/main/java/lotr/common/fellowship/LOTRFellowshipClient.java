@@ -1,11 +1,10 @@
 package lotr.common.fellowship;
 
-import java.util.*;
-
 import com.mojang.authlib.GameProfile;
-
 import lotr.common.LOTRTitle;
 import net.minecraft.item.ItemStack;
+
+import java.util.*;
 
 public class LOTRFellowshipClient {
 	public UUID fellowshipID;
@@ -22,7 +21,7 @@ public class LOTRFellowshipClient {
 	public boolean preventHiredFF;
 	public boolean showMapLocations;
 
-	public LOTRFellowshipClient(UUID id, String name, boolean owned, boolean admin, GameProfile owner, List<GameProfile> members) {
+	public LOTRFellowshipClient(UUID id, String name, boolean owned, boolean admin, GameProfile owner, Iterable<GameProfile> members) {
 		fellowshipID = id;
 		fellowshipName = name;
 		isOwned = owned;
@@ -57,7 +56,7 @@ public class LOTRFellowshipClient {
 	}
 
 	public List<UUID> getAllPlayerUuids() {
-		ArrayList<UUID> allPlayers = new ArrayList<>();
+		List<UUID> allPlayers = new ArrayList<>();
 		allPlayers.add(ownerUUID);
 		allPlayers.addAll(memberUUIDs);
 		return allPlayers;
@@ -71,6 +70,10 @@ public class LOTRFellowshipClient {
 		return fellowshipIcon;
 	}
 
+	public void setIcon(ItemStack itemstack) {
+		fellowshipIcon = itemstack;
+	}
+
 	public List<GameProfile> getMemberProfiles() {
 		return getProfilesFor(memberUUIDs);
 	}
@@ -81,6 +84,10 @@ public class LOTRFellowshipClient {
 
 	public String getName() {
 		return fellowshipName;
+	}
+
+	public void setName(String name) {
+		fellowshipName = name;
 	}
 
 	public GameProfile getOwnerProfile() {
@@ -99,16 +106,24 @@ public class LOTRFellowshipClient {
 		return preventHiredFF;
 	}
 
+	public void setPreventHiredFriendlyFire(boolean flag) {
+		preventHiredFF = flag;
+	}
+
 	public boolean getPreventPVP() {
 		return preventPVP;
+	}
+
+	public void setPreventPVP(boolean flag) {
+		preventPVP = flag;
 	}
 
 	public GameProfile getProfileFor(UUID playerUuid) {
 		return new GameProfile(playerUuid, getUsernameFor(playerUuid));
 	}
 
-	public List<GameProfile> getProfilesFor(List<UUID> playerUuids) {
-		ArrayList<GameProfile> list = new ArrayList<>();
+	public List<GameProfile> getProfilesFor(Iterable<UUID> playerUuids) {
+		List<GameProfile> list = new ArrayList<>();
 		for (UUID playerUuid : playerUuids) {
 			list.add(getProfileFor(playerUuid));
 		}
@@ -117,6 +132,10 @@ public class LOTRFellowshipClient {
 
 	public boolean getShowMapLocations() {
 		return showMapLocations;
+	}
+
+	public void setShowMapLocations(boolean flag) {
+		showMapLocations = flag;
 	}
 
 	public LOTRTitle.PlayerTitle getTitleFor(UUID playerUuid) {
@@ -151,9 +170,7 @@ public class LOTRFellowshipClient {
 		if (memberUUIDs.contains(memberUuid)) {
 			memberUUIDs.remove(memberUuid);
 			usernameMap.remove(memberUuid);
-			if (adminUUIDs.contains(memberUuid)) {
-				adminUUIDs.remove(memberUuid);
-			}
+			adminUUIDs.remove(memberUuid);
 			titleMap.remove(memberUuid);
 		}
 	}
@@ -169,14 +186,6 @@ public class LOTRFellowshipClient {
 		adminUUIDs = admins;
 	}
 
-	public void setIcon(ItemStack itemstack) {
-		fellowshipIcon = itemstack;
-	}
-
-	public void setName(String name) {
-		fellowshipName = name;
-	}
-
 	public void setOwner(GameProfile newOwner, boolean owned) {
 		UUID prevOwnerUuid = ownerUUID;
 		UUID newOwnerUuid = newOwner.getId();
@@ -186,29 +195,13 @@ public class LOTRFellowshipClient {
 			}
 			ownerUUID = newOwnerUuid;
 			usernameMap.put(ownerUUID, newOwner.getName());
-			if (memberUUIDs.contains(newOwnerUuid)) {
-				memberUUIDs.remove(newOwnerUuid);
-			}
-			if (adminUUIDs.contains(newOwnerUuid)) {
-				adminUUIDs.remove(newOwnerUuid);
-			}
+			memberUUIDs.remove(newOwnerUuid);
+			adminUUIDs.remove(newOwnerUuid);
 			isOwned = owned;
 			if (isOwned) {
 				isAdminned = false;
 			}
 		}
-	}
-
-	public void setPreventHiredFriendlyFire(boolean flag) {
-		preventHiredFF = flag;
-	}
-
-	public void setPreventPVP(boolean flag) {
-		preventPVP = flag;
-	}
-
-	public void setShowMapLocations(boolean flag) {
-		showMapLocations = flag;
 	}
 
 	public void setTitles(Map<UUID, LOTRTitle.PlayerTitle> titles) {

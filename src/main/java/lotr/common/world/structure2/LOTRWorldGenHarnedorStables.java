@@ -1,15 +1,17 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
-import lotr.common.*;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
 import lotr.common.entity.animal.LOTREntityHorse;
 import lotr.common.entity.npc.LOTREntityHarnedhrim;
 import lotr.common.item.LOTRItemBanner;
 import lotr.common.world.structure.LOTRChestContents;
-import net.minecraft.init.*;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenHarnedorStables extends LOTRWorldGenHarnedorStructure {
 	public LOTRWorldGenHarnedorStables(boolean flag) {
@@ -19,7 +21,7 @@ public class LOTRWorldGenHarnedorStables extends LOTRWorldGenHarnedorStructure {
 	@Override
 	public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
 		int j1;
-		this.setOriginAndRotation(world, i, j, k, rotation, 9);
+		setOriginAndRotation(world, i, j, k, rotation, 9);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			int minHeight = 0;
@@ -76,13 +78,13 @@ public class LOTRWorldGenHarnedorStables extends LOTRWorldGenHarnedorStructure {
 		spawnItemFrame(world, 2, 2, 0, 3, new ItemStack(Items.lead));
 		setBlockAndMetadata(world, -3, 1, 6, bedBlock, 0);
 		setBlockAndMetadata(world, -3, 1, 7, bedBlock, 8);
-		this.placeChest(world, random, -4, 1, 6, LOTRMod.chestBasket, 4, LOTRChestContents.HARNENNOR_HOUSE);
+		placeChest(world, random, -4, 1, 6, LOTRMod.chestBasket, 4, LOTRChestContents.HARNENNOR_HOUSE);
 		placePlateWithCertainty(world, random, 4, 2, 6, LOTRMod.woodPlateBlock, LOTRFoods.HARNEDOR);
-		this.placeMug(world, random, 4, 2, 5, 1, LOTRFoods.HARNEDOR_DRINK);
+		placeMug(world, random, 4, 2, 5, 1, LOTRFoods.HARNEDOR_DRINK);
 		LOTREntityHarnedhrim harnedhrim = new LOTREntityHarnedhrim(world);
 		spawnNPCAndSetHome(harnedhrim, world, 0, 1, 0, 12);
-		for (int k1 : new int[] { -2, 2 }) {
-			for (int i1 : new int[] { -4, 4 }) {
+		for (int k1 : new int[]{-2, 2}) {
+			for (int i1 : new int[]{-4, 4}) {
 				int j12 = 1;
 				LOTREntityHorse horse = new LOTREntityHorse(world);
 				spawnNPCAndSetHome(horse, world, i1, j12, k1, 0);

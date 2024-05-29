@@ -1,20 +1,25 @@
 package lotr.common.entity.npc;
 
-import java.util.List;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
-import lotr.common.entity.ai.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRMod;
+import lotr.common.entity.ai.LOTREntityAIBossJumpAttack;
+import lotr.common.entity.ai.LOTREntityAIRangedAttack;
 import lotr.common.entity.projectile.LOTREntityThrownRock;
 import lotr.common.item.LOTRItemBossTrophy;
 import lotr.common.world.structure.LOTRChestContents;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 public class LOTREntityMountainTrollChieftain extends LOTREntityMountainTroll implements LOTRBoss {
 	public int trollDeathTick;
@@ -52,10 +57,10 @@ public class LOTREntityMountainTrollChieftain extends LOTREntityMountainTroll im
 			setTrollArmorLevel(getTrollArmorLevel() - 1);
 			if (getTrollArmorLevel() == 0) {
 				double speed = getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue();
-				getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(speed *= 1.5);
+				getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(speed * 1.5);
 			}
 			double maxHealth = getEntityAttribute(SharedMonsterAttributes.maxHealth).getAttributeValue();
-			getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(maxHealth *= 2.0);
+			getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(maxHealth * 2.0);
 			setHealth(getMaxHealth());
 			worldObj.setEntityState(this, (byte) 21);
 		}
@@ -144,6 +149,10 @@ public class LOTREntityMountainTrollChieftain extends LOTREntityMountainTroll im
 		return dataWatcher.getWatchableObjectInt(23);
 	}
 
+	public void setHealingEntityID(int i) {
+		dataWatcher.updateObject(23, i);
+	}
+
 	public float getSpawningOffset(float f) {
 		float f1 = (getTrollSpawnTick() + f) / 100.0f;
 		f1 = Math.min(f1, 1.0f);
@@ -157,7 +166,7 @@ public class LOTREntityMountainTrollChieftain extends LOTREntityMountainTroll im
 		f *= 0.4f;
 		int maxNearbyTrolls = 5;
 		List nearbyTrolls = worldObj.getEntitiesWithinAABB(LOTREntityTroll.class, boundingBox.expand(24.0, 8.0, 24.0));
-		float nearbyModifier = (float) (maxNearbyTrolls - nearbyTrolls.size()) / (float) maxNearbyTrolls;
+		float nearbyModifier = (float) (maxNearbyTrolls - nearbyTrolls.size()) / maxNearbyTrolls;
 		f *= nearbyModifier;
 		if (rand.nextFloat() < f) {
 			rock.setSpawnsTroll(true);
@@ -174,6 +183,10 @@ public class LOTREntityMountainTrollChieftain extends LOTREntityMountainTroll im
 		return dataWatcher.getWatchableObjectByte(24);
 	}
 
+	public void setTrollArmorLevel(int i) {
+		dataWatcher.updateObject(24, (byte) i);
+	}
+
 	@Override
 	public EntityAIBase getTrollRangedAttackAI() {
 		return new LOTREntityAIRangedAttack(this, 1.2, 20, 50, 24.0f);
@@ -188,7 +201,11 @@ public class LOTREntityMountainTrollChieftain extends LOTREntityMountainTroll im
 		return dataWatcher.getWatchableObjectShort(22);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	public void setTrollSpawnTick(int i) {
+		dataWatcher.updateObject(22, (short) i);
+	}
+
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void handleHealthUpdate(byte b) {
 		if (b == 20) {
@@ -234,17 +251,17 @@ public class LOTREntityMountainTrollChieftain extends LOTREntityMountainTroll im
 		LOTREntityThrownRock rock;
 		super.onLivingUpdate();
 		if (getTrollSpawnTick() < 100) {
-			if (!worldObj.isRemote) {
-				setTrollSpawnTick(getTrollSpawnTick() + 1);
-				if (getTrollSpawnTick() == 100) {
-					bossInfo.doJumpAttack(1.5);
-				}
-			} else {
+			if (worldObj.isRemote) {
 				for (int l = 0; l < 32; ++l) {
 					double d = posX + rand.nextGaussian() * width * 0.5;
 					d1 = posY + rand.nextDouble() * height + getSpawningOffset(0.0f);
 					d2 = posZ + rand.nextGaussian() * width * 0.5;
 					LOTRMod.proxy.spawnParticle("mtcSpawn", d, d1, d2, 0.0, 0.0, 0.0);
+				}
+			} else {
+				setTrollSpawnTick(getTrollSpawnTick() + 1);
+				if (getTrollSpawnTick() == 100) {
+					bossInfo.doJumpAttack(1.5);
 				}
 			}
 		}
@@ -285,7 +302,15 @@ public class LOTREntityMountainTrollChieftain extends LOTREntityMountainTroll im
 		if (getHealingEntityID() != -1) {
 			Entity entity = worldObj.getEntityByID(getHealingEntityID());
 			if (entity instanceof LOTREntityTroll && entity.isEntityAlive()) {
-				if (!worldObj.isRemote) {
+				if (worldObj.isRemote) {
+					double d = entity.posX;
+					d1 = entity.posY + entity.height / 2.0;
+					d2 = entity.posZ;
+					double d3 = posX - d;
+					double d4 = posY + height / 2.0 - d1;
+					double d5 = posZ - d2;
+					LOTRMod.proxy.spawnParticle("mtcHeal", d, d1, d2, d3 / 30.0, d4 / 30.0, d5 / 30.0);
+				} else {
 					if (ticksExisted % 20 == 0) {
 						heal(3.0f);
 						entity.attackEntityFrom(DamageSource.generic, 3.0f);
@@ -294,14 +319,6 @@ public class LOTREntityMountainTrollChieftain extends LOTREntityMountainTroll im
 							setHealingEntityID(-1);
 						}
 					}
-				} else {
-					double d = entity.posX;
-					d1 = entity.posY + entity.height / 2.0;
-					d2 = entity.posZ;
-					double d3 = posX - d;
-					double d4 = posY + height / 2.0 - d1;
-					double d5 = posZ - d2;
-					LOTRMod.proxy.spawnParticle("mtcHeal", d, d1, d2, d3 /= 30.0, d4 /= 30.0, d5 /= 30.0);
 				}
 			} else if (!worldObj.isRemote) {
 				setHealingEntityID(-1);
@@ -332,18 +349,6 @@ public class LOTREntityMountainTrollChieftain extends LOTREntityMountainTroll im
 		if (nbt.hasKey("TrollArmorLevel")) {
 			setTrollArmorLevel(nbt.getInteger("TrollArmorLevel"));
 		}
-	}
-
-	public void setHealingEntityID(int i) {
-		dataWatcher.updateObject(23, i);
-	}
-
-	public void setTrollArmorLevel(int i) {
-		dataWatcher.updateObject(24, (byte) i);
-	}
-
-	public void setTrollSpawnTick(int i) {
-		dataWatcher.updateObject(22, (short) i);
 	}
 
 	@Override

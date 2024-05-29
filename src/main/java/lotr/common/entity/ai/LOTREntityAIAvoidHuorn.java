@@ -1,15 +1,17 @@
 package lotr.common.entity.ai;
 
-import java.lang.reflect.Field;
-
 import cpw.mods.fml.common.FMLLog;
 import lotr.common.LOTRReflection;
 import lotr.common.entity.npc.LOTREntityHuornBase;
 import net.minecraft.command.IEntitySelector;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.ai.EntityAIAvoidEntity;
 
+import java.lang.reflect.Field;
+
 public class LOTREntityAIAvoidHuorn extends EntityAIAvoidEntity {
+	@SuppressWarnings("Convert2Lambda")
 	public LOTREntityAIAvoidHuorn(EntityCreature entity, float range, double near, double far) {
 		super(entity, LOTREntityHuornBase.class, range, near, far);
 		try {

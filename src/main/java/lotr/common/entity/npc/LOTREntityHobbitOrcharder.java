@@ -1,6 +1,8 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
 import lotr.common.entity.LOTREntityUtils;
 import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
 import lotr.common.item.LOTRItemLeatherHat;
@@ -8,7 +10,8 @@ import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.ai.EntityAIPanic;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.*;
+import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class LOTREntityHobbitOrcharder extends LOTREntityHobbit implements LOTRTradeable {
@@ -16,7 +19,7 @@ public class LOTREntityHobbitOrcharder extends LOTREntityHobbit implements LOTRT
 		super(world);
 		LOTREntityUtils.removeAITask(this, EntityAIPanic.class);
 		tasks.addTask(2, new LOTREntityAIAttackOnCollide(this, 1.2, false));
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 		isNPCPersistent = false;
 	}
 
@@ -63,17 +66,17 @@ public class LOTREntityHobbitOrcharder extends LOTREntityHobbit implements LOTRT
 		setCurrentItemOrArmor(4, hat);
 		int i = rand.nextInt(3);
 		switch (i) {
-		case 0:
-			npcItemsInv.setMeleeWeapon(new ItemStack(Items.iron_axe));
-			break;
-		case 1:
-			npcItemsInv.setMeleeWeapon(new ItemStack(Items.stone_axe));
-			break;
-		case 2:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.axeBronze));
-			break;
-		default:
-			break;
+			case 0:
+				npcItemsInv.setMeleeWeapon(new ItemStack(Items.iron_axe));
+				break;
+			case 1:
+				npcItemsInv.setMeleeWeapon(new ItemStack(Items.stone_axe));
+				break;
+			case 2:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.axeBronze));
+				break;
+			default:
+				break;
 		}
 		npcItemsInv.setIdleItem(npcItemsInv.getMeleeWeapon());
 		return data;

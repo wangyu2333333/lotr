@@ -1,22 +1,28 @@
 package lotr.common.entity.item;
 
-import java.util.List;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRBannerProtection;
+import lotr.common.LOTRMod;
 import lotr.common.item.LOTRItemBanner;
 import net.minecraft.block.Block;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityHanging;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.Direction;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 public class LOTREntityBannerWall extends EntityHanging {
 	public NBTTagCompound protectData;
-	public boolean updatedClientBB = false;
+	public boolean updatedClientBB;
 
 	public LOTREntityBannerWall(World world) {
 		super(world);
@@ -58,12 +64,20 @@ public class LOTREntityBannerWall extends EntityHanging {
 		return LOTRItemBanner.BannerType.forID(getBannerTypeID());
 	}
 
+	public void setBannerType(LOTRItemBanner.BannerType type) {
+		setBannerTypeID(type.bannerID);
+	}
+
 	public int getBannerTypeID() {
 		return dataWatcher.getWatchableObjectByte(18);
 	}
 
+	public void setBannerTypeID(int i) {
+		dataWatcher.updateObject(18, (byte) i);
+	}
+
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public int getBrightnessForRender(float f) {
 		int i;
 		int k;
@@ -104,10 +118,7 @@ public class LOTREntityBannerWall extends EntityHanging {
 	@Override
 	public void onBroken(Entity entity) {
 		worldObj.playSoundAtEntity(this, Blocks.planks.stepSound.getBreakSound(), (Blocks.planks.stepSound.getVolume() + 1.0f) / 2.0f, Blocks.planks.stepSound.getPitch() * 0.8f);
-		boolean flag = true;
-		if (entity instanceof EntityPlayer && ((EntityPlayer) entity).capabilities.isCreativeMode) {
-			flag = false;
-		}
+		boolean flag = !(entity instanceof EntityPlayer) || !((EntityPlayer) entity).capabilities.isCreativeMode;
 		if (flag) {
 			entityDropItem(getBannerItem(), 0.0f);
 		}
@@ -152,14 +163,6 @@ public class LOTREntityBannerWall extends EntityHanging {
 		if (nbt.hasKey("ProtectData")) {
 			protectData = nbt.getCompoundTag("ProtectData");
 		}
-	}
-
-	public void setBannerType(LOTRItemBanner.BannerType type) {
-		setBannerTypeID(type.bannerID);
-	}
-
-	public void setBannerTypeID(int i) {
-		dataWatcher.updateObject(18, (byte) i);
 	}
 
 	@Override

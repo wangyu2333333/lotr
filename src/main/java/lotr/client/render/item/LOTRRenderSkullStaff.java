@@ -1,22 +1,23 @@
 package lotr.client.render.item;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.*;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
+import org.lwjgl.opengl.GL11;
 
 public class LOTRRenderSkullStaff implements IItemRenderer {
 	public static ModelBase staffModel = new ModelBase() {
 		public ModelRenderer staff = new ModelRenderer(this, 0, 0);
+
 		{
 			staff.addBox(-0.5f, 8.0f, -6.0f, 1, 1, 28, 0.0f);
 			staff.addBox(-2.5f, 6.0f, -11.0f, 5, 5, 5, 0.0f);
-			staff.rotateAngleY = (float) Math.toRadians(90.0);
-			staff.rotateAngleZ = (float) Math.toRadians(-20.0);
+			staff.rotateAngleY = 1.5707963267948966f;
+			staff.rotateAngleZ = -0.3490658503988659f;
 		}
 
 		@Override

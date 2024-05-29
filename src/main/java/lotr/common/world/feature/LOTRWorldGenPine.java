@@ -1,21 +1,22 @@
 package lotr.common.world.feature;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
+import net.minecraft.util.Direction;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenAbstractTree;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.util.Random;
+
 public class LOTRWorldGenPine extends WorldGenAbstractTree {
 	public Block woodBlock = LOTRMod.wood5;
-	public int woodMeta = 0;
+	public int woodMeta;
 	public Block leafBlock = LOTRMod.leaves5;
-	public int leafMeta = 0;
+	public int leafMeta;
 	public int minHeight = 12;
 	public int maxHeight = 24;
 
@@ -49,7 +50,7 @@ public class LOTRWorldGenPine extends WorldGenAbstractTree {
 		} else {
 			flag = false;
 		}
-		if (!(below = world.getBlock(i, j - 1, k)).canSustainPlant((IBlockAccess) world, i, j - 1, k, ForgeDirection.UP, (IPlantable) Blocks.sapling)) {
+		if (!(below = world.getBlock(i, j - 1, k)).canSustainPlant(world, i, j - 1, k, ForgeDirection.UP, (IPlantable) Blocks.sapling)) {
 			flag = false;
 		}
 		if (!flag) {
@@ -73,9 +74,6 @@ public class LOTRWorldGenPine extends WorldGenAbstractTree {
 				generateLeafLayer(world, random, i, leafHeight, k, 2);
 				generateLeafLayer(world, random, i, leafHeight - 1, k, 1);
 				leafHeight -= 3;
-				continue;
-			}
-			if (r != 2) {
 				continue;
 			}
 			leafHeight--;

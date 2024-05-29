@@ -1,8 +1,8 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenRangerVillagePalisade extends LOTRWorldGenRangerStructure {
 	public LOTRWorldGenRangerVillagePalisade(boolean flag) {
@@ -13,7 +13,7 @@ public class LOTRWorldGenRangerVillagePalisade extends LOTRWorldGenRangerStructu
 	public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
 		int k1;
 		int i1;
-		this.setOriginAndRotation(world, i, j, k, rotation, 0);
+		setOriginAndRotation(world, i, j, k, rotation, 0);
 		setupRandomBlocks(random);
 		if (restrictions && !isSurface(world, i1 = 0, getTopBlock(world, i1, k1 = 0) - 1, k1)) {
 			return false;

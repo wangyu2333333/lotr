@@ -1,11 +1,10 @@
 package lotr.common.world.spawning;
 
-import java.util.Random;
-
 import cpw.mods.fml.common.eventhandler.Event;
 import lotr.common.LOTRLevelData;
 import lotr.common.entity.LOTREntities;
-import lotr.common.entity.npc.*;
+import lotr.common.entity.npc.LOTREntityNPC;
+import lotr.common.entity.npc.LOTRTravellingTrader;
 import lotr.common.world.biome.LOTRBiome;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityList;
@@ -15,6 +14,8 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.event.ForgeEventFactory;
+
+import java.util.Random;
 
 public class LOTRTravellingTraderSpawner {
 	public static Random rand = new Random();
@@ -27,6 +28,12 @@ public class LOTRTravellingTraderSpawner {
 		entityClassName = LOTREntities.getStringFromClass(theEntityClass);
 	}
 
+	public static int getRandomTraderTime() {
+		float minHours = 0.8f;
+		float maxHours = 10.0f;
+		return MathHelper.getRandomIntegerInRange(rand, (int) (minHours * 3600.0f) * 20, (int) (maxHours * 3600.0f) * 20);
+	}
+
 	public void performSpawning(World world) {
 		if (timeUntilTrader > 0) {
 			--timeUntilTrader;
@@ -34,7 +41,8 @@ public class LOTRTravellingTraderSpawner {
 			boolean spawned = false;
 			LOTREntityNPC entityTrader = (LOTREntityNPC) EntityList.createEntityByName(LOTREntities.getStringFromClass(theEntityClass), world);
 			LOTRTravellingTrader trader = (LOTRTravellingTrader) entityTrader;
-			block0: for (int players = 0; players < world.playerEntities.size(); ++players) {
+			block0:
+			for (int players = 0; players < world.playerEntities.size(); ++players) {
 				EntityPlayer entityplayer = (EntityPlayer) world.playerEntities.get(players);
 				if (LOTRLevelData.getData(entityplayer).getAlignment(entityTrader.getFaction()) < 0.0f) {
 					continue;
@@ -66,7 +74,7 @@ public class LOTRTravellingTraderSpawner {
 					entityTrader.setShouldTraderRespawn(false);
 					trader.startTraderVisiting(entityplayer);
 					spawned = true;
-					timeUntilTrader = LOTRTravellingTraderSpawner.getRandomTraderTime();
+					timeUntilTrader = getRandomTraderTime();
 					LOTRLevelData.markDirty();
 					break block0;
 				}
@@ -78,16 +86,10 @@ public class LOTRTravellingTraderSpawner {
 	}
 
 	public void readFromNBT(NBTTagCompound nbt) {
-		timeUntilTrader = nbt.hasKey("TraderTime") ? nbt.getInteger("TraderTime") : LOTRTravellingTraderSpawner.getRandomTraderTime();
+		timeUntilTrader = nbt.hasKey("TraderTime") ? nbt.getInteger("TraderTime") : getRandomTraderTime();
 	}
 
 	public void writeToNBT(NBTTagCompound nbt) {
 		nbt.setInteger("TraderTime", timeUntilTrader);
-	}
-
-	public static int getRandomTraderTime() {
-		float minHours = 0.8f;
-		float maxHours = 10.0f;
-		return MathHelper.getRandomIntegerInRange(rand, (int) (minHours * 3600.0f) * 20, (int) (maxHours * 3600.0f) * 20);
 	}
 }

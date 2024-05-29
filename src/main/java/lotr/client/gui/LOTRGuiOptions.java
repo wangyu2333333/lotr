@@ -1,11 +1,13 @@
 package lotr.client.gui;
 
-import org.lwjgl.opengl.GL11;
-
-import lotr.common.*;
-import lotr.common.network.*;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRPlayerData;
+import lotr.common.network.LOTRPacketHandler;
+import lotr.common.network.LOTRPacketSetOption;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.StatCollector;
+import org.lwjgl.opengl.GL11;
 
 public class LOTRGuiOptions extends LOTRGuiMenuBase {
 	public LOTRGuiButtonOptions buttonFriendlyFire;
@@ -19,7 +21,7 @@ public class LOTRGuiOptions extends LOTRGuiMenuBase {
 	public void actionPerformed(GuiButton button) {
 		if (button.enabled) {
 			if (button instanceof LOTRGuiButtonOptions) {
-				LOTRPacketSetOption packet = new LOTRPacketSetOption(button.id);
+				IMessage packet = new LOTRPacketSetOption(button.id);
 				LOTRPacketHandler.networkWrapper.sendToServer(packet);
 			} else {
 				super.actionPerformed(button);

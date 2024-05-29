@@ -1,18 +1,26 @@
 package lotr.common.entity.npc;
 
-import com.google.common.base.Predicate;
-
-import lotr.common.*;
-import lotr.common.entity.ai.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRMod;
+import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
+import lotr.common.entity.ai.LOTREntityAIBanditFlee;
+import lotr.common.entity.ai.LOTREntityAIBanditSteal;
 import lotr.common.inventory.LOTRInventoryNPC;
-import lotr.common.item.*;
-import lotr.common.quest.*;
+import lotr.common.item.LOTRItemCoin;
+import lotr.common.item.LOTRItemGem;
+import lotr.common.item.LOTRItemRing;
+import lotr.common.quest.LOTRMiniQuest;
+import lotr.common.quest.LOTRMiniQuestFactory;
+import lotr.common.quest.MiniQuestSelector;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
 
 public class LOTREntityRuffianSpy extends LOTREntityBreeRuffian implements IBandit {
@@ -21,35 +29,27 @@ public class LOTREntityRuffianSpy extends LOTREntityBreeRuffian implements IBand
 
 	public LOTREntityRuffianSpy(World world) {
 		super(world);
-		questInfo.setBountyHelpPredicate(new Predicate<EntityPlayer>() {
-
-			@Override
-			public boolean apply(EntityPlayer player) {
-				ItemStack itemstack = player.getHeldItem();
-				if (LOTRItemCoin.getStackValue(itemstack, true) > 0) {
-					return true;
-				}
-				if (itemstack != null) {
-					Item item = itemstack.getItem();
-					return item == Items.gold_ingot || item == LOTRMod.silver || item instanceof LOTRItemGem || item instanceof LOTRItemRing;
-				}
-				return false;
-			}
-		});
-		questInfo.setBountyHelpConsumer(new Predicate<EntityPlayer>() {
-
-			@Override
-			public boolean apply(EntityPlayer player) {
-				ItemStack itemstack;
-				if (!player.capabilities.isCreativeMode && (itemstack = player.getHeldItem()) != null) {
-					--itemstack.stackSize;
-					if (itemstack.stackSize <= 0) {
-						player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
-					}
-				}
-				LOTREntityRuffianSpy.this.playTradeSound();
+		questInfo.setBountyHelpPredicate(player -> {
+			ItemStack itemstack = player.getHeldItem();
+			if (LOTRItemCoin.getStackValue(itemstack, true) > 0) {
 				return true;
 			}
+			if (itemstack != null) {
+				Item item = itemstack.getItem();
+				return item == Items.gold_ingot || item == LOTRMod.silver || item instanceof LOTRItemGem || item instanceof LOTRItemRing;
+			}
+			return false;
+		});
+		questInfo.setBountyHelpConsumer(player -> {
+			ItemStack itemstack;
+			if (!player.capabilities.isCreativeMode && (itemstack = player.getHeldItem()) != null) {
+				--itemstack.stackSize;
+				if (itemstack.stackSize <= 0) {
+					player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+				}
+			}
+			playTradeSound();
+			return true;
 		});
 		questInfo.setActiveBountySelector(new MiniQuestSelector.BountyActiveAnyFaction());
 	}

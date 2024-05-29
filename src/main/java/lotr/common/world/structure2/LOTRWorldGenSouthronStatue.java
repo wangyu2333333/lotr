@@ -1,9 +1,9 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenSouthronStatue extends LOTRWorldGenSouthronStructure {
 	public LOTRWorldGenSouthronStatue(boolean flag) {
@@ -36,7 +36,7 @@ public class LOTRWorldGenSouthronStatue extends LOTRWorldGenSouthronStructure {
 	public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
 		int k1;
 		int i1;
-		this.setOriginAndRotation(world, i, j, k, rotation, 6);
+		setOriginAndRotation(world, i, j, k, rotation, 6);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			for (i1 = -5; i1 <= 5; ++i1) {
@@ -72,7 +72,7 @@ public class LOTRWorldGenSouthronStatue extends LOTRWorldGenSouthronStructure {
 	}
 
 	public String getRandomStatueStrscan(Random random) {
-		String[] statues = { "mumak", "bird", "snake" };
+		String[] statues = {"mumak", "bird", "snake"};
 		return "southron_statue_" + statues[random.nextInt(statues.length)];
 	}
 

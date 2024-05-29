@@ -1,21 +1,26 @@
 package lotr.common.block;
 
-import java.util.Random;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
-import net.minecraft.block.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRCreativeTabs;
+import lotr.common.LOTRMod;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockStem;
+import net.minecraft.block.IGrowable;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.util.IIcon;
-import net.minecraft.world.*;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.util.Random;
+
 public class LOTRBlockMudGrass extends Block implements IGrowable {
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon iconTop;
 
 	public LOTRBlockMudGrass() {
@@ -31,7 +36,7 @@ public class LOTRBlockMudGrass extends Block implements IGrowable {
 		return Blocks.grass.canSustainPlant(world, i, j, k, direction, plantable) || plantable instanceof BlockStem;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public int colorMultiplier(IBlockAccess world, int i, int j, int k) {
 		return 16777215;
@@ -52,20 +57,20 @@ public class LOTRBlockMudGrass extends Block implements IGrowable {
 		Blocks.grass.func_149853_b(world, random, i, j, k);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public int getBlockColor() {
 		return 16777215;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
 		if (i == 1) {
 			return iconTop;
 		}
 		if (i == 0) {
-			return LOTRMod.mud.getBlockTextureFromSide(i);
+			return LOTRMod.mud.getBlockTextureFromSide(0);
 		}
 		return blockIcon;
 	}
@@ -75,7 +80,7 @@ public class LOTRBlockMudGrass extends Block implements IGrowable {
 		return LOTRMod.mud.getItemDropped(0, random, j);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public int getRenderColor(int i) {
 		return 16777215;
@@ -86,7 +91,7 @@ public class LOTRBlockMudGrass extends Block implements IGrowable {
 		world.setBlock(i, j, k, LOTRMod.mud, 0, 2);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
 		blockIcon = iconregister.registerIcon(getTextureName() + "_side");

@@ -1,10 +1,10 @@
 package lotr.client.fx;
 
-import java.awt.Color;
-
 import net.minecraft.client.particle.EntitySpellParticleFX;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+
+import java.awt.*;
 
 public class LOTREntityRiverWaterFX extends EntitySpellParticleFX {
 	public LOTREntityRiverWaterFX(World world, double d, double d1, double d2, double d3, double d4, double d5, int color) {
@@ -27,6 +27,6 @@ public class LOTREntityRiverWaterFX extends EntitySpellParticleFX {
 	@Override
 	public void onUpdate() {
 		super.onUpdate();
-		particleAlpha = 0.5f + 0.5f * ((float) particleAge / (float) particleMaxAge);
+		particleAlpha = 0.5f + 0.5f * ((float) particleAge / particleMaxAge);
 	}
 }

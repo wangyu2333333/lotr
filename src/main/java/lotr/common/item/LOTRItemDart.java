@@ -5,11 +5,12 @@ import lotr.common.dispenser.LOTRDispenseDart;
 import lotr.common.entity.projectile.LOTREntityDart;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class LOTRItemDart extends Item {
-	public boolean isPoisoned = false;
+	public boolean isPoisoned;
 
 	public LOTRItemDart() {
 		setCreativeTab(LOTRCreativeTabs.tabCombat);

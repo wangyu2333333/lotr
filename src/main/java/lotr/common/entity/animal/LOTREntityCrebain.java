@@ -1,6 +1,7 @@
 package lotr.common.entity.animal;
 
-import net.minecraft.entity.*;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.world.World;
 
 public class LOTREntityCrebain extends LOTREntityBird {
@@ -30,7 +31,7 @@ public class LOTREntityCrebain extends LOTREntityBird {
 	@Override
 	public IEntityLivingData onSpawnWithEgg(IEntityLivingData data) {
 		data = super.onSpawnWithEgg(data);
-		this.setBirdType(LOTREntityBird.BirdType.CROW);
+		setBirdType(LOTREntityBird.BirdType.CROW);
 		return data;
 	}
 }

@@ -1,21 +1,30 @@
 package lotr.common.world.biome;
 
-import java.util.Random;
-
-import lotr.common.*;
-import lotr.common.entity.animal.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRMod;
+import lotr.common.entity.animal.LOTREntityBear;
+import lotr.common.entity.animal.LOTREntityHorse;
 import lotr.common.entity.npc.*;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
 import lotr.common.world.feature.LOTRTreeType;
-import lotr.common.world.map.*;
-import lotr.common.world.spawning.*;
-import lotr.common.world.structure.*;
+import lotr.common.world.map.LOTRRoadType;
+import lotr.common.world.map.LOTRWaypoint;
+import lotr.common.world.spawning.LOTRBiomeSpawnList;
+import lotr.common.world.spawning.LOTREventSpawner;
+import lotr.common.world.spawning.LOTRInvasions;
+import lotr.common.world.spawning.LOTRSpawnList;
+import lotr.common.world.structure.LOTRWorldGenGondorRuin;
+import lotr.common.world.structure.LOTRWorldGenGondorRuins;
+import lotr.common.world.structure.LOTRWorldGenRuinedGondorTower;
 import lotr.common.world.structure2.*;
 import lotr.common.world.village.LOTRVillageGenGondor;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
-import net.minecraft.world.gen.feature.*;
+import net.minecraft.world.gen.feature.WorldGenFlowers;
+import net.minecraft.world.gen.feature.WorldGenMinable;
+
+import java.util.Random;
 
 public class LOTRBiomeGenGondor extends LOTRBiome {
 	public LOTRBiomeGenGondor(int i, boolean major) {
@@ -59,10 +68,10 @@ public class LOTRBiomeGenGondor extends LOTRBiome {
 		arrspawnListContainer7[0] = LOTRBiomeSpawnList.entry(LOTRSpawnList.HALF_TROLLS, 10);
 		npcSpawnList.newFactionList(0).add(arrspawnListContainer7);
 		addBiomeVariantSet(LOTRBiomeVariant.SET_NORMAL_OAK);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_BEECH, 0.5f);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_BIRCH, 0.5f);
-		this.addBiomeVariant(LOTRBiomeVariant.ORCHARD_APPLE_PEAR, 0.2f);
-		this.addBiomeVariant(LOTRBiomeVariant.ORCHARD_PLUM, 0.2f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_BEECH, 0.5f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_BIRCH, 0.5f);
+		addBiomeVariant(LOTRBiomeVariant.ORCHARD_APPLE_PEAR, 0.2f);
+		addBiomeVariant(LOTRBiomeVariant.ORCHARD_PLUM, 0.2f);
 		decorator.addSoil(new WorldGenMinable(LOTRMod.rock, 1, 60, Blocks.stone), 2.0f, 0, 64);
 		decorator.setTreeCluster(10, 30);
 		decorator.willowPerChunk = 1;

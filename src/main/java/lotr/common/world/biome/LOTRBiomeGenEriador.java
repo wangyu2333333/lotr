@@ -1,21 +1,28 @@
 package lotr.common.world.biome;
 
-import java.util.Random;
-
-import lotr.common.*;
-import lotr.common.entity.animal.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRMod;
+import lotr.common.entity.animal.LOTREntityBear;
+import lotr.common.entity.animal.LOTREntityHorse;
 import lotr.common.entity.npc.*;
 import lotr.common.world.LOTRWorldChunkManager;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
-import lotr.common.world.feature.*;
-import lotr.common.world.map.*;
-import lotr.common.world.spawning.*;
+import lotr.common.world.feature.LOTRTreeType;
+import lotr.common.world.feature.LOTRWorldGenBiomeFlowers;
+import lotr.common.world.map.LOTRRoadType;
+import lotr.common.world.map.LOTRWaypoint;
+import lotr.common.world.spawning.LOTRBiomeSpawnList;
+import lotr.common.world.spawning.LOTREventSpawner;
+import lotr.common.world.spawning.LOTRInvasions;
+import lotr.common.world.spawning.LOTRSpawnList;
 import lotr.common.world.structure.LOTRWorldGenRuinedDunedainTower;
 import lotr.common.world.structure2.*;
 import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.gen.NoiseGeneratorPerlin;
+
+import java.util.Random;
 
 public class LOTRBiomeGenEriador extends LOTRBiome {
 	public static NoiseGeneratorPerlin lavenderNoise = new NoiseGeneratorPerlin(new Random(2571548905158015L), 1);
@@ -45,14 +52,14 @@ public class LOTRBiomeGenEriador extends LOTRBiome {
 		arrspawnListContainer5[1] = LOTRBiomeSpawnList.entry(LOTRSpawnList.RIVENDELL_WARRIORS, 10);
 		npcSpawnList.newFactionList(0).add(arrspawnListContainer5);
 		addBiomeVariantSet(LOTRBiomeVariant.SET_NORMAL_OAK);
-		this.addBiomeVariant(LOTRBiomeVariant.SCRUBLAND, 1.0f);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS_SCRUBLAND, 1.0f);
-		this.addBiomeVariant(LOTRBiomeVariant.MOUNTAIN);
-		this.addBiomeVariant(LOTRBiomeVariant.WASTELAND);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_ASPEN, 0.2f);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_BEECH, 0.2f);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_BIRCH, 0.2f);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_MAPLE, 0.2f);
+		addBiomeVariant(LOTRBiomeVariant.SCRUBLAND, 1.0f);
+		addBiomeVariant(LOTRBiomeVariant.HILLS_SCRUBLAND, 1.0f);
+		addBiomeVariant(LOTRBiomeVariant.MOUNTAIN);
+		addBiomeVariant(LOTRBiomeVariant.WASTELAND);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_ASPEN, 0.2f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_BEECH, 0.2f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_BIRCH, 0.2f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_MAPLE, 0.2f);
 		decorator.setTreeCluster(8, 12);
 		decorator.willowPerChunk = 1;
 		decorator.grassPerChunk = 9;

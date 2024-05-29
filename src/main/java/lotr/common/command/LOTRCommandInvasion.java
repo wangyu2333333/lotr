@@ -1,12 +1,14 @@
 package lotr.common.command;
 
-import java.util.List;
-
 import lotr.common.entity.LOTREntityInvasionSpawner;
 import lotr.common.world.spawning.LOTRInvasions;
-import net.minecraft.command.*;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 public class LOTRCommandInvasion extends CommandBase {
 	@Override
@@ -30,11 +32,6 @@ public class LOTRCommandInvasion extends CommandBase {
 	@Override
 	public int getRequiredPermissionLevel() {
 		return 2;
-	}
-
-	@Override
-	public boolean isUsernameIndex(String[] args, int i) {
-		return false;
 	}
 
 	@Override

@@ -1,27 +1,27 @@
 package lotr.common.tileentity;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.block.LOTRBlockMillstone;
 import lotr.common.recipe.LOTRMillstoneRecipes;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.*;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.StatCollector;
 
-public class LOTRTileEntityMillstone extends TileEntity implements IInventory, ISidedInventory {
+public class LOTRTileEntityMillstone extends TileEntity implements ISidedInventory {
 	public ItemStack[] inventory = new ItemStack[2];
 	public String specialMillstoneName;
 	public boolean isMilling;
-	public int currentMillTime = 0;
+	public int currentMillTime;
 
 	@Override
 	public boolean canExtractItem(int slot, ItemStack itemstack, int side) {
-		if (side == 0) {
-		}
 		return true;
 	}
 
@@ -75,11 +75,9 @@ public class LOTRTileEntityMillstone extends TileEntity implements IInventory, I
 	@Override
 	public int[] getAccessibleSlotsFromSide(int side) {
 		if (side == 0) {
-			return new int[] { 1 };
+			return new int[]{1};
 		}
-		if (side == 1) {
-		}
-		return new int[] { 0 };
+		return new int[]{0};
 	}
 
 	@Override
@@ -92,7 +90,7 @@ public class LOTRTileEntityMillstone extends TileEntity implements IInventory, I
 		return 64;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public int getMillProgressScaled(int i) {
 		return currentMillTime * i / 200;
 	}
@@ -119,7 +117,7 @@ public class LOTRTileEntityMillstone extends TileEntity implements IInventory, I
 
 	@Override
 	public boolean hasCustomInventoryName() {
-		return specialMillstoneName != null && specialMillstoneName.length() > 0;
+		return specialMillstoneName != null && !specialMillstoneName.isEmpty();
 	}
 
 	@Override

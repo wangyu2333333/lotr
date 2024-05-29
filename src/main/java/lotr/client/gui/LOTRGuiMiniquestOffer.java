@@ -1,18 +1,25 @@
 package lotr.client.gui;
 
-import java.util.*;
-
-import org.lwjgl.opengl.GL11;
-
 import lotr.client.render.entity.LOTRRenderBiped;
-import lotr.common.entity.npc.*;
+import lotr.common.entity.npc.LOTREntityNPC;
+import lotr.common.entity.npc.LOTRSpeech;
 import lotr.common.network.LOTRPacketMiniquestOffer;
 import lotr.common.quest.LOTRMiniQuest;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.model.*;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.entity.*;
-import net.minecraft.util.*;
+import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
+import org.lwjgl.opengl.GL11;
+
+import java.util.List;
+import java.util.Random;
 
 public class LOTRGuiMiniquestOffer extends LOTRGuiScreenBase {
 	public static ResourceLocation guiTexture = new ResourceLocation("lotr:gui/quest/miniquest.png");
@@ -33,9 +40,9 @@ public class LOTRGuiMiniquestOffer extends LOTRGuiScreenBase {
 	public int npcY = 90;
 	public GuiButton buttonAccept;
 	public GuiButton buttonDecline;
-	public boolean sentClosePacket = false;
+	public boolean sentClosePacket;
 	public NPCAction npcAction;
-	public int actionTick = 0;
+	public int actionTick;
 	public int actionTime;
 	public float actionSlow;
 	public float headYaw;
@@ -77,9 +84,9 @@ public class LOTRGuiMiniquestOffer extends LOTRGuiScreenBase {
 		drawDefaultBackground();
 		mc.getTextureManager().bindTexture(guiTexture);
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 		String name = theNPC.getNPCName();
-		this.drawCenteredString(name, guiLeft + xSize / 2, guiTop + 8, 8019267);
+		drawCenteredString(name, guiLeft + xSize / 2, guiTop + 8, 8019267);
 		renderNPC(guiLeft + npcX, guiTop + npcY, guiLeft + npcX - i, guiTop + npcY - j, f);
 		fontRendererObj.drawSplitString(description, guiLeft + descriptionX, guiTop + descriptionY, descriptionWidth, 8019267);
 		String objective = theMiniQuest.getQuestObjective();
@@ -88,7 +95,7 @@ public class LOTRGuiMiniquestOffer extends LOTRGuiScreenBase {
 		int objFirstLineY = objY = guiTop + ySize - 50;
 		for (Object obj : objectiveLines) {
 			String line = (String) obj;
-			this.drawCenteredString(line, guiLeft + xSize / 2, objY, 8019267);
+			drawCenteredString(line, guiLeft + xSize / 2, objY, 8019267);
 			objY += fontRendererObj.FONT_HEIGHT;
 		}
 		int objFirstLineWidth = fontRendererObj.getStringWidth((String) objectiveLines.get(0));
@@ -196,10 +203,7 @@ public class LOTRGuiMiniquestOffer extends LOTRGuiScreenBase {
 				for (l = 0; l < modelParts.size(); ++l) {
 					part = (ModelRenderer) modelParts.get(l);
 					prevShowModels[l] = part.showModel;
-					boolean isHeadPart = false;
-					if (recursiveCheckForModel(model.bipedHead, part) || recursiveCheckForModel(model.bipedHeadwear, part)) {
-						isHeadPart = true;
-					}
+					boolean isHeadPart = recursiveCheckForModel(model.bipedHead, part) || recursiveCheckForModel(model.bipedHeadwear, part);
 					if (isHeadPart) {
 						continue;
 					}
@@ -268,23 +272,23 @@ public class LOTRGuiMiniquestOffer extends LOTRGuiScreenBase {
 					actionSlow = 0.7f + rand.nextFloat() * 1.5f;
 				}
 				float slow = actionSlow * 2.0f;
-				headYaw = MathHelper.sin(actionTick / slow) * (float) Math.toRadians(10.0);
-				headPitch = (MathHelper.sin(actionTick / slow * 2.0f) + 1.0f) / 2.0f * (float) Math.toRadians(-20.0);
+				headYaw = MathHelper.sin(actionTick / slow) * 0.17453292519943295f;
+				headPitch = (MathHelper.sin(actionTick / slow * 2.0f) + 1.0f) / 2.0f * -0.3490658503988659f;
 			} else if (npcAction == NPCAction.SHAKING) {
 				actionSlow += 0.01f;
-				headYaw = MathHelper.sin(actionTick / actionSlow) * (float) Math.toRadians(30.0);
-				headPitch += (float) Math.toRadians(0.4);
+				headYaw = MathHelper.sin(actionTick / actionSlow) * 0.5235987755982988f;
+				headPitch += 0.006981317007977318f;
 			} else if (npcAction == NPCAction.LOOKING) {
 				float slow = actionSlow * 16.0f;
-				headYaw = MathHelper.sin(actionTick / slow) * (float) Math.toRadians(60.0);
-				headPitch = (MathHelper.sin(actionTick / slow * 2.0f) + 1.0f) / 2.0f * (float) Math.toRadians(-15.0);
+				headYaw = MathHelper.sin(actionTick / slow) * 1.0471975511965976f;
+				headPitch = (MathHelper.sin(actionTick / slow * 2.0f) + 1.0f) / 2.0f * -0.2617993877991494f;
 			} else if (npcAction == NPCAction.LOOKING_UP) {
 				headYaw = 0.0f;
-				headPitch = (float) Math.toRadians(-20.0);
+				headPitch = -0.3490658503988659f;
 			}
 		} else {
 			headYaw = 0.0f;
-			headPitch = MathHelper.sin(openTick * 0.07f) * (float) Math.toRadians(5.0);
+			headPitch = MathHelper.sin(openTick * 0.07f) * 0.08726646259971647f;
 		}
 		++openTick;
 	}
@@ -292,10 +296,7 @@ public class LOTRGuiMiniquestOffer extends LOTRGuiScreenBase {
 	public enum NPCAction {
 		TALKING(1.0f), SHAKING(0.1f), LOOKING(0.3f), LOOKING_UP(0.4f);
 
-		public static float totalWeight;
-		static {
-			totalWeight = -1.0f;
-		}
+		public static float totalWeight = -1.0f;
 
 		public float weight;
 
@@ -306,14 +307,14 @@ public class LOTRGuiMiniquestOffer extends LOTRGuiScreenBase {
 		public static NPCAction getRandomAction(Random rand) {
 			if (totalWeight <= 0.0f) {
 				totalWeight = 0.0f;
-				for (NPCAction action : NPCAction.values()) {
+				for (NPCAction action : values()) {
 					totalWeight += action.weight;
 				}
 			}
 			float f = rand.nextFloat();
 			f *= totalWeight;
 			NPCAction chosen = null;
-			for (NPCAction action : NPCAction.values()) {
+			for (NPCAction action : values()) {
 				f -= action.weight;
 				if (f > 0.0f) {
 					continue;

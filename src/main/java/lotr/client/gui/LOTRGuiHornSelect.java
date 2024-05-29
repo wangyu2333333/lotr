@@ -1,13 +1,15 @@
 package lotr.client.gui;
 
-import org.lwjgl.opengl.GL11;
-
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import lotr.common.LOTRMod;
-import lotr.common.network.*;
+import lotr.common.network.LOTRPacketHandler;
+import lotr.common.network.LOTRPacketHornSelect;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
+import org.lwjgl.opengl.GL11;
 
 public class LOTRGuiHornSelect extends LOTRGuiScreenBase {
 	public static ResourceLocation guiTexture = new ResourceLocation("lotr:gui/horn_select.png");
@@ -20,7 +22,7 @@ public class LOTRGuiHornSelect extends LOTRGuiScreenBase {
 	@Override
 	public void actionPerformed(GuiButton button) {
 		if (button.enabled) {
-			LOTRPacketHornSelect packet = new LOTRPacketHornSelect(button.id);
+			IMessage packet = new LOTRPacketHornSelect(button.id);
 			LOTRPacketHandler.networkWrapper.sendToServer(packet);
 			mc.thePlayer.closeScreen();
 		}
@@ -31,7 +33,7 @@ public class LOTRGuiHornSelect extends LOTRGuiScreenBase {
 		drawDefaultBackground();
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		mc.getTextureManager().bindTexture(guiTexture);
-		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 		String s = StatCollector.translateToLocal("lotr.gui.hornSelect.title");
 		fontRendererObj.drawString(s, guiLeft + xSize / 2 - fontRendererObj.getStringWidth(s) / 2, guiTop + 11, 4210752);
 		super.drawScreen(i, j, f);

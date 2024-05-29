@@ -1,13 +1,13 @@
 package lotr.common.world.feature;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import net.minecraft.block.Block;
-import net.minecraft.world.*;
+import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenAbstractTree;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.Random;
 
 public class LOTRWorldGenBanana extends WorldGenAbstractTree {
 	public LOTRWorldGenBanana(boolean flag) {
@@ -28,7 +28,7 @@ public class LOTRWorldGenBanana extends WorldGenAbstractTree {
 			return false;
 		}
 		Block below = world.getBlock(i, j - 1, k);
-		if (!below.canSustainPlant((IBlockAccess) world, i, j - 1, k, ForgeDirection.UP, (IPlantable) LOTRMod.sapling2)) {
+		if (!below.canSustainPlant(world, i, j - 1, k, ForgeDirection.UP, (IPlantable) LOTRMod.sapling2)) {
 			return false;
 		}
 		for (l = 0; l < height + 2; ++l) {

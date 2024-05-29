@@ -2,11 +2,17 @@ package lotr.common.world.biome;
 
 import lotr.common.LOTRAchievement;
 import lotr.common.entity.animal.LOTREntityHorse;
-import lotr.common.entity.npc.*;
+import lotr.common.entity.npc.LOTREntityGaladhrimTrader;
+import lotr.common.entity.npc.LOTREntityIronHillsMerchant;
+import lotr.common.entity.npc.LOTREntityNearHaradMerchant;
+import lotr.common.entity.npc.LOTREntityScrapTrader;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
 import lotr.common.world.feature.LOTRTreeType;
 import lotr.common.world.map.LOTRWaypoint;
-import lotr.common.world.spawning.*;
+import lotr.common.world.spawning.LOTRBiomeSpawnList;
+import lotr.common.world.spawning.LOTREventSpawner;
+import lotr.common.world.spawning.LOTRInvasions;
+import lotr.common.world.spawning.LOTRSpawnList;
 import lotr.common.world.structure2.*;
 import net.minecraft.world.biome.BiomeGenBase;
 
@@ -40,10 +46,10 @@ public class LOTRBiomeGenCelebrant extends LOTRBiome {
 		arrspawnListContainer5[3] = LOTRBiomeSpawnList.entry(LOTRSpawnList.OLOG_HAI, 1).setConquestThreshold(200.0f);
 		npcSpawnList.newFactionList(0).add(arrspawnListContainer5);
 		variantChance = 0.3f;
-		this.addBiomeVariant(LOTRBiomeVariant.FLOWERS);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS);
+		addBiomeVariant(LOTRBiomeVariant.FLOWERS);
+		addBiomeVariant(LOTRBiomeVariant.FOREST);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
+		addBiomeVariant(LOTRBiomeVariant.HILLS);
 		decorator.treesPerChunk = 0;
 		decorator.setTreeCluster(6, 50);
 		decorator.willowPerChunk = 1;

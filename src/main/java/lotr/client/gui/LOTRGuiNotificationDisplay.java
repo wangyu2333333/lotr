@@ -1,17 +1,23 @@
 package lotr.client.gui;
 
-import java.util.*;
-
-import org.lwjgl.opengl.GL11;
-
-import lotr.client.*;
+import lotr.client.LOTRClientProxy;
+import lotr.client.LOTRTickHandlerClient;
 import lotr.common.LOTRAchievement;
-import lotr.common.fac.*;
+import lotr.common.fac.LOTRAlignmentValues;
+import lotr.common.fac.LOTRFaction;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.util.*;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
+import net.minecraft.util.StatCollector;
+import org.lwjgl.opengl.GL11;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 
 public class LOTRGuiNotificationDisplay extends Gui {
 	public static int guiXSize = 190;
@@ -19,8 +25,8 @@ public class LOTRGuiNotificationDisplay extends Gui {
 	public static RenderItem itemRenderer = new RenderItem();
 	public Minecraft mc;
 	public int windowWidth;
-	public List<Notification> notifications = new ArrayList<>();
-	public Set<Notification> notificationsToRemove = new HashSet<>();
+	public Collection<Notification> notifications = new ArrayList<>();
+	public Collection<Notification> notificationsToRemove = new HashSet<>();
 
 	public LOTRGuiNotificationDisplay() {
 		mc = Minecraft.getMinecraft();
@@ -43,7 +49,7 @@ public class LOTRGuiNotificationDisplay extends Gui {
 			int index = 0;
 			for (Notification notif : notifications) {
 				long notifTime = notif.getNotificationTime();
-				double d0 = (double) (Minecraft.getSystemTime() - notifTime) / (double) notif.getDurationMs();
+				double d0 = (double) (Minecraft.getSystemTime() - notifTime) / notif.getDurationMs();
 				if (d0 < 0.0 || d0 > 1.0) {
 					notificationsToRemove.add(notif);
 				} else {
@@ -64,7 +70,7 @@ public class LOTRGuiNotificationDisplay extends Gui {
 						d1 *= d1;
 						d1 *= d1;
 						int i = windowWidth - guiXSize;
-						int j = 0 - (int) (d1 * 36.0);
+						int j = -(int) (d1 * 36.0);
 						GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 						GL11.glEnable(3553);
 						mc.getTextureManager().bindTexture(LOTRGuiAchievements.iconsTexture);
@@ -90,7 +96,7 @@ public class LOTRGuiNotificationDisplay extends Gui {
 		GL11.glMatrixMode(5888);
 		GL11.glLoadIdentity();
 		windowWidth = mc.displayWidth;
-		int windowHeight = mc.displayHeight;
+		int windowHeight;
 		ScaledResolution scaledresolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
 		windowWidth = scaledresolution.getScaledWidth();
 		windowHeight = scaledresolution.getScaledHeight();
@@ -105,9 +111,6 @@ public class LOTRGuiNotificationDisplay extends Gui {
 
 	public abstract static class Notification {
 		public Long notificationTime = Minecraft.getSystemTime();
-
-		public Notification() {
-		}
 
 		public abstract int getDurationMs();
 

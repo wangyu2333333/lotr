@@ -1,6 +1,7 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRMod;
+import lotr.common.LOTRShields;
 import lotr.common.item.LOTRItemHaradRobes;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.player.EntityPlayer;
@@ -8,12 +9,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class LOTREntityHarnedorWarrior extends LOTREntityHarnedhrim {
-	public static ItemStack[] weaponsBronze = { new ItemStack(LOTRMod.swordHarad), new ItemStack(LOTRMod.swordHarad), new ItemStack(LOTRMod.swordHarad), new ItemStack(LOTRMod.daggerHarad), new ItemStack(LOTRMod.daggerHaradPoisoned), new ItemStack(LOTRMod.pikeHarad) };
-	public static int[] turbanColors = { 1643539, 6309443, 7014914, 7809314, 5978155 };
+	public static ItemStack[] weaponsBronze = {new ItemStack(LOTRMod.swordHarad), new ItemStack(LOTRMod.swordHarad), new ItemStack(LOTRMod.swordHarad), new ItemStack(LOTRMod.daggerHarad), new ItemStack(LOTRMod.daggerHaradPoisoned), new ItemStack(LOTRMod.pikeHarad)};
+	public static int[] turbanColors = {1643539, 6309443, 7014914, 7809314, 5978155};
 
 	public LOTREntityHarnedorWarrior(World world) {
 		super(world);
-		this.addTargetTasks(true);
+		addTargetTasks(true);
 		spawnRidingHorse = rand.nextInt(8) == 0;
 		npcShield = LOTRShields.ALIGNMENT_HARNEDOR;
 	}

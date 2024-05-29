@@ -1,16 +1,15 @@
 package lotr.client.render.entity;
 
-import org.lwjgl.opengl.GL11;
-
 import lotr.common.entity.item.LOTREntityRugBase;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
+import org.lwjgl.opengl.GL11;
 
 public abstract class LOTRRenderRugBase extends Render {
 	public ModelBase rugModel;
 
-	public LOTRRenderRugBase(ModelBase m) {
+	protected LOTRRenderRugBase(ModelBase m) {
 		rugModel = m;
 	}
 

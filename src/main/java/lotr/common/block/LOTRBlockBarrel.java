@@ -1,24 +1,34 @@
 package lotr.common.block;
 
-import java.util.Random;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
-import lotr.common.item.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRCreativeTabs;
+import lotr.common.LOTRMod;
+import lotr.common.item.LOTRItemBarrel;
+import lotr.common.item.LOTRItemBottlePoison;
+import lotr.common.item.LOTRItemMug;
 import lotr.common.recipe.LOTRBrewingRecipes;
 import lotr.common.tileentity.LOTRTileEntityBarrel;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.*;
-import net.minecraft.item.*;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
+import java.util.Random;
+
 public class LOTRBlockBarrel extends BlockContainer {
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon[] barrelIcons;
 
 	public LOTRBlockBarrel() {
@@ -32,7 +42,7 @@ public class LOTRBlockBarrel extends BlockContainer {
 
 	@Override
 	public void breakBlock(World world, int i, int j, int k, Block block, int meta) {
-		LOTRTileEntityBarrel barrel = (LOTRTileEntityBarrel) world.getTileEntity(i, j, k);
+		IInventory barrel = (IInventory) world.getTileEntity(i, j, k);
 		if (barrel != null) {
 			ItemStack brewing = barrel.getStackInSlot(9);
 			barrel.setInventorySlotContents(9, null);
@@ -42,7 +52,7 @@ public class LOTRBlockBarrel extends BlockContainer {
 			}
 			barrel.setInventorySlotContents(9, brewing);
 			if (!world.isRemote && (meta & 8) == 0) {
-				this.dropBlockAsItem(world, i, j, k, getBarrelDrop(world, i, j, k, meta));
+				dropBlockAsItem(world, i, j, k, getBarrelDrop(world, i, j, k, meta));
 			}
 		}
 		super.breakBlock(world, i, j, k, block, meta);
@@ -63,7 +73,7 @@ public class LOTRBlockBarrel extends BlockContainer {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int i, int j) {
 		if (i == -1) {
 			return barrelIcons[2];
@@ -183,20 +193,20 @@ public class LOTRBlockBarrel extends BlockContainer {
 		int rotation = MathHelper.floor_double(entity.rotationYaw * 4.0f / 360.0f + 0.5) & 3;
 		int meta = 0;
 		switch (rotation) {
-		case 0:
-			meta = 2;
-			break;
-		case 1:
-			meta = 5;
-			break;
-		case 2:
-			meta = 3;
-			break;
-		case 3:
-			meta = 4;
-			break;
-		default:
-			break;
+			case 0:
+				meta = 2;
+				break;
+			case 1:
+				meta = 5;
+				break;
+			case 2:
+				meta = 3;
+				break;
+			case 3:
+				meta = 4;
+				break;
+			default:
+				break;
 		}
 		world.setBlockMetadataWithNotify(i, j, k, meta, 2);
 		if (itemstack.hasDisplayName()) {
@@ -205,7 +215,7 @@ public class LOTRBlockBarrel extends BlockContainer {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconregister) {
 		barrelIcons = new IIcon[3];
 		barrelIcons[0] = iconregister.registerIcon(getTextureName() + "_side");

@@ -1,6 +1,7 @@
 package lotr.common.world.map;
 
-import lotr.common.*;
+import lotr.common.LOTRConfig;
+import lotr.common.LOTRMod;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.world.World;
 
@@ -16,28 +17,15 @@ public enum LOTRFixedStructures {
 		zCoord = LOTRWaypoint.mapToWorldZ(z);
 	}
 
-	public double distanceSqTo(EntityLivingBase entity) {
-		double dx = entity.posX - (xCoord + 0.5);
-		double dz = entity.posZ - (zCoord + 0.5);
-		return dx * dx + dz * dz;
-	}
-
-	public boolean isAt(World world, int x, int z) {
-		if (!LOTRFixedStructures.hasMapFeatures(world)) {
-			return false;
-		}
-		return xCoord == x && zCoord == z;
-	}
-
 	public static boolean[] _mountainNear_structureNear(World world, int x, int z) {
 		long l = System.nanoTime();
 		boolean mountainNear = false;
 		boolean structureNear = false;
-		if (LOTRFixedStructures.hasMapFeatures(world)) {
+		if (hasMapFeatures(world)) {
 			if (LOTRMountains.mountainAt(x, z)) {
 				mountainNear = true;
 			}
-			structureNear = LOTRFixedStructures.structureNear(world, x, z, 256);
+			structureNear = structureNear(world, x, z, 256);
 			if (!structureNear) {
 				for (LOTRWaypoint wp : LOTRWaypoint.values()) {
 					double dz;
@@ -57,7 +45,7 @@ public enum LOTRFixedStructures {
 			}
 		}
 		nanoTimeElapsed += System.nanoTime() - l;
-		return new boolean[] { mountainNear, structureNear };
+		return new boolean[]{mountainNear, structureNear};
 	}
 
 	public static boolean generatesAt(int i, int k, int x, int z) {
@@ -67,7 +55,7 @@ public enum LOTRFixedStructures {
 	public static boolean generatesAtMapImageCoords(int i, int k, int x, int z) {
 		x = LOTRWaypoint.mapToWorldX(x);
 		z = LOTRWaypoint.mapToWorldZ(z);
-		return LOTRFixedStructures.generatesAt(i, k, x, z);
+		return generatesAt(i, k, x, z);
 	}
 
 	public static boolean hasMapFeatures(World world) {
@@ -78,7 +66,7 @@ public enum LOTRFixedStructures {
 	}
 
 	public static boolean structureNear(World world, int x, int z, int range) {
-		for (LOTRFixedStructures str : LOTRFixedStructures.values()) {
+		for (LOTRFixedStructures str : values()) {
 			double dx = x - str.xCoord;
 			double dz = z - str.zCoord;
 			double distSq = dx * dx + dz * dz;
@@ -89,5 +77,18 @@ public enum LOTRFixedStructures {
 			return true;
 		}
 		return false;
+	}
+
+	public double distanceSqTo(EntityLivingBase entity) {
+		double dx = entity.posX - (xCoord + 0.5);
+		double dz = entity.posZ - (zCoord + 0.5);
+		return dx * dx + dz * dz;
+	}
+
+	public boolean isAt(World world, int x, int z) {
+		if (!hasMapFeatures(world)) {
+			return false;
+		}
+		return xCoord == x && zCoord == z;
 	}
 }

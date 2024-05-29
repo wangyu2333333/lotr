@@ -1,26 +1,32 @@
 package lotr.common.item;
 
-import java.util.List;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRCreativeTabs;
+import lotr.common.LOTRLevelData;
 import lotr.common.world.structure.LOTRStructures;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.*;
-import net.minecraft.util.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.Facing;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
+import java.util.List;
+
 public class LOTRItemStructureSpawner extends Item {
-	public static int lastStructureSpawnTick = 0;
-	@SideOnly(value = Side.CLIENT)
+	public static int lastStructureSpawnTick;
+	@SideOnly(Side.CLIENT)
 	public IIcon iconBase;
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon iconOverlay;
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon iconVillageBase;
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon iconVillageOverlay;
 
 	public LOTRItemStructureSpawner() {
@@ -28,7 +34,7 @@ public class LOTRItemStructureSpawner extends Item {
 		setCreativeTab(LOTRCreativeTabs.tabSpawn);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public int getColorFromItemStack(ItemStack itemstack, int pass) {
 		LOTRStructures.StructureColorInfo info = LOTRStructures.structureItemSpawners.get(itemstack.getItemDamage());
@@ -41,7 +47,7 @@ public class LOTRItemStructureSpawner extends Item {
 		return 16777215;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIconFromDamageForRenderPass(int i, int pass) {
 		LOTRStructures.StructureColorInfo info = LOTRStructures.structureItemSpawners.get(i);
@@ -62,7 +68,7 @@ public class LOTRItemStructureSpawner extends Item {
 
 	@Override
 	public String getItemStackDisplayName(ItemStack itemstack) {
-		StringBuilder s = new StringBuilder().append(("" + StatCollector.translateToLocal(this.getUnlocalizedName() + ".name")).trim());
+		StringBuilder s = new StringBuilder().append((StatCollector.translateToLocal(getUnlocalizedName() + ".name")).trim());
 		String structureName = LOTRStructures.getNameFromID(itemstack.getItemDamage());
 		if (structureName != null) {
 			s.append(" ").append(StatCollector.translateToLocal("lotr.structure." + structureName + ".name"));
@@ -70,7 +76,7 @@ public class LOTRItemStructureSpawner extends Item {
 		return s.toString();
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void getSubItems(Item item, CreativeTabs tab, List list) {
 		for (LOTRStructures.StructureColorInfo info : LOTRStructures.structureItemSpawners.values()) {
@@ -98,13 +104,13 @@ public class LOTRItemStructureSpawner extends Item {
 			entityplayer.addChatMessage(new ChatComponentTranslation("chat.lotr.spawnStructure.wait", lastStructureSpawnTick / 20.0));
 			return false;
 		}
-		if (spawnStructure(entityplayer, world, itemstack.getItemDamage(), i += Facing.offsetsXForSide[side], j += Facing.offsetsYForSide[side], k += Facing.offsetsZForSide[side]) && !entityplayer.capabilities.isCreativeMode) {
+		if (spawnStructure(entityplayer, world, itemstack.getItemDamage(), i + Facing.offsetsXForSide[side], j + Facing.offsetsYForSide[side], k + Facing.offsetsZForSide[side]) && !entityplayer.capabilities.isCreativeMode) {
 			--itemstack.stackSize;
 		}
 		return true;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerIcons(IIconRegister iconregister) {
 		iconBase = iconregister.registerIcon(getIconString() + "_base");
@@ -113,7 +119,7 @@ public class LOTRItemStructureSpawner extends Item {
 		iconVillageOverlay = iconregister.registerIcon(getIconString() + "_village_overlay");
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public boolean requiresMultipleRenderPasses() {
 		return true;

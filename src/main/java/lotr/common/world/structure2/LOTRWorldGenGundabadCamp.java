@@ -1,11 +1,11 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import lotr.common.entity.LOTREntityNPCRespawner;
 import lotr.common.entity.npc.*;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenGundabadCamp extends LOTRWorldGenCampBase {
 	public LOTRWorldGenGundabadCamp(boolean flag) {
@@ -31,7 +31,7 @@ public class LOTRWorldGenGundabadCamp extends LOTRWorldGenCampBase {
 		respawner.setSpawnClasses(LOTREntityGundabadOrc.class, LOTREntityGundabadOrcArcher.class);
 		respawner.setCheckRanges(24, -12, 12, 12);
 		respawner.setSpawnRanges(8, -4, 4, 16);
-		this.placeNPCRespawner(respawner, world, i, j, k);
+		placeNPCRespawner(respawner, world, i, j, k);
 	}
 
 	@Override

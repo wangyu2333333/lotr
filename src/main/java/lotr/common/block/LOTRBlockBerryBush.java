@@ -1,20 +1,29 @@
 package lotr.common.block;
 
-import java.util.*;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
-import net.minecraft.block.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRCreativeTabs;
+import lotr.common.LOTRMod;
+import net.minecraft.block.Block;
+import net.minecraft.block.IGrowable;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import net.minecraft.world.*;
-import net.minecraftforge.common.*;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+import net.minecraftforge.common.EnumPlantType;
+import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Random;
 
 public class LOTRBlockBerryBush extends Block implements IPlantable, IGrowable {
 	public LOTRBlockBerryBush() {
@@ -25,6 +34,21 @@ public class LOTRBlockBerryBush extends Block implements IPlantable, IGrowable {
 		setStepSound(Block.soundTypeGrass);
 	}
 
+	public static int getBerryType(int meta) {
+		return meta & 7;
+	}
+
+	public static boolean hasBerries(int meta) {
+		return (meta & 8) != 0;
+	}
+
+	public static int setHasBerries(int meta, boolean flag) {
+		if (flag) {
+			return getBerryType(meta) | 8;
+		}
+		return getBerryType(meta);
+	}
+
 	@Override
 	public int damageDropped(int i) {
 		return i;
@@ -32,7 +56,7 @@ public class LOTRBlockBerryBush extends Block implements IPlantable, IGrowable {
 
 	@Override
 	public boolean func_149851_a(World world, int i, int j, int k, boolean isRemote) {
-		return !LOTRBlockBerryBush.hasBerries(world.getBlockMetadata(i, j, k));
+		return !hasBerries(world.getBlockMetadata(i, j, k));
 	}
 
 	@Override
@@ -47,36 +71,36 @@ public class LOTRBlockBerryBush extends Block implements IPlantable, IGrowable {
 		}
 	}
 
-	public ArrayList<ItemStack> getBerryDrops(World world, int i, int j, int k, int meta) {
-		ArrayList<ItemStack> drops = new ArrayList<>();
-		if (LOTRBlockBerryBush.hasBerries(meta)) {
-			int berryType = LOTRBlockBerryBush.getBerryType(meta);
+	public Collection<ItemStack> getBerryDrops(World world, int i, int j, int k, int meta) {
+		Collection<ItemStack> drops = new ArrayList<>();
+		if (hasBerries(meta)) {
+			int berryType = getBerryType(meta);
 			Item berry = null;
 			int berries = 1 + world.rand.nextInt(4);
 			switch (berryType) {
-			case 0: {
-				berry = LOTRMod.blueberry;
-				break;
-			}
-			case 1: {
-				berry = LOTRMod.blackberry;
-				break;
-			}
-			case 2: {
-				berry = LOTRMod.raspberry;
-				break;
-			}
-			case 3: {
-				berry = LOTRMod.cranberry;
-				break;
-			}
-			case 4: {
-				berry = LOTRMod.elderberry;
-				break;
-			}
-			case 5: {
-				berry = LOTRMod.wildberry;
-			}
+				case 0: {
+					berry = LOTRMod.blueberry;
+					break;
+				}
+				case 1: {
+					berry = LOTRMod.blackberry;
+					break;
+				}
+				case 2: {
+					berry = LOTRMod.raspberry;
+					break;
+				}
+				case 3: {
+					berry = LOTRMod.cranberry;
+					break;
+				}
+				case 4: {
+					berry = LOTRMod.elderberry;
+					break;
+				}
+				case 5: {
+					berry = LOTRMod.wildberry;
+				}
 			}
 			if (berry != null) {
 				for (int l = 0; l < berries; ++l) {
@@ -95,7 +119,7 @@ public class LOTRBlockBerryBush extends Block implements IPlantable, IGrowable {
 	@Override
 	public ArrayList<ItemStack> getDrops(World world, int i, int j, int k, int meta, int fortune) {
 		ArrayList<ItemStack> drops = new ArrayList<>();
-		drops.add(new ItemStack(this, 1, LOTRBlockBerryBush.setHasBerries(meta, false)));
+		drops.add(new ItemStack(this, 1, setHasBerries(meta, false)));
 		drops.addAll(getBerryDrops(world, i, j, k, meta));
 		return drops;
 	}
@@ -108,7 +132,8 @@ public class LOTRBlockBerryBush extends Block implements IPlantable, IGrowable {
 			int k1;
 			growth = 1.0f;
 			boolean bushAdjacent = false;
-			block0: for (i1 = i - 1; i1 <= i + 1; ++i1) {
+			block0:
+			for (i1 = i - 1; i1 <= i + 1; ++i1) {
 				for (k1 = k - 1; k1 <= k + 1; ++k1) {
 					if (i1 == i && k1 == k || !(world.getBlock(i1, j, k1) instanceof LOTRBlockBerryBush)) {
 						continue;
@@ -142,7 +167,7 @@ public class LOTRBlockBerryBush extends Block implements IPlantable, IGrowable {
 				return growth / 150.0f;
 			}
 		}
-		if (below.canSustainPlant((IBlockAccess) world, i, j - 1, k, ForgeDirection.UP, (IPlantable) Blocks.sapling)) {
+		if (below.canSustainPlant(world, i, j - 1, k, ForgeDirection.UP, (IPlantable) Blocks.sapling)) {
 			growth = world.getBlockLightValue(i, j + 1, k) / 2000.0f;
 			if (world.isRaining()) {
 				growth *= 3.0f;
@@ -153,11 +178,11 @@ public class LOTRBlockBerryBush extends Block implements IPlantable, IGrowable {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int i, int j) {
-		int berryType = LOTRBlockBerryBush.getBerryType(j);
+		int berryType = getBerryType(j);
 		BushType type = BushType.forMeta(berryType);
-		if (LOTRBlockBerryBush.hasBerries(j)) {
+		if (hasBerries(j)) {
 			return type.iconGrown;
 		}
 		return type.iconBare;
@@ -179,18 +204,18 @@ public class LOTRBlockBerryBush extends Block implements IPlantable, IGrowable {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item item, CreativeTabs tab, List list) {
 		for (BushType type : BushType.values()) {
 			int meta = type.bushMeta;
-			list.add(new ItemStack(item, 1, LOTRBlockBerryBush.setHasBerries(meta, true)));
-			list.add(new ItemStack(item, 1, LOTRBlockBerryBush.setHasBerries(meta, false)));
+			list.add(new ItemStack(item, 1, setHasBerries(meta, true)));
+			list.add(new ItemStack(item, 1, setHasBerries(meta, false)));
 		}
 	}
 
 	public void growBerries(World world, int i, int j, int k) {
 		int meta = world.getBlockMetadata(i, j, k);
-		world.setBlockMetadataWithNotify(i, j, k, LOTRBlockBerryBush.setHasBerries(meta, true), 3);
+		world.setBlockMetadataWithNotify(i, j, k, setHasBerries(meta, true), 3);
 	}
 
 	@Override
@@ -201,12 +226,12 @@ public class LOTRBlockBerryBush extends Block implements IPlantable, IGrowable {
 	@Override
 	public boolean onBlockActivated(World world, int i, int j, int k, EntityPlayer entityplayer, int side, float f, float f1, float f2) {
 		int meta = world.getBlockMetadata(i, j, k);
-		if (LOTRBlockBerryBush.hasBerries(meta)) {
-			world.setBlockMetadataWithNotify(i, j, k, LOTRBlockBerryBush.setHasBerries(meta, false), 3);
+		if (hasBerries(meta)) {
+			world.setBlockMetadataWithNotify(i, j, k, setHasBerries(meta, false), 3);
 			if (!world.isRemote) {
-				ArrayList<ItemStack> drops = getBerryDrops(world, i, j, k, meta);
+				Iterable<ItemStack> drops = getBerryDrops(world, i, j, k, meta);
 				for (ItemStack berry : drops) {
-					this.dropBlockAsItem(world, i, j, k, berry);
+					dropBlockAsItem(world, i, j, k, berry);
 				}
 			}
 			return true;
@@ -215,7 +240,7 @@ public class LOTRBlockBerryBush extends Block implements IPlantable, IGrowable {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconregister) {
 		for (BushType type : BushType.values()) {
 			type.iconBare = iconregister.registerIcon(getTextureName() + "_" + type.bushName + "_bare");
@@ -226,27 +251,12 @@ public class LOTRBlockBerryBush extends Block implements IPlantable, IGrowable {
 	@Override
 	public void updateTick(World world, int i, int j, int k, Random random) {
 		int meta = world.getBlockMetadata(i, j, k);
-		if (!world.isRemote && !LOTRBlockBerryBush.hasBerries(meta)) {
+		if (!world.isRemote && !hasBerries(meta)) {
 			float growth = getGrowthFactor(world, i, j, k);
 			if (random.nextFloat() < growth) {
 				growBerries(world, i, j, k);
 			}
 		}
-	}
-
-	public static int getBerryType(int meta) {
-		return meta & 7;
-	}
-
-	public static boolean hasBerries(int meta) {
-		return (meta & 8) != 0;
-	}
-
-	public static int setHasBerries(int meta, boolean flag) {
-		if (flag) {
-			return LOTRBlockBerryBush.getBerryType(meta) | 8;
-		}
-		return LOTRBlockBerryBush.getBerryType(meta);
 	}
 
 	public enum BushType {
@@ -255,9 +265,9 @@ public class LOTRBlockBerryBush extends Block implements IPlantable, IGrowable {
 		public int bushMeta;
 		public String bushName;
 		public boolean poisonous;
-		@SideOnly(value = Side.CLIENT)
+		@SideOnly(Side.CLIENT)
 		public IIcon iconBare;
-		@SideOnly(value = Side.CLIENT)
+		@SideOnly(Side.CLIENT)
 		public IIcon iconGrown;
 
 		BushType(int i, String s, boolean flag) {
@@ -267,17 +277,17 @@ public class LOTRBlockBerryBush extends Block implements IPlantable, IGrowable {
 		}
 
 		public static BushType forMeta(int i) {
-			for (BushType type : BushType.values()) {
+			for (BushType type : values()) {
 				if (type.bushMeta != i) {
 					continue;
 				}
 				return type;
 			}
-			return BushType.values()[0];
+			return values()[0];
 		}
 
 		public static BushType randomType(Random rand) {
-			return BushType.values()[rand.nextInt(BushType.values().length)];
+			return values()[rand.nextInt(values().length)];
 		}
 	}
 

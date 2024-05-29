@@ -2,14 +2,19 @@ package lotr.common.item;
 
 import lotr.common.LOTRCreativeTabs;
 import lotr.common.dispenser.LOTRDispenseThrowingAxe;
-import lotr.common.enchant.*;
+import lotr.common.enchant.LOTREnchantment;
+import lotr.common.enchant.LOTREnchantmentHelper;
 import lotr.common.entity.projectile.LOTREntityThrowingAxe;
 import lotr.common.recipe.LOTRRecipes;
 import net.minecraft.block.BlockDispenser;
-import net.minecraft.enchantment.*;
-import net.minecraft.entity.*;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class LOTRItemThrowingAxe extends Item {
@@ -42,7 +47,7 @@ public class LOTRItemThrowingAxe extends Item {
 
 	public float getRangedDamageMultiplier(ItemStack itemstack, Entity shooter, Entity hit) {
 		float damage = axeMaterial.getDamageVsEntity() + 4.0f;
-		damage = shooter instanceof EntityLivingBase && hit instanceof EntityLivingBase ? (damage += EnchantmentHelper.getEnchantmentModifierLiving((EntityLivingBase) shooter, (EntityLivingBase) hit)) : (damage += EnchantmentHelper.func_152377_a(itemstack, EnumCreatureAttribute.UNDEFINED));
+		damage = shooter instanceof EntityLivingBase && hit instanceof EntityLivingBase ? damage + EnchantmentHelper.getEnchantmentModifierLiving((EntityLivingBase) shooter, (EntityLivingBase) hit) : damage + EnchantmentHelper.func_152377_a(itemstack, EnumCreatureAttribute.UNDEFINED);
 		return damage * 0.5f;
 	}
 

@@ -1,8 +1,8 @@
 package lotr.common.entity.npc;
 
-import java.util.List;
-
-import lotr.common.*;
+import lotr.common.LOTRConfig;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
 import lotr.common.block.LOTRBlockOrcBomb;
 import lotr.common.entity.ai.*;
 import lotr.common.entity.animal.LOTREntityRabbit;
@@ -10,23 +10,29 @@ import lotr.common.entity.item.LOTREntityOrcBomb;
 import lotr.common.item.LOTRItemMug;
 import lotr.common.world.biome.LOTRBiome;
 import net.minecraft.block.Block;
-import net.minecraft.entity.*;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.*;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
+
+import java.util.List;
 
 public abstract class LOTREntityOrc extends LOTREntityNPC {
 	public boolean isWeakOrc = true;
 	public int orcSkirmishTick;
 	public EntityLivingBase currentRevengeTarget;
 
-	public LOTREntityOrc(World world) {
+	protected LOTREntityOrc(World world) {
 		super(world);
 		setSize(0.5f, 1.55f);
 		getNavigator().setAvoidsWater(true);
@@ -45,7 +51,7 @@ public abstract class LOTREntityOrc extends LOTREntityNPC {
 		tasks.addTask(9, new EntityAIWatchClosest2(this, LOTREntityNPC.class, 5.0f, 0.05f));
 		tasks.addTask(10, new EntityAIWatchClosest(this, EntityLiving.class, 8.0f, 0.02f));
 		tasks.addTask(11, new EntityAILookIdle(this));
-		int target = this.addTargetTasks(true, LOTREntityAINearestAttackableTargetOrc.class);
+		int target = addTargetTasks(true, LOTREntityAINearestAttackableTargetOrc.class);
 		targetTasks.addTask(target + 1, new LOTREntityAIOrcSkirmish(this, true));
 		if (!isOrcBombardier()) {
 			targetTasks.addTask(target + 2, new LOTREntityAINearestAttackableTargetOrc(this, LOTREntityRabbit.class, 2000, false));
@@ -85,14 +91,14 @@ public abstract class LOTREntityOrc extends LOTREntityNPC {
 		}
 		if (flag) {
 			int rareDropChance = 20 - i * 4;
-			if (rand.nextInt(rareDropChance = Math.max(rareDropChance, 1)) == 0) {
+			if (rand.nextInt(Math.max(rareDropChance, 1)) == 0) {
 				int dropType = rand.nextInt(2);
 				if (dropType == 0) {
 					ItemStack orcDrink = new ItemStack(LOTRMod.mugOrcDraught);
 					orcDrink.setItemDamage(1 + rand.nextInt(3));
 					LOTRItemMug.setVessel(orcDrink, LOTRFoods.ORC_DRINK.getRandomVessel(rand), true);
 					entityDropItem(orcDrink, 0.0f);
-				} else if (dropType == 1) {
+				} else {
 					int ingots = 1 + rand.nextInt(2) + rand.nextInt(i + 1);
 					for (int l = 0; l < ingots; ++l) {
 						if (this instanceof LOTREntityUrukHai || this instanceof LOTREntityGundabadUruk) {
@@ -231,20 +237,20 @@ public abstract class LOTREntityOrc extends LOTREntityNPC {
 			}
 		}
 		if (isOrcBombardier()) {
-			if (!worldObj.isRemote) {
-				ItemStack bomb = npcItemsInv.getBomb();
-				int meta = -1;
-				if (bomb != null && Block.getBlockFromItem(bomb.getItem()) instanceof LOTRBlockOrcBomb) {
-					meta = bomb.getItemDamage();
-				}
-				dataWatcher.updateObject(17, (byte) meta);
-			} else {
+			if (worldObj.isRemote) {
 				byte meta = dataWatcher.getWatchableObjectByte(17);
 				if (meta == -1) {
 					npcItemsInv.setBomb(null);
 				} else {
 					npcItemsInv.setBomb(new ItemStack(LOTRMod.orcBomb, 1, meta));
 				}
+			} else {
+				ItemStack bomb = npcItemsInv.getBomb();
+				int meta = -1;
+				if (bomb != null && Block.getBlockFromItem(bomb.getItem()) instanceof LOTRBlockOrcBomb) {
+					meta = bomb.getItemDamage();
+				}
+				dataWatcher.updateObject(17, (byte) meta);
 			}
 		}
 	}

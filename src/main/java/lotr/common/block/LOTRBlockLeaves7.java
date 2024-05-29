@@ -1,11 +1,14 @@
 package lotr.common.block;
 
-import java.util.*;
-
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.LOTRMod;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
+import java.util.List;
+import java.util.Random;
 
 public class LOTRBlockLeaves7 extends LOTRBlockLeavesBase {
 	public LOTRBlockLeaves7() {
@@ -13,7 +16,7 @@ public class LOTRBlockLeaves7 extends LOTRBlockLeavesBase {
 	}
 
 	@Override
-	public void addSpecialLeafDrops(ArrayList drops, World world, int i, int j, int k, int meta, int fortune) {
+	public void addSpecialLeafDrops(List drops, World world, int i, int j, int k, int meta, int fortune) {
 		if ((meta & 3) == 3 && world.rand.nextInt(calcFortuneModifiedDropChance(12, fortune)) == 0) {
 			drops.add(new ItemStack(LOTRMod.almond));
 		}
@@ -24,7 +27,7 @@ public class LOTRBlockLeaves7 extends LOTRBlockLeavesBase {
 		return Item.getItemFromBlock(LOTRMod.sapling7);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void randomDisplayTick(World world, int i, int j, int k, Random random) {
 		super.randomDisplayTick(world, i, j, k, random);

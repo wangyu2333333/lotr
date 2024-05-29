@@ -1,18 +1,24 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
 import lotr.common.entity.ai.*;
 import lotr.common.fac.LOTRFaction;
-import lotr.common.quest.*;
+import lotr.common.quest.LOTRMiniQuest;
+import lotr.common.quest.LOTRMiniQuestFactory;
 import lotr.common.world.biome.LOTRBiomeGenFarHarad;
 import lotr.common.world.structure.LOTRChestContents;
 import net.minecraft.block.Block;
-import net.minecraft.entity.*;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 
@@ -34,7 +40,7 @@ public class LOTREntityTauredain extends LOTREntityMan {
 		tasks.addTask(7, new EntityAIWatchClosest2(this, LOTREntityNPC.class, 5.0f, 0.02f));
 		tasks.addTask(8, new EntityAIWatchClosest(this, EntityLiving.class, 8.0f, 0.02f));
 		tasks.addTask(9, new EntityAILookIdle(this));
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 	}
 
 	@Override
@@ -100,9 +106,7 @@ public class LOTREntityTauredain extends LOTREntityMan {
 			int k = MathHelper.floor_double(posZ);
 			BiomeGenBase biome = worldObj.getBiomeGenForCoords(i, k);
 			Block block = worldObj.getBlock(i, j - 1, k);
-			if (j > 62 && block == biome.topBlock) {
-				return true;
-			}
+			return j > 62 && block == biome.topBlock;
 		}
 		return false;
 	}
@@ -119,7 +123,7 @@ public class LOTREntityTauredain extends LOTREntityMan {
 
 	@Override
 	public String getNPCFormattedName(String npcName, String entityName) {
-		if (this.getClass() == LOTREntityTauredain.class) {
+		if (getClass() == LOTREntityTauredain.class) {
 			return StatCollector.translateToLocalFormatted("entity.lotr.Tauredain.entityName", npcName);
 		}
 		return super.getNPCFormattedName(npcName, entityName);

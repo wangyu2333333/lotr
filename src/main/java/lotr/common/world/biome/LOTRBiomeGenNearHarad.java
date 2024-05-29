@@ -1,22 +1,34 @@
 package lotr.common.world.biome;
 
-import java.util.Random;
-
-import lotr.common.*;
-import lotr.common.entity.animal.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRMod;
+import lotr.common.entity.animal.LOTREntityCamel;
+import lotr.common.entity.animal.LOTREntityDesertScorpion;
 import lotr.common.entity.npc.LOTREntityBanditHarad;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
-import lotr.common.world.feature.*;
-import lotr.common.world.map.*;
-import lotr.common.world.spawning.*;
+import lotr.common.world.feature.LOTRTreeType;
+import lotr.common.world.feature.LOTRWorldGenBoulder;
+import lotr.common.world.map.LOTRRoadType;
+import lotr.common.world.map.LOTRWaypoint;
+import lotr.common.world.spawning.LOTRBiomeSpawnList;
+import lotr.common.world.spawning.LOTREventSpawner;
+import lotr.common.world.spawning.LOTRSpawnList;
 import lotr.common.world.structure.LOTRWorldGenHaradObelisk;
-import lotr.common.world.structure2.*;
+import lotr.common.world.structure2.LOTRWorldGenHaradPyramid;
+import lotr.common.world.structure2.LOTRWorldGenHaradRuinedFort;
+import lotr.common.world.structure2.LOTRWorldGenMumakSkeleton;
+import lotr.common.world.structure2.LOTRWorldGenStoneRuin;
 import lotr.common.world.village.LOTRVillageGenHaradNomad;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.gen.NoiseGeneratorPerlin;
-import net.minecraft.world.gen.feature.*;
+import net.minecraft.world.gen.feature.WorldGenCactus;
+import net.minecraft.world.gen.feature.WorldGenDeadBush;
+import net.minecraft.world.gen.feature.WorldGenMinable;
+import net.minecraft.world.gen.feature.WorldGenerator;
+
+import java.util.Random;
 
 public class LOTRBiomeGenNearHarad extends LOTRBiome {
 	public static NoiseGeneratorPerlin noiseAridGrass = new NoiseGeneratorPerlin(new Random(62926025827260L), 1);
@@ -37,12 +49,12 @@ public class LOTRBiomeGenNearHarad extends LOTRBiome {
 		arrspawnListContainer[1] = LOTRBiomeSpawnList.entry(LOTRSpawnList.NOMAD_WARRIORS, 15).setSpawnChance(10000);
 		npcSpawnList.newFactionList(100).add(arrspawnListContainer);
 		variantChance = 0.8f;
-		this.addBiomeVariant(LOTRBiomeVariant.DUNES, 0.5f);
-		this.addBiomeVariant(LOTRBiomeVariant.STEPPE);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS);
-		this.addBiomeVariant(LOTRBiomeVariant.BOULDERS_RED);
-		this.addBiomeVariant(LOTRBiomeVariant.DEADFOREST_OAK);
-		this.addBiomeVariant(LOTRBiomeVariant.SCRUBLAND_SAND);
+		addBiomeVariant(LOTRBiomeVariant.DUNES, 0.5f);
+		addBiomeVariant(LOTRBiomeVariant.STEPPE);
+		addBiomeVariant(LOTRBiomeVariant.HILLS);
+		addBiomeVariant(LOTRBiomeVariant.BOULDERS_RED);
+		addBiomeVariant(LOTRBiomeVariant.DEADFOREST_OAK);
+		addBiomeVariant(LOTRBiomeVariant.SCRUBLAND_SAND);
 		decorator.addOre(new WorldGenMinable(Blocks.lapis_ore, 6), 1.0f, 0, 48);
 		decorator.grassPerChunk = 0;
 		decorator.doubleGrassPerChunk = 0;

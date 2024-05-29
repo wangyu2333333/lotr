@@ -1,6 +1,8 @@
 package lotr.common.fac;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievementRank;
+import lotr.common.LOTRPlayerData;
+import lotr.common.LOTRTitle;
 import net.minecraft.util.StatCollector;
 
 public class LOTRFactionRank implements Comparable<LOTRFactionRank> {
@@ -44,7 +46,7 @@ public class LOTRFactionRank implements Comparable<LOTRFactionRank> {
 	}
 
 	public String getCodeFullNameWithGender(LOTRPlayerData pd) {
-		if (isGendered() && pd.useFeminineRanks()) {
+		if (isGendered && pd.useFeminineRanks()) {
 			return getCodeFullNameFem();
 		}
 		return getCodeFullName();
@@ -75,7 +77,7 @@ public class LOTRFactionRank implements Comparable<LOTRFactionRank> {
 	}
 
 	public String getFullNameWithGender(LOTRPlayerData pd) {
-		if (isGendered() && pd.useFeminineRanks()) {
+		if (isGendered && pd.useFeminineRanks()) {
 			return getDisplayFullNameFem();
 		}
 		return getDisplayFullName();
@@ -86,7 +88,7 @@ public class LOTRFactionRank implements Comparable<LOTRFactionRank> {
 	}
 
 	public String getShortNameWithGender(LOTRPlayerData pd) {
-		if (isGendered() && pd.useFeminineRanks()) {
+		if (isGendered && pd.useFeminineRanks()) {
 			return getDisplayNameFem();
 		}
 		return getDisplayName();
@@ -145,7 +147,7 @@ public class LOTRFactionRank implements Comparable<LOTRFactionRank> {
 
 		@Override
 		public String getDisplayName() {
-			return StatCollector.translateToLocal(getCodeName());
+			return StatCollector.translateToLocal(name);
 		}
 
 		@Override

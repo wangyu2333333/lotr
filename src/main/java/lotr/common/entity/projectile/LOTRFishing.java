@@ -1,17 +1,22 @@
 package lotr.common.entity.projectile;
 
-import java.util.*;
-
 import lotr.common.LOTRMod;
-import net.minecraft.init.*;
-import net.minecraft.item.*;
-import net.minecraft.util.*;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemFishFood;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.WeightedRandom;
 import net.minecraftforge.common.FishingHooks;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Random;
+
 public class LOTRFishing {
-	public static List<FishingItem> fish = new ArrayList<>();
-	public static List<FishingItem> junk = new ArrayList<>();
-	public static List<FishingItem> treasure = new ArrayList<>();
+	public static Collection<FishingItem> fish = new ArrayList<>();
+	public static Collection<FishingItem> junk = new ArrayList<>();
+	public static Collection<FishingItem> treasure = new ArrayList<>();
 
 	static {
 		fish.add(new FishingItem(new ItemStack(Items.fish, 1, ItemFishFood.FishType.COD.func_150976_a()), 60));
@@ -97,7 +102,7 @@ public class LOTRFishing {
 
 	public static class FishingItem extends WeightedRandom.Item {
 		public ItemStack theItem;
-		public float maxDurability = 0.0f;
+		public float maxDurability;
 
 		public FishingItem(ItemStack item, int weight) {
 			super(weight);

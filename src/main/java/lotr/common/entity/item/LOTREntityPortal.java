@@ -1,19 +1,23 @@
 package lotr.common.entity.item;
 
-import java.util.List;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRDimension;
+import lotr.common.LOTRMod;
 import lotr.common.world.LOTRTeleporter;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
+
+import java.util.List;
 
 public class LOTREntityPortal extends Entity {
 	public static int MAX_SCALE = 120;
@@ -50,11 +54,6 @@ public class LOTREntityPortal extends Entity {
 	}
 
 	@Override
-	public boolean canBePushed() {
-		return false;
-	}
-
-	@Override
 	public boolean canTriggerWalking() {
 		return false;
 	}
@@ -82,7 +81,11 @@ public class LOTREntityPortal extends Entity {
 		return dataWatcher.getWatchableObjectShort(10);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	public void setScale(int i) {
+		dataWatcher.updateObject(10, (short) i);
+	}
+
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void handleHealthUpdate(byte b) {
 		if (b == 16) {
@@ -170,10 +173,6 @@ public class LOTREntityPortal extends Entity {
 	@Override
 	public void readEntityFromNBT(NBTTagCompound nbt) {
 		setScale(nbt.getInteger("Scale"));
-	}
-
-	public void setScale(int i) {
-		dataWatcher.updateObject(10, (short) i);
 	}
 
 	public void transferEntity(Entity entity) {

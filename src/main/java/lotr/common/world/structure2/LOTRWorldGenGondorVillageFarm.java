@@ -1,7 +1,5 @@
 package lotr.common.world.structure2;
 
-import java.util.*;
-
 import lotr.common.LOTRMod;
 import lotr.common.entity.npc.LOTREntityGondorFarmhand;
 import lotr.common.world.feature.LOTRTreeType;
@@ -10,15 +8,18 @@ import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenAbstractTree;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 public abstract class LOTRWorldGenGondorVillageFarm extends LOTRWorldGenGondorStructure {
-	public LOTRWorldGenGondorVillageFarm(boolean flag) {
+	protected LOTRWorldGenGondorVillageFarm(boolean flag) {
 		super(flag);
 	}
 
 	@Override
 	public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
 		int j1;
-		this.setOriginAndRotation(world, i, j, k, rotation, 6);
+		setOriginAndRotation(world, i, j, k, rotation, 6);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			int minHeight = 0;
@@ -186,6 +187,26 @@ public abstract class LOTRWorldGenGondorVillageFarm extends LOTRWorldGenGondorSt
 			super(flag);
 		}
 
+		public static LOTRTreeType getRandomTree(Random random) {
+			ArrayList<LOTRTreeType> treeList = new ArrayList<>();
+			treeList.add(LOTRTreeType.OAK);
+			treeList.add(LOTRTreeType.OAK_LARGE);
+			treeList.add(LOTRTreeType.BIRCH);
+			treeList.add(LOTRTreeType.BIRCH_TALL);
+			treeList.add(LOTRTreeType.BIRCH_LARGE);
+			treeList.add(LOTRTreeType.BEECH);
+			treeList.add(LOTRTreeType.BEECH_LARGE);
+			treeList.add(LOTRTreeType.LEBETHRON);
+			treeList.add(LOTRTreeType.LEBETHRON_LARGE);
+			treeList.add(LOTRTreeType.CEDAR);
+			treeList.add(LOTRTreeType.APPLE);
+			treeList.add(LOTRTreeType.PEAR);
+			treeList.add(LOTRTreeType.PLUM);
+			treeList.add(LOTRTreeType.ALMOND);
+			treeList.add(LOTRTreeType.OLIVE);
+			return treeList.get(random.nextInt(treeList.size()));
+		}
+
 		@Override
 		public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
 			int i1;
@@ -204,7 +225,7 @@ public abstract class LOTRWorldGenGondorVillageFarm extends LOTRWorldGenGondorSt
 				}
 			}
 			for (int l = 0; l < 16; ++l) {
-				LOTRTreeType tree = Tree.getRandomTree(random);
+				LOTRTreeType tree = getRandomTree(random);
 				WorldGenAbstractTree treeGen = tree.create(notifyChanges, random);
 				if (treeGen == null) {
 					continue;
@@ -226,26 +247,6 @@ public abstract class LOTRWorldGenGondorVillageFarm extends LOTRWorldGenGondorSt
 				}
 			}
 			return true;
-		}
-
-		public static LOTRTreeType getRandomTree(Random random) {
-			ArrayList<LOTRTreeType> treeList = new ArrayList<>();
-			treeList.add(LOTRTreeType.OAK);
-			treeList.add(LOTRTreeType.OAK_LARGE);
-			treeList.add(LOTRTreeType.BIRCH);
-			treeList.add(LOTRTreeType.BIRCH_TALL);
-			treeList.add(LOTRTreeType.BIRCH_LARGE);
-			treeList.add(LOTRTreeType.BEECH);
-			treeList.add(LOTRTreeType.BEECH_LARGE);
-			treeList.add(LOTRTreeType.LEBETHRON);
-			treeList.add(LOTRTreeType.LEBETHRON_LARGE);
-			treeList.add(LOTRTreeType.CEDAR);
-			treeList.add(LOTRTreeType.APPLE);
-			treeList.add(LOTRTreeType.PEAR);
-			treeList.add(LOTRTreeType.PLUM);
-			treeList.add(LOTRTreeType.ALMOND);
-			treeList.add(LOTRTreeType.OLIVE);
-			return treeList.get(random.nextInt(treeList.size()));
 		}
 	}
 

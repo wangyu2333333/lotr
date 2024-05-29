@@ -1,11 +1,13 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
-import lotr.common.entity.npc.*;
+import lotr.common.entity.npc.LOTREntityNearHaradrimArcher;
+import lotr.common.entity.npc.LOTREntityNearHaradrimBase;
+import lotr.common.entity.npc.LOTREntityNearHaradrimWarrior;
 import lotr.common.world.structure.LOTRChestContents;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenSouthronBarracks extends LOTRWorldGenSouthronStructure {
 	public LOTRWorldGenSouthronBarracks(boolean flag) {
@@ -19,7 +21,7 @@ public class LOTRWorldGenSouthronBarracks extends LOTRWorldGenSouthronStructure 
 	@Override
 	public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
 		int k1;
-		this.setOriginAndRotation(world, i, j, k, rotation, 8);
+		setOriginAndRotation(world, i, j, k, rotation, 8);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			int minHeight = 0;
@@ -67,12 +69,12 @@ public class LOTRWorldGenSouthronBarracks extends LOTRWorldGenSouthronStructure 
 		generateStrScan(world, random, 0, 0, 0);
 		for (k1 = -4; k1 <= 4; k1 += 2) {
 			if (random.nextBoolean()) {
-				this.placeChest(world, random, -4, 1, k1, LOTRMod.chestBasket, 4, LOTRChestContents.NEAR_HARAD_TOWER, 1 + random.nextInt(2));
+				placeChest(world, random, -4, 1, k1, LOTRMod.chestBasket, 4, LOTRChestContents.NEAR_HARAD_TOWER, 1 + random.nextInt(2));
 			} else {
 				setBlockAndMetadata(world, -4, 1, k1, LOTRMod.chestBasket, 4);
 			}
 			if (random.nextBoolean()) {
-				this.placeChest(world, random, 3, 1, k1, LOTRMod.chestBasket, 5, LOTRChestContents.NEAR_HARAD_TOWER, 1 + random.nextInt(2));
+				placeChest(world, random, 3, 1, k1, LOTRMod.chestBasket, 5, LOTRChestContents.NEAR_HARAD_TOWER, 1 + random.nextInt(2));
 				continue;
 			}
 			setBlockAndMetadata(world, 3, 1, k1, LOTRMod.chestBasket, 5);

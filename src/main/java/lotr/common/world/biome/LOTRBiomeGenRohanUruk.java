@@ -1,16 +1,26 @@
 package lotr.common.world.biome;
 
-import java.util.Random;
-
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRMod;
 import lotr.common.entity.npc.LOTREntityScrapTrader;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
-import lotr.common.world.feature.*;
-import lotr.common.world.spawning.*;
+import lotr.common.world.feature.LOTRTreeType;
+import lotr.common.world.feature.LOTRWorldGenBlastedLand;
+import lotr.common.world.feature.LOTRWorldGenBoulder;
+import lotr.common.world.feature.LOTRWorldGenSkullPile;
+import lotr.common.world.spawning.LOTRBiomeSpawnList;
+import lotr.common.world.spawning.LOTREventSpawner;
+import lotr.common.world.spawning.LOTRInvasions;
+import lotr.common.world.spawning.LOTRSpawnList;
 import lotr.common.world.structure.LOTRWorldGenRuinedRohanWatchtower;
-import lotr.common.world.structure2.*;
+import lotr.common.world.structure2.LOTRWorldGenSmallStoneRuin;
+import lotr.common.world.structure2.LOTRWorldGenUrukCamp;
+import lotr.common.world.structure2.LOTRWorldGenUrukWargPit;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.*;
+import net.minecraft.world.gen.feature.WorldGenAbstractTree;
+import net.minecraft.world.gen.feature.WorldGenerator;
+
+import java.util.Random;
 
 public class LOTRBiomeGenRohanUruk extends LOTRBiomeGenRohan {
 	public WorldGenerator deadMoundGen = new LOTRWorldGenBoulder(LOTRMod.wasteBlock, 0, 1, 3);
@@ -34,9 +44,9 @@ public class LOTRBiomeGenRohanUruk extends LOTRBiomeGenRohan {
 		arrspawnListContainer4[1] = LOTRBiomeSpawnList.entry(LOTRSpawnList.HUORNS, 20);
 		npcSpawnList.newFactionList(0).add(arrspawnListContainer4);
 		clearBiomeVariants();
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS);
-		this.addBiomeVariant(LOTRBiomeVariant.DEADFOREST_OAK);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
+		addBiomeVariant(LOTRBiomeVariant.HILLS);
+		addBiomeVariant(LOTRBiomeVariant.DEADFOREST_OAK);
 		decorator.resetTreeCluster();
 		decorator.willowPerChunk = 0;
 		decorator.flowersPerChunk = 1;
@@ -104,8 +114,4 @@ public class LOTRBiomeGenRohanUruk extends LOTRBiomeGenRohan {
 		return false;
 	}
 
-	@Override
-	public int spawnCountMultiplier() {
-		return 3;
-	}
 }

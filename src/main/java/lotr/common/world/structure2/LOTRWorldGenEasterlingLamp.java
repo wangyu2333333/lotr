@@ -1,10 +1,10 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenEasterlingLamp extends LOTRWorldGenEasterlingStructure {
 	public LOTRWorldGenEasterlingLamp(boolean flag) {
@@ -15,7 +15,7 @@ public class LOTRWorldGenEasterlingLamp extends LOTRWorldGenEasterlingStructure 
 	public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
 		int k1;
 		int i1;
-		this.setOriginAndRotation(world, i, j, k, rotation, 0);
+		setOriginAndRotation(world, i, j, k, rotation, 0);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			for (i1 = -1; i1 <= 1; ++i1) {

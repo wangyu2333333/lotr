@@ -1,22 +1,26 @@
 package lotr.common.block;
 
-import java.util.*;
-
 import lotr.common.LOTRCreativeTabs;
 import lotr.common.item.LOTRItemAnimalJar;
 import lotr.common.tileentity.LOTRTileEntityAnimalJar;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.world.*;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 public abstract class LOTRBlockAnimalJar extends BlockContainer {
-	public LOTRBlockAnimalJar(Material material) {
+	protected LOTRBlockAnimalJar(Material material) {
 		super(material);
 		setCreativeTab(LOTRCreativeTabs.tabDeco);
 	}
@@ -98,7 +102,7 @@ public abstract class LOTRBlockAnimalJar extends BlockContainer {
 		if (entityplayer.capabilities.isCreativeMode) {
 			world.setBlockMetadataWithNotify(i, j, k, meta |= 8, 4);
 		}
-		this.dropBlockAsItem(world, i, j, k, meta, 0);
+		dropBlockAsItem(world, i, j, k, meta, 0);
 		super.onBlockHarvested(world, i, j, k, meta, entityplayer);
 	}
 
@@ -106,7 +110,7 @@ public abstract class LOTRBlockAnimalJar extends BlockContainer {
 	public void onNeighborBlockChange(World world, int i, int j, int k, Block block) {
 		if (!canBlockStay(world, i, j, k)) {
 			int meta = world.getBlockMetadata(i, j, k);
-			this.dropBlockAsItem(world, i, j, k, meta, 0);
+			dropBlockAsItem(world, i, j, k, meta, 0);
 			world.setBlockToAir(i, j, k);
 		}
 	}

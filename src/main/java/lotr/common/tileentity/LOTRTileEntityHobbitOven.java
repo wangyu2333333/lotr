@@ -1,38 +1,52 @@
 package lotr.common.tileentity;
 
-import java.util.*;
-
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.LOTRMod;
 import lotr.common.block.LOTRBlockHobbitOven;
 import lotr.common.inventory.LOTRSlotStackSize;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.*;
-import net.minecraft.item.*;
+import net.minecraft.inventory.ISidedInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.tileentity.*;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.StatCollector;
 
-public class LOTRTileEntityHobbitOven extends TileEntity implements IInventory, ISidedInventory {
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class LOTRTileEntityHobbitOven extends TileEntity implements ISidedInventory {
 	public ItemStack[] inventory = new ItemStack[19];
-	public int ovenCookTime = 0;
-	public int currentItemFuelValue = 0;
-	public int currentCookTime = 0;
+	public int ovenCookTime;
+	public int currentItemFuelValue;
+	public int currentCookTime;
 	public String specialOvenName;
-	public int[] inputSlots = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
-	public int[] outputSlots = { 9, 10, 11, 12, 13, 14, 15, 16, 17 };
+	public int[] inputSlots = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+	public int[] outputSlots = {9, 10, 11, 12, 13, 14, 15, 16, 17};
 	public int fuelSlot = 18;
+
+	public static boolean isCookResultAcceptable(ItemStack result) {
+		if (result == null) {
+			return false;
+		}
+		Item item = result.getItem();
+		return item instanceof ItemFood || item == LOTRMod.pipeweed || item == Item.getItemFromBlock(LOTRMod.driedReeds);
+	}
 
 	public boolean canCook(int i) {
 		if (inventory[i] == null) {
 			return false;
 		}
 		ItemStack result = FurnaceRecipes.smelting().getSmeltingResult(inventory[i]);
-		if (!LOTRTileEntityHobbitOven.isCookResultAcceptable(result)) {
+		if (!isCookResultAcceptable(result)) {
 			return false;
 		}
 		if (inventory[i + 9] == null) {
@@ -132,15 +146,15 @@ public class LOTRTileEntityHobbitOven extends TileEntity implements IInventory, 
 			}
 			return temp;
 		}
-		return new int[] { fuelSlot };
+		return new int[]{fuelSlot};
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public int getCookProgressScaled(int i) {
 		return currentCookTime * i / 400;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public int getCookTimeRemainingScaled(int i) {
 		if (currentItemFuelValue == 0) {
 			currentItemFuelValue = 400;
@@ -180,7 +194,7 @@ public class LOTRTileEntityHobbitOven extends TileEntity implements IInventory, 
 
 	@Override
 	public boolean hasCustomInventoryName() {
-		return specialOvenName != null && specialOvenName.length() > 0;
+		return specialOvenName != null && !specialOvenName.isEmpty();
 	}
 
 	public boolean isCooking() {
@@ -190,7 +204,7 @@ public class LOTRTileEntityHobbitOven extends TileEntity implements IInventory, 
 	@Override
 	public boolean isItemValidForSlot(int slot, ItemStack itemstack) {
 		if (slot < 9) {
-			return itemstack == null ? false : LOTRTileEntityHobbitOven.isCookResultAcceptable(FurnaceRecipes.smelting().getSmeltingResult(itemstack));
+			return itemstack != null && isCookResultAcceptable(FurnaceRecipes.smelting().getSmeltingResult(itemstack));
 		}
 		if (slot < 18) {
 			return false;
@@ -308,13 +322,5 @@ public class LOTRTileEntityHobbitOven extends TileEntity implements IInventory, 
 		if (hasCustomInventoryName()) {
 			nbt.setString("CustomName", specialOvenName);
 		}
-	}
-
-	public static boolean isCookResultAcceptable(ItemStack result) {
-		if (result == null) {
-			return false;
-		}
-		Item item = result.getItem();
-		return item instanceof ItemFood || item == LOTRMod.pipeweed || item == Item.getItemFromBlock(LOTRMod.driedReeds);
 	}
 }

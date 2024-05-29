@@ -1,22 +1,35 @@
 package lotr.common.world;
 
-import java.util.*;
-
 import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
-import lotr.common.world.biome.*;
-import lotr.common.world.biome.variant.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRDimension;
+import lotr.common.LOTRMod;
+import lotr.common.world.biome.LOTRBiome;
+import lotr.common.world.biome.LOTRBiomeGenFarHaradJungle;
+import lotr.common.world.biome.LOTRBiomeGenFarHaradMangrove;
+import lotr.common.world.biome.variant.LOTRBiomeVariant;
+import lotr.common.world.biome.variant.LOTRBiomeVariantList;
+import lotr.common.world.biome.variant.LOTRBiomeVariantStorage;
 import lotr.common.world.genlayer.*;
 import lotr.common.world.map.LOTRFixedStructures;
-import lotr.common.world.village.*;
-import net.minecraft.world.*;
-import net.minecraft.world.biome.*;
+import lotr.common.world.village.LOTRVillageGen;
+import lotr.common.world.village.LOTRVillagePositionCache;
+import net.minecraft.world.ChunkPosition;
+import net.minecraft.world.World;
+import net.minecraft.world.biome.BiomeCache;
+import net.minecraft.world.biome.BiomeGenBase;
+import net.minecraft.world.biome.WorldChunkManager;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.structure.MapGenStructure;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
 public class LOTRWorldChunkManager extends WorldChunkManager {
-	public static int LAYER_BIOME = 0;
+	public static int LAYER_BIOME;
 	public static int LAYER_VARIANTS_LARGE = 1;
 	public static int LAYER_VARIANTS_SMALL = 2;
 	public static int LAYER_VARIANTS_LAKES = 3;
@@ -117,7 +130,7 @@ public class LOTRWorldChunkManager extends WorldChunkManager {
 		}
 		if (useCache && xSize == 16 && zSize == 16 && (i & 0xF) == 0 && (k & 0xF) == 0) {
 			BiomeGenBase[] cachedBiomes = biomeCache.getCachedBiomes(i, k);
-			System.arraycopy(cachedBiomes, 0, biomes, 0, xSize * zSize);
+			System.arraycopy(cachedBiomes, 0, biomes, 0, 16 * 16);
 			return biomes;
 		}
 		int[] ints = worldLayers[LAYER_BIOME].getInts(worldObj, i, k, xSize, zSize);
@@ -221,7 +234,7 @@ public class LOTRWorldChunkManager extends WorldChunkManager {
 							}
 							int[] sourceInts = pass == 0 ? variantsLargeInts : variantsSmallInts;
 							int variantCode = sourceInts[index];
-							float variantF = (float) variantCode / (float) LOTRGenLayerBiomeVariants.RANDOM_MAX;
+							float variantF = (float) variantCode / LOTRGenLayerBiomeVariants.RANDOM_MAX;
 							if (variantF < variantChance) {
 								float variantFNormalised = variantF / variantChance;
 								variant = variantList.get(variantFNormalised);
@@ -283,7 +296,7 @@ public class LOTRWorldChunkManager extends WorldChunkManager {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public float getTemperatureAtHeight(float f, int height) {
 		if (worldObj.isRemote && LOTRMod.isChristmas()) {
 			return 0.0f;
@@ -306,7 +319,7 @@ public class LOTRWorldChunkManager extends WorldChunkManager {
 
 	@Override
 	public BiomeGenBase[] loadBlockGeneratorData(BiomeGenBase[] biomes, int i, int k, int xSize, int zSize) {
-		return this.getBiomeGenAt(biomes, i, k, xSize, zSize, true);
+		return getBiomeGenAt(biomes, i, k, xSize, zSize, true);
 	}
 
 	public void setupGenLayers() {

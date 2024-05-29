@@ -1,10 +1,9 @@
 package lotr.common.world.biome;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
-import lotr.common.world.feature.*;
+import lotr.common.world.feature.LOTRTreeType;
+import lotr.common.world.feature.LOTRWorldGenBoulder;
 import lotr.common.world.spawning.LOTREventSpawner;
 import lotr.common.world.structure2.LOTRWorldGenRohanWatchtower;
 import lotr.common.world.village.LOTRVillageGenRohan;
@@ -13,18 +12,20 @@ import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
 
+import java.util.Random;
+
 public class LOTRBiomeGenWold extends LOTRBiomeGenRohan {
 	public WorldGenerator woldBoulderGen = new LOTRWorldGenBoulder(LOTRMod.rock, 2, 2, 4);
 
 	public LOTRBiomeGenWold(int i, boolean major) {
 		super(i, major);
 		clearBiomeVariants();
-		this.addBiomeVariant(LOTRBiomeVariant.FLOWERS);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
-		this.addBiomeVariant(LOTRBiomeVariant.STEPPE);
-		this.addBiomeVariant(LOTRBiomeVariant.STEPPE_BARREN);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS);
-		this.addBiomeVariant(LOTRBiomeVariant.DEADFOREST_OAK);
+		addBiomeVariant(LOTRBiomeVariant.FLOWERS);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
+		addBiomeVariant(LOTRBiomeVariant.STEPPE);
+		addBiomeVariant(LOTRBiomeVariant.STEPPE_BARREN);
+		addBiomeVariant(LOTRBiomeVariant.HILLS);
+		addBiomeVariant(LOTRBiomeVariant.DEADFOREST_OAK);
 		decorator.treesPerChunk = 0;
 		decorator.setTreeCluster(8, 100);
 		decorator.flowersPerChunk = 1;

@@ -1,10 +1,12 @@
 package lotr.common.entity.ai;
 
-import lotr.common.*;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
 import lotr.common.entity.npc.LOTREntityNPC;
 import lotr.common.fac.LOTRFaction;
 import net.minecraft.command.IEntitySelector;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class LOTRNPCTargetSelector implements IEntitySelector {
@@ -40,9 +42,7 @@ public class LOTRNPCTargetSelector implements IEntitySelector {
 						hiringPlayer = npc.hiredNPCInfo.getHiringPlayer();
 					}
 				}
-				if (hiringPlayer != null && LOTRLevelData.getData(hiringPlayer).getAlignment(targetFaction) < 0.0f) {
-					return true;
-				}
+				return hiringPlayer != null && LOTRLevelData.getData(hiringPlayer).getAlignment(targetFaction) < 0.0f;
 			}
 		}
 		return false;

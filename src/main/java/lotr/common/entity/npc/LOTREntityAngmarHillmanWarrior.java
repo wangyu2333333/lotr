@@ -1,6 +1,7 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRMod;
+import lotr.common.LOTRShields;
 import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.ai.EntityAIBase;
@@ -8,11 +9,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class LOTREntityAngmarHillmanWarrior extends LOTREntityAngmarHillman {
-	public static ItemStack[] weapons = { new ItemStack(LOTRMod.swordAngmar), new ItemStack(LOTRMod.battleaxeAngmar), new ItemStack(LOTRMod.hammerAngmar), new ItemStack(LOTRMod.daggerAngmar), new ItemStack(LOTRMod.polearmAngmar), new ItemStack(LOTRMod.spearAngmar) };
-	public static ItemStack[] helmets = { new ItemStack(LOTRMod.helmetBone), new ItemStack(LOTRMod.helmetFur) };
-	public static ItemStack[] bodies = { new ItemStack(LOTRMod.bodyAngmar), new ItemStack(LOTRMod.bodyAngmar), new ItemStack(LOTRMod.bodyBone), new ItemStack(LOTRMod.bodyFur) };
-	public static ItemStack[] legs = { new ItemStack(LOTRMod.legsAngmar), new ItemStack(LOTRMod.legsAngmar), new ItemStack(LOTRMod.legsBone), new ItemStack(LOTRMod.legsFur) };
-	public static ItemStack[] boots = { new ItemStack(LOTRMod.bootsAngmar), new ItemStack(LOTRMod.bootsAngmar), new ItemStack(LOTRMod.bootsBone), new ItemStack(LOTRMod.bootsFur) };
+	public static ItemStack[] weapons = {new ItemStack(LOTRMod.swordAngmar), new ItemStack(LOTRMod.battleaxeAngmar), new ItemStack(LOTRMod.hammerAngmar), new ItemStack(LOTRMod.daggerAngmar), new ItemStack(LOTRMod.polearmAngmar), new ItemStack(LOTRMod.spearAngmar)};
+	public static ItemStack[] helmets = {new ItemStack(LOTRMod.helmetBone), new ItemStack(LOTRMod.helmetFur)};
+	public static ItemStack[] bodies = {new ItemStack(LOTRMod.bodyAngmar), new ItemStack(LOTRMod.bodyAngmar), new ItemStack(LOTRMod.bodyBone), new ItemStack(LOTRMod.bodyFur)};
+	public static ItemStack[] legs = {new ItemStack(LOTRMod.legsAngmar), new ItemStack(LOTRMod.legsAngmar), new ItemStack(LOTRMod.legsBone), new ItemStack(LOTRMod.legsFur)};
+	public static ItemStack[] boots = {new ItemStack(LOTRMod.bootsAngmar), new ItemStack(LOTRMod.bootsAngmar), new ItemStack(LOTRMod.bootsBone), new ItemStack(LOTRMod.bootsFur)};
 
 	public LOTREntityAngmarHillmanWarrior(World world) {
 		super(world);

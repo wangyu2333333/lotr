@@ -1,16 +1,20 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
-import lotr.common.*;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
 import lotr.common.entity.LOTREntityNPCRespawner;
-import lotr.common.entity.npc.*;
+import lotr.common.entity.npc.LOTREntityDorwinionCaptain;
+import lotr.common.entity.npc.LOTREntityDorwinionCrossbower;
+import lotr.common.entity.npc.LOTREntityDorwinionElfCaptain;
+import lotr.common.entity.npc.LOTREntityDorwinionGuard;
 import lotr.common.item.LOTRItemBanner;
 import lotr.common.world.structure.LOTRChestContents;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.Direction;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenDorwinionCaptainTent extends LOTRWorldGenDorwinionTent {
 	public LOTRWorldGenDorwinionCaptainTent(boolean flag) {
@@ -24,7 +28,7 @@ public class LOTRWorldGenDorwinionCaptainTent extends LOTRWorldGenDorwinionTent 
 		int k1;
 		int j1;
 		int i1;
-		this.setOriginAndRotation(world, i, j, k, rotation, 7);
+		setOriginAndRotation(world, i, j, k, rotation, 7);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			int minHeight = 0;
@@ -87,10 +91,7 @@ public class LOTRWorldGenDorwinionCaptainTent extends LOTRWorldGenDorwinionTent 
 			for (k1 = -6; k1 <= 6; ++k1) {
 				i2 = Math.abs(i1);
 				k2 = Math.abs(k1);
-				boolean inside = false;
-				if (i2 <= 3 && k2 <= 3) {
-					inside = true;
-				}
+				boolean inside = i2 <= 3 && k2 <= 3;
 				if (i2 == 4 && k2 <= 3 || k2 == 4 && i2 <= 3) {
 					inside = true;
 				}
@@ -186,23 +187,23 @@ public class LOTRWorldGenDorwinionCaptainTent extends LOTRWorldGenDorwinionTent 
 		setBlockAndMetadata(world, -3, 2, -4, Blocks.bed, 10);
 		setBlockAndMetadata(world, 3, 1, -4, Blocks.crafting_table, 0);
 		setBlockAndMetadata(world, 4, 1, -3, LOTRMod.dorwinionTable, 0);
-		this.placeChest(world, random, -4, 1, 3, 2, LOTRChestContents.DORWINION_CAMP);
-		this.placeChest(world, random, -3, 1, 4, 4, LOTRChestContents.DORWINION_CAMP);
+		placeChest(world, random, -4, 1, 3, 2, LOTRChestContents.DORWINION_CAMP);
+		placeChest(world, random, -3, 1, 4, 4, LOTRChestContents.DORWINION_CAMP);
 		setBlockAndMetadata(world, 2, 1, 4, plankSlabBlock, plankSlabMeta | 8);
-		this.placeMug(world, random, 2, 2, 4, 1, LOTRFoods.DORWINION_DRINK);
+		placeMug(world, random, 2, 2, 4, 1, LOTRFoods.DORWINION_DRINK);
 		setBlockAndMetadata(world, 3, 1, 3, plankSlabBlock, plankSlabMeta | 8);
-		this.placeMug(world, random, 3, 2, 3, 0, LOTRFoods.DORWINION_DRINK);
+		placeMug(world, random, 3, 2, 3, 0, LOTRFoods.DORWINION_DRINK);
 		setBlockAndMetadata(world, 4, 1, 2, plankSlabBlock, plankSlabMeta | 8);
-		this.placeMug(world, random, 4, 2, 2, 1, LOTRFoods.DORWINION_DRINK);
+		placeMug(world, random, 4, 2, 2, 1, LOTRFoods.DORWINION_DRINK);
 		setBlockAndMetadata(world, 3, 1, 4, plankBlock, plankMeta);
-		this.placeBarrel(world, random, 3, 2, 4, 5, LOTRFoods.DORWINION_DRINK);
+		placeBarrel(world, random, 3, 2, 4, 5, LOTRFoods.DORWINION_DRINK);
 		setBlockAndMetadata(world, 4, 1, 3, plankBlock, plankMeta);
-		this.placeBarrel(world, random, 4, 2, 3, 2, LOTRFoods.DORWINION_DRINK);
-		for (int i13 : new int[] { -2, 2 }) {
+		placeBarrel(world, random, 4, 2, 3, 2, LOTRFoods.DORWINION_DRINK);
+		for (int i13 : new int[]{-2, 2}) {
 			placeWallBanner(world, i13, 3, -6, LOTRItemBanner.BannerType.DORWINION, 2);
 			placeWallBanner(world, i13, 3, 6, LOTRItemBanner.BannerType.DORWINION, 0);
 		}
-		for (int k13 : new int[] { -2, 2 }) {
+		for (int k13 : new int[]{-2, 2}) {
 			placeWallBanner(world, -6, 3, k13, LOTRItemBanner.BannerType.DORWINION, 3);
 			placeWallBanner(world, 6, 3, k13, LOTRItemBanner.BannerType.DORWINION, 1);
 		}

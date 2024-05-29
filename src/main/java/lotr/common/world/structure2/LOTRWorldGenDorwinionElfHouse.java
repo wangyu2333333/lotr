@@ -1,17 +1,18 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import com.google.common.math.IntMath;
-
-import lotr.common.*;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
 import lotr.common.entity.npc.LOTREntityDorwinionElf;
 import lotr.common.world.structure.LOTRChestContents;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
+
+import java.util.Random;
 
 public class LOTRWorldGenDorwinionElfHouse extends LOTRWorldGenDorwinionHouse {
 	public Block grapevineBlock;
@@ -34,7 +35,7 @@ public class LOTRWorldGenDorwinionElfHouse extends LOTRWorldGenDorwinionHouse {
 		int i13;
 		int j12;
 		int i14;
-		this.setOriginAndRotation(world, i, j, k, rotation, 1);
+		setOriginAndRotation(world, i, j, k, rotation, 1);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			for (int i15 = -4; i15 <= 8; ++i15) {
@@ -120,13 +121,13 @@ public class LOTRWorldGenDorwinionElfHouse extends LOTRWorldGenDorwinionHouse {
 			setBlockAndMetadata(world, -3, 3, k13, brickStairBlock, 6);
 			setBlockAndMetadata(world, -4, 1, k13, leafBlock, leafMeta);
 		}
-		for (int k14 : new int[] { 0, 8 }) {
+		for (int k14 : new int[]{0, 8}) {
 			setAir(world, -1, 2, k14);
 			setAir(world, 0, 2, k14);
 			setBlockAndMetadata(world, -1, 3, k14, brickStairBlock, 4);
 			setBlockAndMetadata(world, 0, 3, k14, brickStairBlock, 5);
 		}
-		for (int k14 : new int[] { 3, 8 }) {
+		for (int k14 : new int[]{3, 8}) {
 			setAir(world, 4, 2, k14);
 			setAir(world, 5, 2, k14);
 			setBlockAndMetadata(world, 4, 3, k14, brickStairBlock, 4);
@@ -148,7 +149,7 @@ public class LOTRWorldGenDorwinionElfHouse extends LOTRWorldGenDorwinionHouse {
 		setAir(world, 7, 2, 6);
 		setBlockAndMetadata(world, 7, 3, 5, brickStairBlock, 7);
 		setBlockAndMetadata(world, 7, 3, 6, brickStairBlock, 6);
-		for (int i16 : new int[] { -1, 0 }) {
+		for (int i16 : new int[]{-1, 0}) {
 			setBlockAndMetadata(world, i16, 0, 0, floorBlock, floorMeta);
 			setAir(world, i16, 1, 0);
 		}
@@ -297,8 +298,8 @@ public class LOTRWorldGenDorwinionElfHouse extends LOTRWorldGenDorwinionHouse {
 		setBlockAndMetadata(world, 6, 3, 4, Blocks.torch, 3);
 		setBlockAndMetadata(world, 1, 3, 1, Blocks.torch, 3);
 		setBlockAndMetadata(world, -2, 1, 4, Blocks.crafting_table, 0);
-		this.placeChest(world, random, -2, 1, 5, 5, LOTRChestContents.DORWINION_HOUSE);
-		this.placeChest(world, random, -2, 1, 6, 5, LOTRChestContents.DORWINION_HOUSE);
+		placeChest(world, random, -2, 1, 5, 5, LOTRChestContents.DORWINION_HOUSE);
+		placeChest(world, random, -2, 1, 6, 5, LOTRChestContents.DORWINION_HOUSE);
 		setBlockAndMetadata(world, -2, 1, 7, LOTRMod.dorwinionTable, 0);
 		setBlockAndMetadata(world, -1, 1, 6, Blocks.bed, 0);
 		setBlockAndMetadata(world, -1, 1, 7, Blocks.bed, 8);
@@ -312,7 +313,7 @@ public class LOTRWorldGenDorwinionElfHouse extends LOTRWorldGenDorwinionHouse {
 		setBlockAndMetadata(world, 6, 1, 7, plankBlock, plankMeta);
 		setBlockAndMetadata(world, 5, 1, 7, plankSlabBlock, plankSlabMeta | 8);
 		setBlockAndMetadata(world, 4, 1, 7, plankStairBlock, 4);
-		int[] i17 = { 4, 7 };
+		int[] i17 = {4, 7};
 		k2 = i17.length;
 		for (j12 = 0; j12 < k2; ++j12) {
 			int k14;
@@ -320,10 +321,10 @@ public class LOTRWorldGenDorwinionElfHouse extends LOTRWorldGenDorwinionHouse {
 			for (int i18 = 4; i18 <= 5; ++i18) {
 				placePlate(world, random, i18, 2, k14, plateBlock, LOTRFoods.DORWINION);
 			}
-			this.placeBarrel(world, random, 6, 2, k14, 5, new ItemStack(wineItem));
+			placeBarrel(world, random, 6, 2, k14, 5, new ItemStack(wineItem));
 		}
-		this.placeMug(world, random, 6, 2, 5, 1, new ItemStack(wineItem), LOTRFoods.DORWINION_DRINK);
-		this.placeMug(world, random, 6, 2, 6, 1, new ItemStack(wineItem), LOTRFoods.DORWINION_DRINK);
+		placeMug(world, random, 6, 2, 5, 1, new ItemStack(wineItem), LOTRFoods.DORWINION_DRINK);
+		placeMug(world, random, 6, 2, 6, 1, new ItemStack(wineItem), LOTRFoods.DORWINION_DRINK);
 		setBlockAndMetadata(world, 2, 0, 8, floorBlock, floorMeta);
 		setBlockAndMetadata(world, 2, 1, 8, doorBlock, 3);
 		setBlockAndMetadata(world, 2, 2, 8, doorBlock, 8);
@@ -346,9 +347,9 @@ public class LOTRWorldGenDorwinionElfHouse extends LOTRWorldGenDorwinionHouse {
 					continue;
 				}
 				if (k12 == 14) {
-					setBlockAndMetadata(world, i14, 0, k12, Blocks.water, 0);
-					setBlockAndMetadata(world, i14, 1, k12, fenceBlock, fenceMeta);
-					setBlockAndMetadata(world, i14, 2, k12, Blocks.torch, 5);
+					setBlockAndMetadata(world, i14, 0, 14, Blocks.water, 0);
+					setBlockAndMetadata(world, i14, 1, 14, fenceBlock, fenceMeta);
+					setBlockAndMetadata(world, i14, 2, 14, Blocks.torch, 5);
 					continue;
 				}
 				if (k12 < 11 || k12 > 17) {
@@ -369,7 +370,7 @@ public class LOTRWorldGenDorwinionElfHouse extends LOTRWorldGenDorwinionHouse {
 		setBlockAndMetadata(world, 4, 4, 19, brickStairBlock, 0);
 		setBlockAndMetadata(world, 1, 5, 19, brickSlabBlock, brickSlabMeta);
 		setBlockAndMetadata(world, 3, 5, 19, brickSlabBlock, brickSlabMeta);
-		for (int i16 : new int[] { -3, 4 }) {
+		for (int i16 : new int[]{-3, 4}) {
 			setGrassToDirt(world, i16, 0, 20);
 			setBlockAndMetadata(world, i16, 1, 20, brickStairBlock, 3);
 			setBlockAndMetadata(world, i16 + 1, 1, 20, leafBlock, leafMeta);

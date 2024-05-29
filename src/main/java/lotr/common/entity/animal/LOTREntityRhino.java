@@ -1,16 +1,19 @@
 package lotr.common.entity.animal;
 
-import java.util.List;
-
-import lotr.common.*;
+import lotr.common.LOTRMod;
+import lotr.common.LOTRReflection;
 import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 public class LOTREntityRhino extends LOTREntityHorse {
 	public LOTREntityRhino(World world) {
@@ -106,14 +109,9 @@ public class LOTREntityRhino extends LOTREntityHorse {
 			if (riddenByEntity instanceof EntityLivingBase) {
 				EntityLivingBase rhinoRider = (EntityLivingBase) riddenByEntity;
 				float momentum = MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ);
-				if (momentum > 0.2f) {
-					setSprinting(true);
-				} else {
-					setSprinting(false);
-				}
+				setSprinting(momentum > 0.2f);
 				if (momentum >= 0.32f) {
 					float strength = momentum * 15.0f;
-					Vec3.createVectorHelper(posX, posY, posZ);
 					Vec3 look = getLookVec();
 					float sightWidth = 1.0f;
 					double range = 0.5;
@@ -141,11 +139,7 @@ public class LOTREntityRhino extends LOTREntityHorse {
 				}
 			} else if (getAttackTarget() != null) {
 				float momentum = MathHelper.sqrt_double(motionX * motionX + motionZ * motionZ);
-				if (momentum > 0.2f) {
-					setSprinting(true);
-				} else {
-					setSprinting(false);
-				}
+				setSprinting(momentum > 0.2f);
 			} else {
 				setSprinting(false);
 			}
@@ -159,8 +153,8 @@ public class LOTREntityRhino extends LOTREntityHorse {
 		maxHealth = Math.max(maxHealth, 40.0);
 		getEntityAttribute(SharedMonsterAttributes.maxHealth).setBaseValue(maxHealth);
 		double speed = getEntityAttribute(SharedMonsterAttributes.movementSpeed).getAttributeValue();
-		getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(speed *= 1.2);
+		getEntityAttribute(SharedMonsterAttributes.movementSpeed).setBaseValue(speed * 1.2);
 		double jumpStrength = getEntityAttribute(LOTRReflection.getHorseJumpStrength()).getAttributeValue();
-		getEntityAttribute(LOTRReflection.getHorseJumpStrength()).setBaseValue(jumpStrength *= 0.5);
+		getEntityAttribute(LOTRReflection.getHorseJumpStrength()).setBaseValue(jumpStrength * 0.5);
 	}
 }

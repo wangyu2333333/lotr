@@ -1,13 +1,13 @@
 package lotr.common.world.biome;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import lotr.common.world.feature.LOTRTreeType;
 import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenMinable;
+
+import java.util.Random;
 
 public class LOTRBiomeGenFarHaradMangrove extends LOTRBiomeGenFarHarad {
 	public LOTRBiomeGenFarHaradMangrove(int i, boolean major) {
@@ -67,11 +67,6 @@ public class LOTRBiomeGenFarHaradMangrove extends LOTRBiomeGenFarHarad {
 	@Override
 	public float getChanceToSpawnAnimals() {
 		return 0.4f;
-	}
-
-	@Override
-	public boolean getEnableRiver() {
-		return true;
 	}
 
 	@Override

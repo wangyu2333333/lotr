@@ -1,11 +1,11 @@
 package lotr.common.world.structure;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenAngmarShrine extends LOTRWorldGenStructureBase {
 	public LOTRWorldGenAngmarShrine(boolean flag) {
@@ -25,21 +25,21 @@ public class LOTRWorldGenAngmarShrine extends LOTRWorldGenStructureBase {
 			rotation = usingPlayerRotation();
 		}
 		switch (rotation) {
-		case 0: {
-			k += 4;
-			break;
-		}
-		case 1: {
-			i -= 4;
-			break;
-		}
-		case 2: {
-			k -= 4;
-			break;
-		}
-		case 3: {
-			i += 4;
-		}
+			case 0: {
+				k += 4;
+				break;
+			}
+			case 1: {
+				i -= 4;
+				break;
+			}
+			case 2: {
+				k -= 4;
+				break;
+			}
+			case 3: {
+				i += 4;
+			}
 		}
 		if (restrictions) {
 			int minHeight = j;

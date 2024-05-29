@@ -1,21 +1,22 @@
 package lotr.client.render.tileentity;
 
-import org.lwjgl.opengl.GL11;
-
 import lotr.client.LOTRTickHandlerClient;
 import lotr.client.render.entity.LOTRRenderBird;
 import lotr.common.item.LOTRItemAnimalJar;
 import lotr.common.tileentity.LOTRTileEntityAnimalJar;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.client.IItemRenderer;
+import org.lwjgl.opengl.GL11;
 
 public class LOTRRenderAnimalJar extends TileEntitySpecialRenderer implements IItemRenderer {
 	@Override
@@ -69,7 +70,7 @@ public class LOTRRenderAnimalJar extends TileEntitySpecialRenderer implements II
 					double dx = entityPos.xCoord - viewerPos.xCoord;
 					double dz = entityPos.zCoord - viewerPos.zCoord;
 					float lookYaw = (float) Math.toDegrees(Math.atan2(dz, dx));
-					jarLiving.rotationYaw = jarLiving.prevRotationYaw = lookYaw += 90.0f;
+					jarLiving.rotationYaw = jarLiving.prevRotationYaw = lookYaw + 90.0f;
 				}
 				jarLiving.renderYawOffset = jarLiving.rotationYaw;
 				jarLiving.prevRenderYawOffset = jarLiving.prevRotationYaw;

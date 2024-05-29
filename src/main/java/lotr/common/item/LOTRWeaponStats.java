@@ -1,17 +1,21 @@
 package lotr.common.item;
 
-import java.util.*;
-
 import com.google.common.collect.Multimap;
-
 import lotr.common.enchant.LOTREnchantmentHelper;
-import net.minecraft.enchantment.*;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemBow;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ISpecialArmor;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LOTRWeaponStats {
 	public static int basePlayerMeleeTime = 15;
@@ -24,21 +28,21 @@ public class LOTRWeaponStats {
 	public static int MAX_MODIFIABLE_KNOCKBACK;
 
 	static {
-		LOTRWeaponStats.registerMeleeSpeed(LOTRItemDagger.class, 1.5f);
-		LOTRWeaponStats.registerMeleeSpeed(LOTRItemSpear.class, 0.833f);
-		LOTRWeaponStats.registerMeleeSpeed(LOTRItemPolearm.class, 0.667f);
-		LOTRWeaponStats.registerMeleeSpeed(LOTRItemPolearmLong.class, 0.5f);
-		LOTRWeaponStats.registerMeleeSpeed(LOTRItemLance.class, 0.5f);
-		LOTRWeaponStats.registerMeleeSpeed(LOTRItemBattleaxe.class, 0.75f);
-		LOTRWeaponStats.registerMeleeSpeed(LOTRItemHammer.class, 0.667f);
-		LOTRWeaponStats.registerMeleeReach(LOTRItemDagger.class, 0.75f);
-		LOTRWeaponStats.registerMeleeReach(LOTRItemSpear.class, 1.5f);
-		LOTRWeaponStats.registerMeleeReach(LOTRItemPolearm.class, 1.5f);
-		LOTRWeaponStats.registerMeleeReach(LOTRItemPolearmLong.class, 2.0f);
-		LOTRWeaponStats.registerMeleeReach(LOTRItemLance.class, 2.0f);
-		LOTRWeaponStats.registerMeleeReach(LOTRItemBalrogWhip.class, 1.5f);
-		LOTRWeaponStats.registerMeleeExtraKnockback(LOTRItemHammer.class, 1);
-		LOTRWeaponStats.registerMeleeExtraKnockback(LOTRItemLance.class, 1);
+		registerMeleeSpeed(LOTRItemDagger.class, 1.5f);
+		registerMeleeSpeed(LOTRItemSpear.class, 0.833f);
+		registerMeleeSpeed(LOTRItemPolearm.class, 0.667f);
+		registerMeleeSpeed(LOTRItemPolearmLong.class, 0.5f);
+		registerMeleeSpeed(LOTRItemLance.class, 0.5f);
+		registerMeleeSpeed(LOTRItemBattleaxe.class, 0.75f);
+		registerMeleeSpeed(LOTRItemHammer.class, 0.667f);
+		registerMeleeReach(LOTRItemDagger.class, 0.75f);
+		registerMeleeReach(LOTRItemSpear.class, 1.5f);
+		registerMeleeReach(LOTRItemPolearm.class, 1.5f);
+		registerMeleeReach(LOTRItemPolearmLong.class, 2.0f);
+		registerMeleeReach(LOTRItemLance.class, 2.0f);
+		registerMeleeReach(LOTRItemBalrogWhip.class, 1.5f);
+		registerMeleeExtraKnockback(LOTRItemHammer.class, 1);
+		registerMeleeExtraKnockback(LOTRItemLance.class, 1);
 		MAX_MODIFIABLE_REACH = 2.0f;
 		MAX_MODIFIABLE_SPEED = 1.6f;
 		MAX_MODIFIABLE_KNOCKBACK = 2;
@@ -49,22 +53,22 @@ public class LOTRWeaponStats {
 		if (itemstack != null && (item = itemstack.getItem()) instanceof ItemArmor) {
 			ItemArmor armor = (ItemArmor) item;
 			int i = armor.damageReduceAmount;
-			return i += LOTREnchantmentHelper.calcCommonArmorProtection(itemstack);
+			return i + LOTREnchantmentHelper.calcCommonArmorProtection(itemstack);
 		}
 		return 0;
 	}
 
 	public static int getAttackTimeMob(ItemStack itemstack) {
-		return LOTRWeaponStats.getAttackTimeWithBase(itemstack, baseMobMeleeTime);
+		return getAttackTimeWithBase(itemstack, baseMobMeleeTime);
 	}
 
 	public static int getAttackTimePlayer(ItemStack itemstack) {
-		return LOTRWeaponStats.getAttackTimeWithBase(itemstack, basePlayerMeleeTime);
+		return getAttackTimeWithBase(itemstack, basePlayerMeleeTime);
 	}
 
 	public static int getAttackTimeWithBase(ItemStack itemstack, int baseTime) {
 		float time = baseTime;
-		Float factor = (Float) LOTRWeaponStats.getClassOrItemProperty(itemstack, meleeSpeed);
+		Float factor = (Float) getClassOrItemProperty(itemstack, meleeSpeed);
 		if (factor != null) {
 			time /= factor;
 		}
@@ -75,7 +79,7 @@ public class LOTRWeaponStats {
 
 	public static int getBaseExtraKnockback(ItemStack itemstack) {
 		int kb = 0;
-		Integer extra = (Integer) LOTRWeaponStats.getClassOrItemProperty(itemstack, meleeExtraKnockback);
+		Integer extra = (Integer) getClassOrItemProperty(itemstack, meleeExtraKnockback);
 		if (extra != null) {
 			kb = extra;
 		}
@@ -125,7 +129,7 @@ public class LOTRWeaponStats {
 
 	public static float getMeleeReachDistance(EntityPlayer entityplayer) {
 		float reach = 3.0f;
-		reach *= LOTRWeaponStats.getMeleeReachFactor(entityplayer.getHeldItem());
+		reach *= getMeleeReachFactor(entityplayer.getHeldItem());
 		if (entityplayer.capabilities.isCreativeMode) {
 			reach = (float) (reach + 3.0);
 		}
@@ -134,16 +138,16 @@ public class LOTRWeaponStats {
 
 	public static float getMeleeReachFactor(ItemStack itemstack) {
 		float reach = 1.0f;
-		Float factor = (Float) LOTRWeaponStats.getClassOrItemProperty(itemstack, meleeReach);
+		Float factor = (Float) getClassOrItemProperty(itemstack, meleeReach);
 		if (factor != null) {
 			reach *= factor;
 		}
-		return reach *= LOTREnchantmentHelper.calcMeleeReachFactor(itemstack);
+		return reach * LOTREnchantmentHelper.calcMeleeReachFactor(itemstack);
 	}
 
 	public static float getMeleeSpeed(ItemStack itemstack) {
 		int base = basePlayerMeleeTime;
-		return 1.0f / ((float) LOTRWeaponStats.getAttackTimeWithBase(itemstack, base) / (float) base);
+		return 1.0f / ((float) getAttackTimeWithBase(itemstack, base) / base);
 	}
 
 	public static float getRangedDamageFactor(ItemStack itemstack, boolean launchSpeedOnly) {
@@ -190,8 +194,8 @@ public class LOTRWeaponStats {
 	}
 
 	public static int getRangedKnockback(ItemStack itemstack) {
-		if (LOTRWeaponStats.isMeleeWeapon(itemstack) || itemstack != null && itemstack.getItem() instanceof LOTRItemThrowingAxe) {
-			return LOTRWeaponStats.getTotalKnockback(itemstack);
+		if (isMeleeWeapon(itemstack) || itemstack != null && itemstack.getItem() instanceof LOTRItemThrowingAxe) {
+			return getTotalKnockback(itemstack);
 		}
 		return EnchantmentHelper.getEnchantmentLevel(Enchantment.punch.effectId, itemstack) + LOTREnchantmentHelper.calcRangedKnockback(itemstack);
 	}
@@ -216,7 +220,7 @@ public class LOTRWeaponStats {
 			}
 		}
 		if (time > 0) {
-			return 1.0f / ((float) time / (float) base);
+			return 1.0f / ((float) time / base);
 		}
 		return 0.0f;
 	}
@@ -232,13 +236,13 @@ public class LOTRWeaponStats {
 			if (stack == null || !(stack.getItem() instanceof ItemArmor)) {
 				continue;
 			}
-			protection += LOTRWeaponStats.getArmorProtection(stack);
+			protection += getArmorProtection(stack);
 		}
 		return protection;
 	}
 
 	public static int getTotalKnockback(ItemStack itemstack) {
-		return EnchantmentHelper.getEnchantmentLevel(Enchantment.knockback.effectId, itemstack) + LOTRWeaponStats.getBaseExtraKnockback(itemstack) + LOTREnchantmentHelper.calcExtraKnockback(itemstack);
+		return EnchantmentHelper.getEnchantmentLevel(Enchantment.knockback.effectId, itemstack) + getBaseExtraKnockback(itemstack) + LOTREnchantmentHelper.calcExtraKnockback(itemstack);
 	}
 
 	public static boolean isMeleeWeapon(ItemStack itemstack) {
@@ -277,10 +281,10 @@ public class LOTRWeaponStats {
 	}
 
 	public static void registerMeleeReach(Object obj, float f) {
-		meleeReach.put(obj, Float.valueOf(f));
+		meleeReach.put(obj, f);
 	}
 
 	public static void registerMeleeSpeed(Object obj, float f) {
-		meleeSpeed.put(obj, Float.valueOf(f));
+		meleeSpeed.put(obj, f);
 	}
 }

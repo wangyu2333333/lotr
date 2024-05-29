@@ -1,12 +1,18 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
 import lotr.common.entity.ai.*;
 import lotr.common.fac.LOTRFaction;
-import lotr.common.quest.*;
+import lotr.common.quest.IPickpocketable;
+import lotr.common.quest.LOTRMiniQuest;
+import lotr.common.quest.LOTRMiniQuestFactory;
 import lotr.common.world.biome.LOTRBiomeGenBreeland;
 import lotr.common.world.structure.LOTRChestContents;
-import net.minecraft.entity.*;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -17,7 +23,7 @@ import net.minecraft.world.biome.BiomeGenBase;
 
 public class LOTREntityBreeMan extends LOTREntityMan implements IPickpocketable {
 	public static String CARROT_EATER_NAME = "Peter Jackson";
-	public static ItemStack[] weapons = { new ItemStack(LOTRMod.daggerIron), new ItemStack(LOTRMod.daggerBronze), new ItemStack(Items.iron_axe), new ItemStack(LOTRMod.axeBronze), new ItemStack(Items.stone_axe) };
+	public static ItemStack[] weapons = {new ItemStack(LOTRMod.daggerIron), new ItemStack(LOTRMod.daggerBronze), new ItemStack(Items.iron_axe), new ItemStack(LOTRMod.axeBronze), new ItemStack(Items.stone_axe)};
 
 	public LOTREntityBreeMan(World world) {
 		super(world);
@@ -38,7 +44,7 @@ public class LOTREntityBreeMan extends LOTREntityMan implements IPickpocketable 
 		tasks.addTask(p + 6, new EntityAIWatchClosest2(this, LOTREntityNPC.class, 5.0f, 0.02f));
 		tasks.addTask(p + 7, new EntityAIWatchClosest(this, EntityLiving.class, 8.0f, 0.02f));
 		tasks.addTask(p + 8, new EntityAILookIdle(this));
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 	}
 
 	public int addBreeAttackAI(int prio) {
@@ -121,9 +127,7 @@ public class LOTREntityBreeMan extends LOTREntityMan implements IPickpocketable 
 			int i = MathHelper.floor_double(posX);
 			int j = MathHelper.floor_double(boundingBox.minY);
 			int k = MathHelper.floor_double(posZ);
-			if (j > 62 && worldObj.getBlock(i, j - 1, k) == worldObj.getBiomeGenForCoords(i, k).topBlock) {
-				return true;
-			}
+			return j > 62 && worldObj.getBlock(i, j - 1, k) == worldObj.getBiomeGenForCoords(i, k).topBlock;
 		}
 		return false;
 	}

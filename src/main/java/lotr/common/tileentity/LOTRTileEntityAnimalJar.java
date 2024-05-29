@@ -1,27 +1,33 @@
 package lotr.common.tileentity;
 
-import java.util.*;
-
 import lotr.common.block.LOTRBlockAnimalJar;
-import lotr.common.entity.*;
+import lotr.common.entity.AnimalJarUpdater;
+import lotr.common.entity.LOTREntities;
 import lotr.common.entity.animal.LOTREntityButterfly;
 import net.minecraft.block.Block;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.*;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.server.management.PlayerManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
-import net.minecraft.world.*;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+
+import java.util.List;
+import java.util.Random;
 
 public class LOTRTileEntityAnimalJar extends TileEntity {
 	public NBTTagCompound jarEntityData;
 	public Entity jarEntity;
 	public int ticksExisted = -1;
 	public float targetYaw;
-	public boolean hasTargetYaw = false;
+	public boolean hasTargetYaw;
 
 	public void clearEntityData() {
 		jarEntity = null;
@@ -41,6 +47,12 @@ public class LOTRTileEntityAnimalJar extends TileEntity {
 		return jarEntityData;
 	}
 
+	public void setEntityData(NBTTagCompound nbt) {
+		jarEntityData = nbt;
+		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		markDirty();
+	}
+
 	public float getEntityHeight() {
 		Block block = getBlockType();
 		if (block instanceof LOTRBlockAnimalJar) {
@@ -50,7 +62,7 @@ public class LOTRTileEntityAnimalJar extends TileEntity {
 	}
 
 	public float[] getInitialEntityCoords(Entity entity) {
-		return new float[] { xCoord + 0.5f, yCoord + getEntityHeight() - entity.height / 2.0f, zCoord + 0.5f };
+		return new float[]{xCoord + 0.5f, yCoord + getEntityHeight() - entity.height / 2.0f, zCoord + 0.5f};
 	}
 
 	public Packet getJarPacket(int type) {
@@ -137,12 +149,6 @@ public class LOTRTileEntityAnimalJar extends TileEntity {
 		}
 	}
 
-	public void setEntityData(NBTTagCompound nbt) {
-		jarEntityData = nbt;
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-		markDirty();
-	}
-
 	@Override
 	public void setWorldObj(World world) {
 		super.setWorldObj(world);
@@ -186,7 +192,7 @@ public class LOTRTileEntityAnimalJar extends TileEntity {
 			} else if (hasTargetYaw) {
 				float delta = targetYaw - jarEntity.rotationYaw;
 				delta = MathHelper.wrapAngleTo180_float(delta);
-				jarEntity.rotationYaw += delta *= 0.1f;
+				jarEntity.rotationYaw += delta * 0.1f;
 				if (Math.abs(jarEntity.rotationYaw - targetYaw) <= 0.01f) {
 					hasTargetYaw = false;
 				}

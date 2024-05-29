@@ -1,13 +1,15 @@
 package lotr.common.network;
 
-import java.util.Random;
-
-import cpw.mods.fml.common.network.simpleimpl.*;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import lotr.common.LOTRMod;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRPacketWeaponFX implements IMessage {
 	public Type type;
@@ -34,20 +36,30 @@ public class LOTRPacketWeaponFX implements IMessage {
 		data.writeInt(entityID);
 	}
 
+	public enum Type {
+		MACE_SAURON, STAFF_GANDALF_WHITE, FIREBALL_GANDALF_WHITE, INFERNAL, CHILLING
+
+	}
+
 	public static class Handler implements IMessageHandler<LOTRPacketWeaponFX, IMessage> {
 		@Override
 		public IMessage onMessage(LOTRPacketWeaponFX packet, MessageContext context) {
-			block4: {
+			block4:
+			{
 				Random rand;
 				Entity entity;
 				double z;
 				double y;
 				double x;
-				block8: {
+				block8:
+				{
 					World world;
-					block7: {
-						block6: {
-							block5: {
+					block7:
+					{
+						block6:
+						{
+							block5:
+							{
 								world = LOTRMod.proxy.getClientWorld();
 								entity = world.getEntityByID(packet.entityID);
 								if (entity == null) {
@@ -91,9 +103,7 @@ public class LOTRPacketWeaponFX implements IMessage {
 						break block8;
 					}
 					for (int i = 0; i < 20; ++i) {
-						double d = x;
 						double d1 = y + entity.height * 0.7f;
-						double d2 = z;
 						float angleXZ = rand.nextFloat() * 3.1415927f * 2.0f;
 						float angleY = rand.nextFloat() * 3.1415927f * 2.0f;
 						float speed = MathHelper.randomFloatClamp(rand, 0.1f, 0.15f);
@@ -101,7 +111,7 @@ public class LOTRPacketWeaponFX implements IMessage {
 						double d4 = MathHelper.sin(angleY) * speed;
 						double d5 = MathHelper.sin(angleXZ) * MathHelper.cos(angleY) * speed;
 						d4 += 0.15000000596046448;
-						world.spawnParticle("flame", d, d1, d2, d3 += entity.posX - entity.lastTickPosX, d4 += entity.posY - entity.lastTickPosY, d5 += entity.posZ - entity.lastTickPosZ);
+						world.spawnParticle("flame", x, d1, z, d3 + (entity.posX - entity.lastTickPosX), d4 + (entity.posY - entity.lastTickPosY), d5 + (entity.posZ - entity.lastTickPosZ));
 					}
 					break block4;
 				}
@@ -109,25 +119,18 @@ public class LOTRPacketWeaponFX implements IMessage {
 					break block4;
 				}
 				for (int i = 0; i < 40; ++i) {
-					double d = x;
 					double d1 = y + entity.height * 0.7f;
-					double d2 = z;
 					float angleXZ = rand.nextFloat() * 3.1415927f * 2.0f;
 					float angleY = rand.nextFloat() * 3.1415927f * 2.0f;
 					float speed = MathHelper.randomFloatClamp(rand, 0.1f, 0.2f);
 					double d3 = MathHelper.cos(angleXZ) * MathHelper.cos(angleY) * speed;
 					double d4 = MathHelper.sin(angleY) * speed;
 					double d5 = MathHelper.sin(angleXZ) * MathHelper.cos(angleY) * speed;
-					LOTRMod.proxy.spawnParticle("chill", d, d1, d2, d3 += entity.posX - entity.lastTickPosX, d4 += entity.posY - entity.lastTickPosY, d5 += entity.posZ - entity.lastTickPosZ);
+					LOTRMod.proxy.spawnParticle("chill", x, d1, z, d3 + (entity.posX - entity.lastTickPosX), d4 + (entity.posY - entity.lastTickPosY), d5 + (entity.posZ - entity.lastTickPosZ));
 				}
 			}
 			return null;
 		}
-	}
-
-	public enum Type {
-		MACE_SAURON, STAFF_GANDALF_WHITE, FIREBALL_GANDALF_WHITE, INFERNAL, CHILLING;
-
 	}
 
 }

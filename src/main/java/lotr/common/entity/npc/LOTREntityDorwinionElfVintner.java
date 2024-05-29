@@ -1,6 +1,7 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -9,17 +10,12 @@ import net.minecraft.world.World;
 public class LOTREntityDorwinionElfVintner extends LOTREntityDorwinionElf implements LOTRTradeable {
 	public LOTREntityDorwinionElfVintner(World world) {
 		super(world);
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 	}
 
 	@Override
 	public boolean canTradeWith(EntityPlayer entityplayer) {
 		return LOTRLevelData.getData(entityplayer).getAlignment(getFaction()) >= 50.0f && isFriendly(entityplayer);
-	}
-
-	@Override
-	public float getAlignmentBonus() {
-		return 2.0f;
 	}
 
 	@Override

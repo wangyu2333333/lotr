@@ -1,26 +1,34 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
 import lotr.common.entity.LOTRMountFunctions;
-import lotr.common.entity.ai.*;
+import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
+import lotr.common.entity.ai.LOTREntityAIFollowHiringPlayer;
+import lotr.common.entity.ai.LOTREntityAIHiredRemainStill;
+import lotr.common.entity.ai.LOTREntityAIUntamedPanic;
 import lotr.common.fac.LOTRAlignmentValues;
 import net.minecraft.block.Block;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EnumCreatureAttribute;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.*;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
 public abstract class LOTREntitySpiderBase extends LOTREntityNPCRideable {
-	public static int VENOM_NONE = 0;
+	public static int VENOM_NONE;
 	public static int VENOM_SLOWNESS = 1;
 	public static int VENOM_POISON = 2;
 
-	public LOTREntitySpiderBase(World world) {
+	protected LOTREntitySpiderBase(World world) {
 		super(world);
 		setSize(1.4f, 0.8f);
 		getNavigator().setAvoidsWater(true);
@@ -33,7 +41,7 @@ public abstract class LOTREntitySpiderBase extends LOTREntityNPCRideable {
 		tasks.addTask(6, new EntityAIWander(this, 1.0));
 		tasks.addTask(7, new EntityAIWatchClosest(this, EntityPlayer.class, 8.0f, 0.02f));
 		tasks.addTask(8, new EntityAILookIdle(this));
-		this.addTargetTasks(true);
+		addTargetTasks(true);
 		spawnsInDarkness = true;
 	}
 
@@ -126,6 +134,10 @@ public abstract class LOTREntitySpiderBase extends LOTREntityNPCRideable {
 		return false;
 	}
 
+	@Override
+	public void setBelongsToNPC(boolean flag) {
+	}
+
 	public float getClimbFractionRemaining() {
 		float f = getSpiderClimbTime() / 100.0f;
 		f = Math.min(f, 1.0f);
@@ -181,8 +193,16 @@ public abstract class LOTREntitySpiderBase extends LOTREntityNPCRideable {
 		return dataWatcher.getWatchableObjectShort(23);
 	}
 
+	public void setSpiderClimbTime(int i) {
+		dataWatcher.updateObject(23, (short) i);
+	}
+
 	public int getSpiderScale() {
 		return dataWatcher.getWatchableObjectByte(22);
+	}
+
+	public void setSpiderScale(int i) {
+		dataWatcher.updateObject(22, (byte) i);
 	}
 
 	public float getSpiderScaleAmount() {
@@ -191,6 +211,10 @@ public abstract class LOTREntitySpiderBase extends LOTREntityNPCRideable {
 
 	public int getSpiderType() {
 		return dataWatcher.getWatchableObjectByte(21);
+	}
+
+	public void setSpiderType(int i) {
+		dataWatcher.updateObject(21, (byte) i);
 	}
 
 	@Override
@@ -214,7 +238,7 @@ public abstract class LOTREntitySpiderBase extends LOTREntityNPCRideable {
 		if (canRideSpider() && getAttackTarget() != entityplayer) {
 			boolean hasRequiredAlignment = LOTRLevelData.getData(entityplayer).getAlignment(getFaction()) >= 50.0f;
 			boolean notifyNotEnoughAlignment = false;
-			if (!notifyNotEnoughAlignment && itemstack != null && LOTRMod.isOreNameEqual(itemstack, "bone") && isNPCTamed() && getHealth() < getMaxHealth()) {
+			if (itemstack != null && LOTRMod.isOreNameEqual(itemstack, "bone") && isNPCTamed() && getHealth() < getMaxHealth()) {
 				if (hasRequiredAlignment) {
 					if (!entityplayer.capabilities.isCreativeMode) {
 						--itemstack.stackSize;
@@ -234,7 +258,7 @@ public abstract class LOTREntitySpiderBase extends LOTREntityNPCRideable {
 				}
 				if (hasRequiredAlignment) {
 					entityplayer.mountEntity(this);
-					this.setAttackTarget(null);
+					setAttackTarget(null);
 					getNavigator().clearPathEntity();
 					return true;
 				}
@@ -268,6 +292,12 @@ public abstract class LOTREntitySpiderBase extends LOTREntityNPCRideable {
 
 	public boolean isSpiderClimbing() {
 		return (dataWatcher.getWatchableObjectByte(20) & 1) != 0;
+	}
+
+	public void setSpiderClimbing(boolean flag) {
+		byte b = dataWatcher.getWatchableObjectByte(20);
+		b = flag ? (byte) (b | 1) : (byte) (b & 0xFFFFFFFE);
+		dataWatcher.updateObject(20, b);
 	}
 
 	@Override
@@ -305,34 +335,12 @@ public abstract class LOTREntitySpiderBase extends LOTREntityNPCRideable {
 		setSpiderClimbTime(nbt.getShort("SpiderRideTime"));
 	}
 
-	@Override
-	public void setBelongsToNPC(boolean flag) {
-	}
-
 	public void setInQuag() {
 		super.setInWeb();
 	}
 
 	@Override
 	public void setInWeb() {
-	}
-
-	public void setSpiderClimbing(boolean flag) {
-		byte b = dataWatcher.getWatchableObjectByte(20);
-		b = flag ? (byte) (b | 1) : (byte) (b & 0xFFFFFFFE);
-		dataWatcher.updateObject(20, b);
-	}
-
-	public void setSpiderClimbTime(int i) {
-		dataWatcher.updateObject(23, (short) i);
-	}
-
-	public void setSpiderScale(int i) {
-		dataWatcher.updateObject(22, (byte) i);
-	}
-
-	public void setSpiderType(int i) {
-		dataWatcher.updateObject(21, (byte) i);
 	}
 
 	public boolean shouldRenderClimbingMeter() {

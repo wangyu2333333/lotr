@@ -1,9 +1,6 @@
 package lotr.common.world.biome.variant;
 
-import java.util.Random;
-
 import com.google.common.math.IntMath;
-
 import lotr.common.world.biome.LOTRBiome;
 import lotr.common.world.map.LOTRRoads;
 import net.minecraft.block.Block;
@@ -11,6 +8,8 @@ import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenAbstractTree;
+
+import java.util.Random;
 
 public class LOTRBiomeVariantOrchard extends LOTRBiomeVariant {
 	public LOTRBiomeVariantOrchard(int i, String s) {
@@ -24,7 +23,7 @@ public class LOTRBiomeVariantOrchard extends LOTRBiomeVariant {
 
 	@Override
 	public void decorateVariant(World world, Random random, int i, int k, LOTRBiome biome) {
-		for (int i1 : new int[] { i + 3, i + 11 }) {
+		for (int i1 : new int[]{i + 3, i + 11}) {
 			int k1 = k + 8;
 			int j1 = world.getHeightValue(i1, k1);
 			WorldGenAbstractTree treeGen = getRandomTree(random).create(false, random);

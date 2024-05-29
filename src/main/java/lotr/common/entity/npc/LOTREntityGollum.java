@@ -1,20 +1,31 @@
 package lotr.common.entity.npc;
 
-import java.util.*;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
 import lotr.common.entity.ai.*;
 import lotr.common.inventory.LOTRInventoryNPC;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.*;
+import net.minecraft.entity.ai.EntityAILookIdle;
+import net.minecraft.entity.ai.EntityAISwimming;
+import net.minecraft.entity.ai.EntityAIWander;
+import net.minecraft.entity.ai.EntityAIWatchClosest;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.*;
+import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.StringUtils;
 import net.minecraft.world.World;
+
+import java.util.List;
+import java.util.UUID;
 
 public class LOTREntityGollum extends LOTREntityNPC implements LOTRCharacter {
 	public static int INV_ROWS = 3;
@@ -98,7 +109,7 @@ public class LOTREntityGollum extends LOTREntityNPC implements LOTRCharacter {
 	public EntityPlayer getGollumOwner() {
 		try {
 			UUID uuid = UUID.fromString(getGollumOwnerUUID());
-			return uuid == null ? null : worldObj.func_152378_a(uuid);
+			return worldObj.func_152378_a(uuid);
 		} catch (IllegalArgumentException e) {
 			return null;
 		}
@@ -106,6 +117,10 @@ public class LOTREntityGollum extends LOTREntityNPC implements LOTRCharacter {
 
 	public String getGollumOwnerUUID() {
 		return dataWatcher.getWatchableObjectString(17);
+	}
+
+	public void setGollumOwnerUUID(String s) {
+		dataWatcher.updateObject(17, s);
 	}
 
 	@Override
@@ -131,7 +146,7 @@ public class LOTREntityGollum extends LOTREntityNPC implements LOTRCharacter {
 		return super.getSplashSound();
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void handleHealthUpdate(byte b) {
 		if (b == 15) {
@@ -211,8 +226,16 @@ public class LOTREntityGollum extends LOTREntityNPC implements LOTRCharacter {
 		return dataWatcher.getWatchableObjectByte(18) == 1;
 	}
 
+	public void setGollumFleeing(boolean flag) {
+		dataWatcher.updateObject(18, flag ? (byte) 1 : 0);
+	}
+
 	public boolean isGollumSitting() {
 		return dataWatcher.getWatchableObjectByte(19) == 1;
+	}
+
+	public void setGollumSitting(boolean flag) {
+		dataWatcher.updateObject(19, flag ? (byte) 1 : 0);
 	}
 
 	@Override
@@ -267,7 +290,7 @@ public class LOTREntityGollum extends LOTREntityNPC implements LOTRCharacter {
 			for (EntityPlayer entityplayer : nearbyPlayers) {
 				double d2 = getDistanceToEntity(entityplayer);
 				int chance = (int) (d2 / 8.0);
-				if (rand.nextInt(chance = Math.max(2, chance)) != 0) {
+				if (rand.nextInt(Math.max(2, chance)) != 0) {
 					continue;
 				}
 				worldObj.playSoundAtEntity(entityplayer, getLivingSound(), getSoundVolume(), getSoundPitch());
@@ -288,18 +311,6 @@ public class LOTREntityGollum extends LOTREntityNPC implements LOTRCharacter {
 			fishRequired = nbt.getInteger("FishReq");
 			prevFishRequired = nbt.getInteger("FishReqPrev");
 		}
-	}
-
-	public void setGollumFleeing(boolean flag) {
-		dataWatcher.updateObject(18, flag ? (byte) 1 : 0);
-	}
-
-	public void setGollumOwnerUUID(String s) {
-		dataWatcher.updateObject(17, s);
-	}
-
-	public void setGollumSitting(boolean flag) {
-		dataWatcher.updateObject(19, flag ? (byte) 1 : 0);
 	}
 
 	@Override

@@ -1,21 +1,22 @@
 package lotr.common.world.feature;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
+import net.minecraft.util.Direction;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenAbstractTree;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.util.Random;
+
 public class LOTRWorldGenShirePine extends WorldGenAbstractTree {
 	public Block woodBlock = LOTRMod.wood;
-	public int woodMeta = 0;
+	public int woodMeta;
 	public Block leafBlock = LOTRMod.leaves;
-	public int leafMeta = 0;
+	public int leafMeta;
 	public int minHeight = 10;
 	public int maxHeight = 20;
 
@@ -47,7 +48,7 @@ public class LOTRWorldGenShirePine extends WorldGenAbstractTree {
 				return false;
 			}
 			Block below = world.getBlock(i, j - 1, k);
-			if (below.canSustainPlant((IBlockAccess) world, i, j - 1, k, ForgeDirection.UP, (IPlantable) Blocks.sapling)) {
+			if (below.canSustainPlant(world, i, j - 1, k, ForgeDirection.UP, (IPlantable) Blocks.sapling)) {
 				below.onPlantGrow(world, i, j - 1, k, i, j, k);
 				int leafWidth = random.nextInt(2);
 				int leafWidthLimit = 1;

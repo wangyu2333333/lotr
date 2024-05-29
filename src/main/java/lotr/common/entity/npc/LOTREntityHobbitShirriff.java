@@ -1,6 +1,8 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
 import lotr.common.item.LOTRItemLeatherHat;
 import lotr.common.world.spawning.LOTRInvasions;
 import net.minecraft.entity.IEntityLivingData;
@@ -11,7 +13,7 @@ import net.minecraft.world.World;
 public class LOTREntityHobbitShirriff extends LOTREntityHobbitBounder implements LOTRUnitTradeable {
 	public LOTREntityHobbitShirriff(World world) {
 		super(world);
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 	}
 
 	@Override

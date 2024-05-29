@@ -1,8 +1,12 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRCapes;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
 import lotr.common.fac.LOTRFaction;
-import lotr.common.quest.*;
+import lotr.common.quest.LOTRMiniQuest;
+import lotr.common.quest.LOTRMiniQuestFactory;
 import lotr.common.world.biome.LOTRBiomeGenIthilien;
 import lotr.common.world.structure.LOTRChestContents;
 import net.minecraft.entity.IEntityLivingData;
@@ -86,7 +90,7 @@ public class LOTREntityRangerIthilien extends LOTREntityRanger {
 		int i = rand.nextInt(4);
 		if (i == 0 || i == 1 || i == 2) {
 			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.daggerGondor));
-		} else if (i == 3) {
+		} else {
 			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.swordGondor));
 		}
 		npcItemsInv.setRangedWeapon(new ItemStack(LOTRMod.gondorBow));

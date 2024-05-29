@@ -1,34 +1,39 @@
 package lotr.client.render.entity;
 
-import java.util.UUID;
-
-import org.lwjgl.opengl.GL11;
-
 import com.mojang.authlib.GameProfile;
-
-import lotr.client.model.*;
+import lotr.client.model.LOTRArmorModels;
+import lotr.client.model.LOTRModelBiped;
 import lotr.client.render.LOTRRenderShield;
 import lotr.common.LOTRShields;
 import lotr.common.entity.npc.LOTREntityNPC;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.*;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.entity.RenderBiped;
 import net.minecraft.client.renderer.tileentity.TileEntitySkullRenderer;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Items;
-import net.minecraft.item.*;
-import net.minecraft.nbt.*;
-import net.minecraft.util.*;
-import net.minecraftforge.client.*;
+import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagString;
+import net.minecraft.nbt.NBTUtil;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StringUtils;
+import net.minecraftforge.client.IItemRenderer;
+import net.minecraftforge.client.MinecraftForgeClient;
+import org.lwjgl.opengl.GL11;
 
 public abstract class LOTRRenderBiped extends RenderBiped {
 	public static float PLAYER_SCALE = 0.9375f;
 	public ModelBiped capeModel = new LOTRModelBiped();
 	public ModelBiped npcRenderPassModel;
 
-	public LOTRRenderBiped(ModelBiped model, float f) {
+	protected LOTRRenderBiped(ModelBiped model, float f) {
 		super(model, f);
 	}
 
@@ -116,7 +121,7 @@ public abstract class LOTRRenderBiped extends RenderBiped {
 					if (nbttagcompound.hasKey("SkullOwner", new NBTTagCompound().getId())) {
 						gameprofile = NBTUtil.func_152459_a(nbttagcompound.getCompoundTag("SkullOwner"));
 					} else if (nbttagcompound.hasKey("SkullOwner", new NBTTagString().getId()) && !StringUtils.isNullOrEmpty(nbttagcompound.getString("SkullOwner"))) {
-						gameprofile = new GameProfile((UUID) null, nbttagcompound.getString("SkullOwner"));
+						gameprofile = new GameProfile(null, nbttagcompound.getString("SkullOwner"));
 					}
 				}
 				TileEntitySkullRenderer.field_147536_b.func_152674_a(-0.5f, 0.0f, -0.5f, 1, 180.0f, headItem.getItemDamage(), gameprofile);

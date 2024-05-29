@@ -1,17 +1,21 @@
 package lotr.common.recipe;
 
-import java.util.*;
-
 import lotr.common.LOTRMod;
 import lotr.common.fac.LOTRFaction;
 import lotr.common.inventory.LOTRInventoryPouch;
-import lotr.common.item.*;
+import lotr.common.item.LOTRItemDye;
+import lotr.common.item.LOTRItemPouch;
 import net.minecraft.block.BlockColored;
 import net.minecraft.entity.passive.EntitySheep;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class LOTRRecipesPouch implements IRecipe {
 	public int overrideColor;
@@ -30,7 +34,7 @@ public class LOTRRecipesPouch implements IRecipe {
 		this(f.getFactionColor(), true);
 	}
 
-	public int getCombinedMeta(List<ItemStack> pouches) {
+	public int getCombinedMeta(Iterable<ItemStack> pouches) {
 		int size = 0;
 		for (ItemStack pouch : pouches) {
 			size += pouch.getItemDamage() + 1;
@@ -41,7 +45,7 @@ public class LOTRRecipesPouch implements IRecipe {
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting inv) {
 		ItemStack pouch;
-		ArrayList<ItemStack> pouches = new ArrayList<>();
+		List<ItemStack> pouches = new ArrayList<>();
 		int[] rgb = new int[3];
 		int totalColor = 0;
 		int coloredItems = 0;
@@ -93,10 +97,10 @@ public class LOTRRecipesPouch implements IRecipe {
 			pouch = new ItemStack(LOTRMod.pouch);
 			pouch.stackSize = 1;
 			pouch.setItemDamage(meta);
-			LOTRInventoryPouch pouchInv = new LOTRInventoryPouch(pouch);
+			IInventory pouchInv = new LOTRInventoryPouch(pouch);
 			int slot = 0;
 			for (ItemStack craftingPouch : pouches) {
-				LOTRInventoryPouch craftingPouchInv = new LOTRInventoryPouch(craftingPouch);
+				IInventory craftingPouchInv = new LOTRInventoryPouch(craftingPouch);
 				for (int i = 0; i < craftingPouchInv.getSizeInventory(); ++i) {
 					ItemStack slotItem = craftingPouchInv.getStackInSlot(i);
 					if (slotItem == null) {
@@ -113,7 +117,7 @@ public class LOTRRecipesPouch implements IRecipe {
 			int r = rgb[0] / coloredItems;
 			int g = rgb[1] / coloredItems;
 			int b = rgb[2] / coloredItems;
-			float averageColor = (float) totalColor / (float) coloredItems;
+			float averageColor = (float) totalColor / coloredItems;
 			float maxColor = Math.max(r, Math.max(g, b));
 			r = (int) (r * averageColor / maxColor);
 			g = (int) (g * averageColor / maxColor);
@@ -136,8 +140,8 @@ public class LOTRRecipesPouch implements IRecipe {
 
 	@Override
 	public boolean matches(InventoryCrafting inv, World world) {
-		ArrayList<ItemStack> pouches = new ArrayList<>();
-		ArrayList<ItemStack> dyes = new ArrayList<>();
+		Collection<ItemStack> pouches = new ArrayList<>();
+		Collection<ItemStack> dyes = new ArrayList<>();
 		for (int i = 0; i < inv.getSizeInventory(); ++i) {
 			ItemStack itemstack = inv.getStackInSlot(i);
 			if (itemstack == null) {

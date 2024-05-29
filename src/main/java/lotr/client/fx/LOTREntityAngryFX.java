@@ -1,6 +1,7 @@
 package lotr.client.fx;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.util.LOTRFunctions;
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.Tessellator;
@@ -28,7 +29,7 @@ public class LOTREntityAngryFX extends EntityFX {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public int getBrightnessForRender(float f) {
 		return 15728880;
 	}
@@ -38,7 +39,7 @@ public class LOTREntityAngryFX extends EntityFX {
 		super.onUpdate();
 		setParticleTextureIndex(12 + particleAge / 4 % 4);
 		float fade = 0.8f;
-		float ageF = (float) particleAge / (float) particleMaxAge;
+		float ageF = (float) particleAge / particleMaxAge;
 		if (ageF >= fade) {
 			particleAlpha = 1.0f - (ageF - fade) / (1.0f - fade);
 			if (particleAlpha <= 0.0f) {

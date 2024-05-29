@@ -1,18 +1,21 @@
 package lotr.common.command;
 
-import java.util.*;
-
+import lotr.common.world.structure2.scan.LOTRScanAlias;
+import lotr.common.world.structure2.scan.LOTRStructureScan;
+import net.minecraft.block.Block;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
+import net.minecraft.init.Blocks;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.Pair;
 
-import lotr.common.world.structure2.scan.*;
-import net.minecraft.block.Block;
-import net.minecraft.command.*;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.*;
-import net.minecraft.world.World;
+import java.util.*;
 
 public class LOTRCommandStrScan extends CommandBase {
-	public boolean scanning = false;
+	public boolean scanning;
 	public int originX;
 	public int originY;
 	public int originZ;
@@ -22,15 +25,10 @@ public class LOTRCommandStrScan extends CommandBase {
 	public int maxX;
 	public int maxY;
 	public int maxZ;
-	public List<String> aliasOrder = new ArrayList<>();
+	public Collection<String> aliasOrder = new ArrayList<>();
 	public Map<Block, String> blockAliases = new HashMap<>();
 	public Map<Pair<Block, Integer>, String> blockMetaAliases = new HashMap<>();
-	public Set<String> aliasesToInclude = new HashSet<>();
-
-	@Override
-	public List addTabCompletionOptions(ICommandSender sender, String[] args) {
-		return null;
-	}
+	public Collection<String> aliasesToInclude = new HashSet<>();
 
 	@Override
 	public String getCommandName() {
@@ -45,11 +43,6 @@ public class LOTRCommandStrScan extends CommandBase {
 	@Override
 	public int getRequiredPermissionLevel() {
 		return 2;
-	}
-
-	@Override
-	public boolean isUsernameIndex(String[] args, int i) {
-		return false;
 	}
 
 	@Override
@@ -168,7 +161,7 @@ public class LOTRCommandStrScan extends CommandBase {
 							} else if (world.getBlock(i, j - 1, k) == findLowestKey) {
 								findLowest = true;
 							}
-							LOTRStructureScan.ScanStepBase step = null;
+							LOTRStructureScan.ScanStepBase step;
 							if (blockMetaAliases.containsKey(Pair.of((Object) block, (Object) meta))) {
 								alias = blockMetaAliases.get(Pair.of((Object) block, (Object) meta));
 								step = new LOTRStructureScan.ScanStepBlockMetaAlias(i1, j1, k1, alias);
@@ -201,7 +194,7 @@ public class LOTRCommandStrScan extends CommandBase {
 				}
 				if (LOTRStructureScan.writeScanToFile(scan)) {
 					scanning = false;
-					CommandBase.func_152373_a(sender, (ICommand) this, "Scanned structure as %s", scanName);
+					CommandBase.func_152373_a(sender, this, "Scanned structure as %s", scanName);
 					return;
 				}
 				throw new WrongUsageException("Error scanning structure as %s", scanName);

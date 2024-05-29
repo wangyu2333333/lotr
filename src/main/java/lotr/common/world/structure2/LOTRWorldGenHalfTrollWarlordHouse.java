@@ -1,9 +1,6 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import com.google.common.math.IntMath;
-
 import lotr.common.LOTRMod;
 import lotr.common.entity.npc.LOTREntityHalfTrollWarlord;
 import lotr.common.item.LOTRItemBanner;
@@ -11,6 +8,8 @@ import lotr.common.world.structure.LOTRChestContents;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenHalfTrollWarlordHouse extends LOTRWorldGenStructureBase2 {
 	public LOTRWorldGenHalfTrollWarlordHouse(boolean flag) {
@@ -26,7 +25,7 @@ public class LOTRWorldGenHalfTrollWarlordHouse extends LOTRWorldGenStructureBase
 		int k12;
 		int radius = 7;
 		int height = 10 + random.nextInt(4);
-		this.setOriginAndRotation(world, i, j, k, rotation, radius + 1);
+		setOriginAndRotation(world, i, j, k, rotation, radius + 1);
 		if (restrictions) {
 			for (i12 = -radius; i12 <= radius; ++i12) {
 				for (k12 = -radius; k12 <= radius; ++k12) {
@@ -61,7 +60,7 @@ public class LOTRWorldGenHalfTrollWarlordHouse extends LOTRWorldGenStructureBase
 						continue;
 					}
 					if (j1 == 0) {
-						setBlockAndMetadata(world, i12, j1, k12, Blocks.cobblestone, 0);
+						setBlockAndMetadata(world, i12, 0, k12, Blocks.cobblestone, 0);
 						continue;
 					}
 					setAir(world, i12, j1, k12);
@@ -124,7 +123,7 @@ public class LOTRWorldGenHalfTrollWarlordHouse extends LOTRWorldGenStructureBase
 			setBlockAndMetadata(world, i12, 1, 1, Blocks.stone_slab, 11);
 			setBlockAndMetadata(world, i12, 1, 2, Blocks.stone_slab, 11);
 			setBlockAndMetadata(world, i12 + Integer.signum(i12), 1, 0, Blocks.stained_hardened_clay, 12);
-			this.placeChest(world, random, i12, 1, 0, LOTRMod.chestBasket, 0, LOTRChestContents.HALF_TROLL_HOUSE);
+			placeChest(world, random, i12, 1, 0, LOTRMod.chestBasket, 0, LOTRChestContents.HALF_TROLL_HOUSE);
 		}
 		setBlockAndMetadata(world, -2, 1, 4, Blocks.crafting_table, 0);
 		setBlockAndMetadata(world, -1, 1, 4, Blocks.stone_slab, 11);
@@ -144,7 +143,8 @@ public class LOTRWorldGenHalfTrollWarlordHouse extends LOTRWorldGenStructureBase
 		placeWallBanner(world, 0, b, 0, LOTRItemBanner.BannerType.HALF_TROLL, 2);
 		placeWallBanner(world, 0, b, 0, LOTRItemBanner.BannerType.HALF_TROLL, 3);
 		for (i1 = -radius; i1 <= radius; ++i1) {
-			block16: for (k1 = -radius; k1 <= radius; ++k1) {
+			block16:
+			for (k1 = -radius; k1 <= radius; ++k1) {
 				if (random.nextInt(10) != 0) {
 					continue;
 				}
@@ -152,7 +152,7 @@ public class LOTRWorldGenHalfTrollWarlordHouse extends LOTRWorldGenStructureBase
 					if (!isAir(world, i1, j13, k1) || !isOpaque(world, i1, j13 - 1, k1)) {
 						continue;
 					}
-					this.placeSkull(world, random, i1, j13, k1);
+					placeSkull(world, random, i1, j13, k1);
 					continue block16;
 				}
 			}

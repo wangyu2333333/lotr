@@ -1,12 +1,20 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
-import lotr.common.entity.ai.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRMod;
+import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
+import lotr.common.entity.ai.LOTREntityAIFollowHiringPlayer;
+import lotr.common.entity.ai.LOTREntityAIHiredRemainStill;
+import lotr.common.entity.ai.LOTREntityAINearestAttackableTargetOrc;
 import lotr.common.fac.LOTRFaction;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.potion.*;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 
 public class LOTREntityMirkTroll extends LOTREntityTroll {
@@ -23,7 +31,7 @@ public class LOTREntityMirkTroll extends LOTREntityTroll {
 		tasks.addTask(5, new EntityAIWatchClosest2(this, LOTREntityNPC.class, 8.0f, 0.02f));
 		tasks.addTask(6, new EntityAIWatchClosest(this, EntityLiving.class, 12.0f, 0.01f));
 		tasks.addTask(7, new EntityAILookIdle(this));
-		this.addTargetTasks(true, LOTREntityAINearestAttackableTargetOrc.class);
+		addTargetTasks(true, LOTREntityAINearestAttackableTargetOrc.class);
 		trollImmuneToSun = true;
 	}
 

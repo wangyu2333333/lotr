@@ -1,13 +1,14 @@
 package lotr.common.item;
 
-import java.util.List;
-
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.LOTRCreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
+
+import java.util.List;
 
 public class LOTRItemHaradRobes extends LOTRItemArmor {
 	public static int ROBES_WHITE = 16777215;
@@ -21,26 +22,12 @@ public class LOTRItemHaradRobes extends LOTRItemArmor {
 		setCreativeTab(LOTRCreativeTabs.tabMisc);
 	}
 
-	@SideOnly(value = Side.CLIENT)
-	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag) {
-		if (LOTRItemHaradRobes.areRobesDyed(itemstack)) {
-			list.add(StatCollector.translateToLocal("item.lotr.haradRobes.dyed"));
-		}
-	}
-
-	@SideOnly(value = Side.CLIENT)
-	@Override
-	public int getColorFromItemStack(ItemStack itemstack, int pass) {
-		return LOTRItemHaradRobes.getRobesColor(itemstack);
-	}
-
 	public static boolean areRobesDyed(ItemStack itemstack) {
-		return LOTRItemHaradRobes.getSavedDyeColor(itemstack) != -1;
+		return getSavedDyeColor(itemstack) != -1;
 	}
 
 	public static int getRobesColor(ItemStack itemstack) {
-		int dye = LOTRItemHaradRobes.getSavedDyeColor(itemstack);
+		int dye = getSavedDyeColor(itemstack);
 		if (dye != -1) {
 			return dye;
 		}
@@ -65,5 +52,19 @@ public class LOTRItemHaradRobes extends LOTRItemArmor {
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
 		itemstack.getTagCompound().setInteger("RobesColor", i);
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag) {
+		if (areRobesDyed(itemstack)) {
+			list.add(StatCollector.translateToLocal("item.lotr.haradRobes.dyed"));
+		}
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public int getColorFromItemStack(ItemStack itemstack, int pass) {
+		return getRobesColor(itemstack);
 	}
 }

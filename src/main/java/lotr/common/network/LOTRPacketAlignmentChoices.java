@@ -1,15 +1,19 @@
 package lotr.common.network;
 
-import java.util.*;
-
-import cpw.mods.fml.common.network.simpleimpl.*;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import lotr.common.*;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRPlayerData;
 import lotr.common.fac.LOTRFaction;
 import net.minecraft.entity.player.EntityPlayerMP;
 
+import java.util.EnumSet;
+import java.util.Set;
+
 public class LOTRPacketAlignmentChoices implements IMessage {
-	public Set<LOTRFaction> setZeroFacs = new HashSet<>();
+	public Set<LOTRFaction> setZeroFacs = EnumSet.noneOf(LOTRFaction.class);
 
 	public LOTRPacketAlignmentChoices() {
 	}
@@ -20,7 +24,7 @@ public class LOTRPacketAlignmentChoices implements IMessage {
 
 	@Override
 	public void fromBytes(ByteBuf data) {
-		byte facID = 0;
+		byte facID;
 		while ((facID = data.readByte()) >= 0) {
 			LOTRFaction fac = LOTRFaction.forID(facID);
 			if (fac == null) {

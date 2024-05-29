@@ -1,16 +1,17 @@
 package lotr.common.world.biome;
 
-import java.util.Random;
-
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRMod;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
 import lotr.common.world.feature.LOTRWorldGenBoulder;
-import lotr.common.world.map.LOTRWaypoint;
-import lotr.common.world.spawning.*;
+import lotr.common.world.spawning.LOTRBiomeSpawnList;
+import lotr.common.world.spawning.LOTRSpawnList;
 import lotr.common.world.structure.LOTRWorldGenHobbitPicnicBench;
 import lotr.common.world.structure2.*;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
+
+import java.util.Random;
 
 public class LOTRBiomeGenWhiteDowns extends LOTRBiomeGenShire {
 	public WorldGenerator chalkBoulder = new LOTRWorldGenBoulder(LOTRMod.rock, 5, 1, 3);
@@ -38,8 +39,8 @@ public class LOTRBiomeGenWhiteDowns extends LOTRBiomeGenShire {
 		npcSpawnList.newFactionList(0).add(arrspawnListContainer4);
 		npcSpawnList.conquestGainRate = 0.2f;
 		clearBiomeVariants();
-		this.addBiomeVariant(LOTRBiomeVariant.FLOWERS);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
+		addBiomeVariant(LOTRBiomeVariant.FLOWERS);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
 		biomeColors.resetGrass();
 		decorator.clearRandomStructures();
 		decorator.addRandomStructure(new LOTRWorldGenHobbitHole(false), 300);
@@ -73,11 +74,6 @@ public class LOTRBiomeGenWhiteDowns extends LOTRBiomeGenShire {
 	@Override
 	public LOTRMusicRegion.Sub getBiomeMusic() {
 		return LOTRMusicRegion.SHIRE.getSubregion("whiteDowns");
-	}
-
-	@Override
-	public LOTRWaypoint.Region getBiomeWaypoints() {
-		return LOTRWaypoint.Region.SHIRE;
 	}
 
 	@Override

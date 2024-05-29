@@ -1,11 +1,15 @@
 package lotr.common.block;
 
-import java.util.*;
-
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.LOTRMod;
-import net.minecraft.item.*;
-import net.minecraft.world.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+
+import java.util.List;
+import java.util.Random;
 
 public class LOTRBlockLeaves extends LOTRBlockLeavesBase {
 	public LOTRBlockLeaves() {
@@ -14,7 +18,7 @@ public class LOTRBlockLeaves extends LOTRBlockLeavesBase {
 	}
 
 	@Override
-	public void addSpecialLeafDrops(ArrayList drops, World world, int i, int j, int k, int meta, int fortune) {
+	public void addSpecialLeafDrops(List drops, World world, int i, int j, int k, int meta, int fortune) {
 		if ((meta & 3) == 1 && world.rand.nextInt(calcFortuneModifiedDropChance(100, fortune)) == 0) {
 			drops.add(new ItemStack(LOTRMod.mallornNut));
 		}
@@ -34,7 +38,7 @@ public class LOTRBlockLeaves extends LOTRBlockLeavesBase {
 		return super.getLightOpacity(world, i, j, k);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void randomDisplayTick(World world, int i, int j, int k, Random random) {
 		super.randomDisplayTick(world, i, j, k, random);

@@ -1,18 +1,20 @@
 package lotr.common.item;
 
-import java.util.List;
-
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.LOTRCreativeTabs;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
+import java.util.List;
+
 public class LOTRItemAncientItemParts extends Item {
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon[] icons;
-	public String[] partNames = { "swordTip", "swordBlade", "swordHilt", "armorPlate" };
+	public String[] partNames = {"swordTip", "swordBlade", "swordHilt", "armorPlate"};
 
 	public LOTRItemAncientItemParts() {
 		setHasSubtypes(true);
@@ -20,7 +22,7 @@ public class LOTRItemAncientItemParts extends Item {
 		setCreativeTab(LOTRCreativeTabs.tabMisc);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIconFromDamage(int i) {
 		if (i >= icons.length) {
@@ -29,7 +31,7 @@ public class LOTRItemAncientItemParts extends Item {
 		return icons[i];
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void getSubItems(Item item, CreativeTabs tab, List list) {
 		for (int i = 0; i <= 3; ++i) {
@@ -39,10 +41,10 @@ public class LOTRItemAncientItemParts extends Item {
 
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack) {
-		return super.getUnlocalizedName() + "." + itemstack.getItemDamage();
+		return getUnlocalizedName() + "." + itemstack.getItemDamage();
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerIcons(IIconRegister iconregister) {
 		icons = new IIcon[partNames.length];

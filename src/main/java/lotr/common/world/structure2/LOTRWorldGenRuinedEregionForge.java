@@ -1,10 +1,10 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import lotr.common.entity.npc.LOTREntityElf;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenRuinedEregionForge extends LOTRWorldGenHighElvenForge {
 	public LOTRWorldGenRuinedEregionForge(boolean flag) {
@@ -27,17 +27,17 @@ public class LOTRWorldGenRuinedEregionForge extends LOTRWorldGenHighElvenForge {
 		}
 		int l = random.nextInt(3);
 		switch (l) {
-		case 0: {
-			setBlockAndMetadata(world, i, j, k, LOTRMod.brick3, 2);
-			break;
-		}
-		case 1: {
-			setBlockAndMetadata(world, i, j, k, LOTRMod.brick3, 3);
-			break;
-		}
-		case 2: {
-			setBlockAndMetadata(world, i, j, k, LOTRMod.brick3, 4);
-		}
+			case 0: {
+				setBlockAndMetadata(world, i, j, k, LOTRMod.brick3, 2);
+				break;
+			}
+			case 1: {
+				setBlockAndMetadata(world, i, j, k, LOTRMod.brick3, 3);
+				break;
+			}
+			case 2: {
+				setBlockAndMetadata(world, i, j, k, LOTRMod.brick3, 4);
+			}
 		}
 	}
 
@@ -76,17 +76,17 @@ public class LOTRWorldGenRuinedEregionForge extends LOTRWorldGenHighElvenForge {
 		}
 		int l = random.nextInt(3);
 		switch (l) {
-		case 0: {
-			setBlockAndMetadata(world, i, j, k, LOTRMod.slabSingle5, 5 | (flag ? 8 : 0));
-			break;
-		}
-		case 1: {
-			setBlockAndMetadata(world, i, j, k, LOTRMod.slabSingle5, 6 | (flag ? 8 : 0));
-			break;
-		}
-		case 2: {
-			setBlockAndMetadata(world, i, j, k, LOTRMod.slabSingle5, 7 | (flag ? 8 : 0));
-		}
+			case 0: {
+				setBlockAndMetadata(world, i, j, k, LOTRMod.slabSingle5, 5 | (flag ? 8 : 0));
+				break;
+			}
+			case 1: {
+				setBlockAndMetadata(world, i, j, k, LOTRMod.slabSingle5, 6 | (flag ? 8 : 0));
+				break;
+			}
+			case 2: {
+				setBlockAndMetadata(world, i, j, k, LOTRMod.slabSingle5, 7 | (flag ? 8 : 0));
+			}
 		}
 	}
 
@@ -97,17 +97,17 @@ public class LOTRWorldGenRuinedEregionForge extends LOTRWorldGenHighElvenForge {
 		}
 		int l = random.nextInt(3);
 		switch (l) {
-		case 0: {
-			setBlockAndMetadata(world, i, j, k, LOTRMod.stairsHighElvenBrick, meta);
-			break;
-		}
-		case 1: {
-			setBlockAndMetadata(world, i, j, k, LOTRMod.stairsHighElvenBrickMossy, meta);
-			break;
-		}
-		case 2: {
-			setBlockAndMetadata(world, i, j, k, LOTRMod.stairsHighElvenBrickCracked, meta);
-		}
+			case 0: {
+				setBlockAndMetadata(world, i, j, k, LOTRMod.stairsHighElvenBrick, meta);
+				break;
+			}
+			case 1: {
+				setBlockAndMetadata(world, i, j, k, LOTRMod.stairsHighElvenBrickMossy, meta);
+				break;
+			}
+			case 2: {
+				setBlockAndMetadata(world, i, j, k, LOTRMod.stairsHighElvenBrickCracked, meta);
+			}
 		}
 	}
 
@@ -118,17 +118,17 @@ public class LOTRWorldGenRuinedEregionForge extends LOTRWorldGenHighElvenForge {
 		}
 		int l = random.nextInt(3);
 		switch (l) {
-		case 0: {
-			setBlockAndMetadata(world, i, j, k, LOTRMod.wall2, 11);
-			break;
-		}
-		case 1: {
-			setBlockAndMetadata(world, i, j, k, LOTRMod.wall2, 12);
-			break;
-		}
-		case 2: {
-			setBlockAndMetadata(world, i, j, k, LOTRMod.wall2, 13);
-		}
+			case 0: {
+				setBlockAndMetadata(world, i, j, k, LOTRMod.wall2, 11);
+				break;
+			}
+			case 1: {
+				setBlockAndMetadata(world, i, j, k, LOTRMod.wall2, 12);
+				break;
+			}
+			case 2: {
+				setBlockAndMetadata(world, i, j, k, LOTRMod.wall2, 13);
+			}
 		}
 	}
 }

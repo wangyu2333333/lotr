@@ -1,8 +1,7 @@
 package lotr.common.block;
 
-import java.util.Random;
-
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.LOTRCreativeTabs;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -12,8 +11,10 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.util.Random;
+
 public class LOTRBlockHearth extends Block {
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon[] blockIcons;
 
 	public LOTRBlockHearth() {
@@ -21,7 +22,7 @@ public class LOTRBlockHearth extends Block {
 		setCreativeTab(LOTRCreativeTabs.tabBlock);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
 		if (i == 0) {
@@ -53,7 +54,7 @@ public class LOTRBlockHearth extends Block {
 		}
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
 		blockIcons = new IIcon[3];

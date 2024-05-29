@@ -1,8 +1,10 @@
 package lotr.common.block;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.LOTRCreativeTabs;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockFenceGate;
 import net.minecraft.util.IIcon;
 
 public class LOTRBlockFenceGate extends BlockFenceGate {
@@ -18,7 +20,7 @@ public class LOTRBlockFenceGate extends BlockFenceGate {
 		setStepSound(soundTypeWood);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
 		return plankBlock.getIcon(i, plankMeta);

@@ -1,8 +1,11 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
 import lotr.common.fac.LOTRFaction;
-import lotr.common.quest.*;
+import lotr.common.quest.LOTRMiniQuest;
+import lotr.common.quest.LOTRMiniQuestFactory;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -10,16 +13,15 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 public class LOTREntityWickedDwarf extends LOTREntityDwarf implements LOTRTradeable.Smith {
-	public static ItemStack[] wickedWeapons = { new ItemStack(LOTRMod.swordDwarven), new ItemStack(LOTRMod.battleaxeDwarven), new ItemStack(LOTRMod.hammerDwarven) };
+	public static ItemStack[] wickedWeapons = {new ItemStack(LOTRMod.swordDwarven), new ItemStack(LOTRMod.battleaxeDwarven), new ItemStack(LOTRMod.hammerDwarven)};
 
 	public LOTREntityWickedDwarf(World world) {
 		super(world);
-		this.addTargetTasks(true);
+		addTargetTasks(true);
 	}
 
-	@Override
-	public boolean canDwarfSpawnAboveGround() {
-		return true;
+	public static LOTRFaction[] getTradeFactions() {
+		return new LOTRFaction[]{LOTRFaction.MORDOR, LOTRFaction.ANGMAR, LOTRFaction.RHUDEL};
 	}
 
 	@Override
@@ -33,7 +35,7 @@ public class LOTREntityWickedDwarf extends LOTREntityDwarf implements LOTRTradea
 	@Override
 	public boolean canTradeWith(EntityPlayer entityplayer) {
 		boolean hasSuitableAlignment = false;
-		for (LOTRFaction f : LOTREntityWickedDwarf.getTradeFactions()) {
+		for (LOTRFaction f : getTradeFactions()) {
 			if (LOTRLevelData.getData(entityplayer).getAlignment(f) < 100.0f) {
 				continue;
 			}
@@ -111,14 +113,5 @@ public class LOTREntityWickedDwarf extends LOTREntityDwarf implements LOTRTradea
 		}
 		setCurrentItemOrArmor(4, null);
 		return data;
-	}
-
-	@Override
-	public void setupNPCGender() {
-		familyInfo.setMale(true);
-	}
-
-	public static LOTRFaction[] getTradeFactions() {
-		return new LOTRFaction[] { LOTRFaction.MORDOR, LOTRFaction.ANGMAR, LOTRFaction.RHUDEL };
 	}
 }

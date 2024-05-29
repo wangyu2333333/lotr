@@ -1,9 +1,9 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import lotr.common.item.LOTRItemBanner;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenGulfTotem extends LOTRWorldGenGulfStructure {
 	public LOTRWorldGenGulfTotem(boolean flag) {
@@ -12,7 +12,7 @@ public class LOTRWorldGenGulfTotem extends LOTRWorldGenGulfStructure {
 
 	@Override
 	public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
-		this.setOriginAndRotation(world, i, j, k, rotation, 2);
+		setOriginAndRotation(world, i, j, k, rotation, 2);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			for (int i1 = -3; i1 <= 3; ++i1) {

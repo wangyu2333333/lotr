@@ -1,9 +1,5 @@
 package lotr.client.render.tileentity;
 
-import java.awt.Color;
-
-import org.lwjgl.opengl.GL11;
-
 import lotr.common.LOTRMod;
 import lotr.common.tileentity.LOTRTileEntityEntJar;
 import net.minecraft.client.renderer.Tessellator;
@@ -13,6 +9,9 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
+import org.lwjgl.opengl.GL11;
+
+import java.awt.*;
 
 public class LOTRRenderEntJar extends TileEntitySpecialRenderer {
 	@Override
@@ -31,11 +30,11 @@ public class LOTRRenderEntJar extends TileEntitySpecialRenderer {
 		GL11.glBlendFunc(770, 771);
 		float transparency = 0.5f;
 		Tessellator tessellator = Tessellator.instance;
-		IIcon icon = null;
-		float minU = 0.0f;
-		float maxU = 0.0f;
-		float minV = 0.0f;
-		float maxV = 0.0f;
+		IIcon icon;
+		float minU;
+		float maxU;
+		float minV;
+		float maxV;
 		int color = 16777215;
 		if (jar.drinkMeta >= 0) {
 			bindTexture(TextureMap.locationItemsTexture);

@@ -1,30 +1,40 @@
 package lotr.common.world.spawning;
 
-import java.util.*;
-
 import cpw.mods.fml.common.eventhandler.Event;
-import lotr.common.*;
+import lotr.common.LOTRConfig;
+import lotr.common.LOTRSpawnDamping;
 import lotr.common.entity.npc.LOTREntityNPC;
-import lotr.common.world.*;
+import lotr.common.world.LOTRWorldChunkManager;
+import lotr.common.world.LOTRWorldProvider;
 import lotr.common.world.biome.LOTRBiome;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.world.ChunkPosition;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.event.ForgeEventFactory;
+
+import java.util.*;
 
 public class LOTRSpawnerNPCs {
 	public static int expectedChunks = 196;
 	public static Set<ChunkCoordIntPair> eligibleSpawnChunks = new HashSet<>();
 	public static Map<Integer, Integer> ticksSinceCycle = new HashMap<>();
 
-	public static boolean canNPCSpawnAtLocation(World world, int i, int j, int k) {
+	public static boolean canNPCSpawnAtLocation(IBlockAccess world, int i, int j, int k) {
 		if (!World.doesBlockHaveSolidTopSurface(world, i, j - 1, k)) {
 			return false;
 		}
@@ -50,7 +60,7 @@ public class LOTRSpawnerNPCs {
 	public static ChunkPosition getRandomSpawningPointInChunk(World world, ChunkCoordIntPair chunkCoords) {
 		int i = chunkCoords.chunkXPos;
 		int k = chunkCoords.chunkZPos;
-		return LOTRSpawnerNPCs.getRandomSpawningPointInChunk(world, i, k);
+		return getRandomSpawningPointInChunk(world, i, k);
 	}
 
 	public static ChunkPosition getRandomSpawningPointInChunk(World world, int i, int k) {
@@ -79,7 +89,7 @@ public class LOTRSpawnerNPCs {
 		return null;
 	}
 
-	public static void getSpawnableChunks(World world, Set<ChunkCoordIntPair> set) {
+	public static void getSpawnableChunks(World world, Collection<ChunkCoordIntPair> set) {
 		set.clear();
 		for (Object element : world.playerEntities) {
 			EntityPlayer entityplayer = (EntityPlayer) element;
@@ -94,9 +104,9 @@ public class LOTRSpawnerNPCs {
 		}
 	}
 
-	public static void getSpawnableChunksWithPlayerInRange(World world, Set<ChunkCoordIntPair> set, int range) {
-		LOTRSpawnerNPCs.getSpawnableChunks(world, set);
-		ArrayList<EntityPlayer> validPlayers = new ArrayList<>();
+	public static void getSpawnableChunksWithPlayerInRange(World world, Collection<ChunkCoordIntPair> set, int range) {
+		getSpawnableChunks(world, set);
+		Collection<EntityPlayer> validPlayers = new ArrayList<>();
 		for (Object obj : world.playerEntities) {
 			EntityPlayer entityplayer = (EntityPlayer) obj;
 			if (entityplayer.capabilities.isCreativeMode) {
@@ -105,7 +115,7 @@ public class LOTRSpawnerNPCs {
 			validPlayers.add(entityplayer);
 		}
 		int height = world.getHeight();
-		HashSet<ChunkCoordIntPair> removes = new HashSet<>();
+		Collection<ChunkCoordIntPair> removes = new HashSet<>();
 		for (ChunkCoordIntPair chunkCoords : set) {
 			int i = chunkCoords.getCenterXPos();
 			int k = chunkCoords.getCenterZPosition();
@@ -142,24 +152,26 @@ public class LOTRSpawnerNPCs {
 			ticks = interval;
 			ticksSinceCycle.put(dimID, ticks);
 		}
-		LOTRSpawnerNPCs.getSpawnableChunks(world, eligibleSpawnChunks);
+		getSpawnableChunks(world, eligibleSpawnChunks);
 		ChunkCoordinates spawnPoint = world.getSpawnPoint();
-		int totalSpawnCount = LOTRSpawnerNPCs.countNPCs(world);
+		int totalSpawnCount = countNPCs(world);
 		int maxSpawnCount = LOTRSpawnDamping.getNPCSpawnCap(world) * eligibleSpawnChunks.size() / 196;
 		if (totalSpawnCount <= maxSpawnCount) {
 			int cycles = Math.max(1, interval);
-			block2: for (int c = 0; c < cycles; ++c) {
-				List<ChunkCoordIntPair> shuffled = LOTRSpawnerNPCs.shuffle(eligibleSpawnChunks);
+			block2:
+			for (int c = 0; c < cycles; ++c) {
+				List<ChunkCoordIntPair> shuffled = shuffle(eligibleSpawnChunks);
 				for (ChunkCoordIntPair chunkCoords : shuffled) {
 					int i;
 					int j;
 					int k;
-					ChunkPosition chunkposition = LOTRSpawnerNPCs.getRandomSpawningPointInChunk(world, chunkCoords);
+					ChunkPosition chunkposition = getRandomSpawningPointInChunk(world, chunkCoords);
 					if (chunkposition == null || world.getBlock(i = chunkposition.chunkPosX, j = chunkposition.chunkPosY, k = chunkposition.chunkPosZ).isNormalCube() || world.getBlock(i, j, k).getMaterial() != Material.air) {
 						continue;
 					}
 					int groups = 3;
-					block4: for (int l = 0; l < groups; ++l) {
+					block4:
+					for (int l = 0; l < groups; ++l) {
 						int i1 = i;
 						int j1 = j;
 						int k1 = k;
@@ -167,7 +179,7 @@ public class LOTRSpawnerNPCs {
 						int yRange = 0;
 						int rangeP1 = range + 1;
 						int yRangeP1 = yRange + 1;
-						LOTRSpawnEntry.Instance spawnEntryInstance = LOTRSpawnerNPCs.getRandomSpawnListEntry(world, i1, j1, k1);
+						LOTRSpawnEntry.Instance spawnEntryInstance = getRandomSpawnListEntry(world, i1, j1, k1);
 						if (spawnEntryInstance == null) {
 							continue;
 						}
@@ -190,7 +202,7 @@ public class LOTRSpawnerNPCs {
 							float f;
 							Event.Result canSpawn;
 							EntityLiving entity;
-							if (!world.blockExists(i1 += world.rand.nextInt(rangeP1) - world.rand.nextInt(rangeP1), j1 += world.rand.nextInt(yRangeP1) - world.rand.nextInt(yRangeP1), k1 += world.rand.nextInt(rangeP1) - world.rand.nextInt(rangeP1)) || !LOTRSpawnerNPCs.canNPCSpawnAtLocation(world, i1, j1, k1) || world.getClosestPlayer(f = i1 + 0.5f, f1 = j1, f2 = k1 + 0.5f, 24.0) != null || (f3 = f - spawnPoint.posX) * f3 + (f4 = f1 - spawnPoint.posY) * f4 + (f5 = f2 - spawnPoint.posZ) * f5 < 576.0f) {
+							if (!world.blockExists(i1 += world.rand.nextInt(rangeP1) - world.rand.nextInt(rangeP1), j1 += world.rand.nextInt(yRangeP1) - world.rand.nextInt(yRangeP1), k1 += world.rand.nextInt(rangeP1) - world.rand.nextInt(rangeP1)) || !canNPCSpawnAtLocation(world, i1, j1, k1) || world.getClosestPlayer(f = i1 + 0.5f, f1 = j1, f2 = k1 + 0.5f, 24.0) != null || (f3 = f - spawnPoint.posX) * f3 + (f4 = f1 - spawnPoint.posY) * f4 + (f5 = f2 - spawnPoint.posZ) * f5 < 576.0f) {
 								continue;
 							}
 							try {
@@ -233,7 +245,7 @@ public class LOTRSpawnerNPCs {
 	}
 
 	public static List<ChunkCoordIntPair> shuffle(Set<ChunkCoordIntPair> set) {
-		ArrayList<ChunkCoordIntPair> list = new ArrayList<>(set);
+		List<ChunkCoordIntPair> list = new ArrayList<>(set);
 		Collections.shuffle(list);
 		return list;
 	}

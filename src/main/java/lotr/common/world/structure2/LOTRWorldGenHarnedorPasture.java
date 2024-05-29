@@ -1,21 +1,40 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import lotr.common.entity.animal.LOTREntityCamel;
 import net.minecraft.entity.passive.*;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenHarnedorPasture extends LOTRWorldGenHarnedorStructure {
 	public LOTRWorldGenHarnedorPasture(boolean flag) {
 		super(flag);
 	}
 
+	public static EntityAnimal getRandomAnimal(World world, Random random) {
+		int animal = random.nextInt(5);
+		switch (animal) {
+			case 0:
+				return new EntityCow(world);
+			case 1:
+				return new EntityPig(world);
+			case 2:
+				return new EntitySheep(world);
+			case 3:
+				return new EntityChicken(world);
+			case 4:
+				return new LOTREntityCamel(world);
+			default:
+				break;
+		}
+		return null;
+	}
+
 	@Override
 	public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
 		int j1;
-		this.setOriginAndRotation(world, i, j, k, rotation, 4);
+		setOriginAndRotation(world, i, j, k, rotation, 4);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			int minHeight = 0;
@@ -57,7 +76,8 @@ public class LOTRWorldGenHarnedorPasture extends LOTRWorldGenHarnedorStructure {
 		associateBlockMetaAlias("FENCE", fenceBlock, fenceMeta);
 		associateBlockAlias("FENCE_GATE", fenceGateBlock);
 		generateStrScan(world, random, 0, 0, 0);
-		block6: for (int i1 : new int[] { -2, -1, 1, 2 }) {
+		block6:
+		for (int i1 : new int[]{-2, -1, 1, 2}) {
 			j1 = 0;
 			for (int step = 0; step < 6; ++step) {
 				int j2;
@@ -96,29 +116,10 @@ public class LOTRWorldGenHarnedorPasture extends LOTRWorldGenHarnedorStructure {
 		}
 		int animals = 2 + random.nextInt(4);
 		for (int l = 0; l < animals; ++l) {
-			EntityAnimal animal = LOTRWorldGenHarnedorPasture.getRandomAnimal(world, random);
+			EntityAnimal animal = getRandomAnimal(world, random);
 			spawnNPCAndSetHome(animal, world, 0, 1, 0, 0);
 			animal.detachHome();
 		}
 		return true;
-	}
-
-	public static EntityAnimal getRandomAnimal(World world, Random random) {
-		int animal = random.nextInt(5);
-		switch (animal) {
-		case 0:
-			return new EntityCow(world);
-		case 1:
-			return new EntityPig(world);
-		case 2:
-			return new EntitySheep(world);
-		case 3:
-			return new EntityChicken(world);
-		case 4:
-			return new LOTREntityCamel(world);
-		default:
-			break;
-		}
-		return null;
 	}
 }

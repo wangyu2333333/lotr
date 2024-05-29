@@ -1,17 +1,22 @@
 package lotr.common.world.spawning;
 
-import java.util.*;
-
 import cpw.mods.fml.common.eventhandler.Event;
-import lotr.common.*;
+import lotr.common.LOTRConfig;
+import lotr.common.LOTRSpawnDamping;
 import lotr.common.entity.animal.LOTRAnimalSpawnConditions;
 import lotr.common.world.biome.LOTRBiome;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
-import net.minecraft.entity.*;
-import net.minecraft.util.*;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.WeightedRandom;
 import net.minecraft.world.*;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.event.ForgeEventFactory;
+
+import java.util.*;
 
 public class LOTRSpawnerAnimals {
 	public static Set<ChunkCoordIntPair> eligibleSpawnChunks = new HashSet<>();
@@ -57,10 +62,11 @@ public class LOTRSpawnerAnimals {
 		int totalSpawned = 0;
 		LOTRSpawnerNPCs.getSpawnableChunks(world, eligibleSpawnChunks);
 		ChunkCoordinates spawnPoint = world.getSpawnPoint();
-		block2: for (EnumCreatureType creatureType : EnumCreatureType.values()) {
+		block2:
+		for (EnumCreatureType creatureType : EnumCreatureType.values()) {
 			int count;
 			int maxCount;
-			TypeInfo typeInfo = LOTRSpawnerAnimals.forDimAndType(world, creatureType);
+			TypeInfo typeInfo = forDimAndType(world, creatureType);
 			boolean canSpawnType;
 			canSpawnType = creatureType.getPeacefulCreature() ? peacefuls : hostiles;
 			if (creatureType.getAnimal()) {
@@ -77,7 +83,8 @@ public class LOTRSpawnerAnimals {
 				}
 				int newlySpawned = 0;
 				List<ChunkCoordIntPair> shuffled = LOTRSpawnerNPCs.shuffle(eligibleSpawnChunks);
-				block4: for (ChunkCoordIntPair chunkCoords : shuffled) {
+				block4:
+				for (ChunkCoordIntPair chunkCoords : shuffled) {
 					int i;
 					int k;
 					int j;
@@ -100,7 +107,7 @@ public class LOTRSpawnerAnimals {
 							float f5;
 							EntityLiving entity;
 							float f1;
-							if (!world.blockExists(i1 += world.rand.nextInt(range) - world.rand.nextInt(range), j1 += world.rand.nextInt(1) - world.rand.nextInt(1), k1 += world.rand.nextInt(range) - world.rand.nextInt(range)) || !SpawnerAnimals.canCreatureTypeSpawnAtLocation(creatureType, world, i1, j1, k1) || world.getClosestPlayer(f = i1 + 0.5f, f1 = j1, f2 = k1 + 0.5f, 24.0) != null || (f3 = f - spawnPoint.posX) * f3 + (f4 = f1 - spawnPoint.posY) * f4 + (f5 = f2 - spawnPoint.posZ) * f5 < 576.0f) {
+							if (!world.blockExists(i1 += world.rand.nextInt(range) - world.rand.nextInt(range), j1 += 0, k1 += world.rand.nextInt(range) - world.rand.nextInt(range)) || !SpawnerAnimals.canCreatureTypeSpawnAtLocation(creatureType, world, i1, j1, k1) || world.getClosestPlayer(f = i1 + 0.5f, f1 = j1, f2 = k1 + 0.5f, 24.0) != null || (f3 = f - spawnPoint.posX) * f3 + (f4 = f1 - spawnPoint.posY) * f4 + (f5 = f2 - spawnPoint.posZ) * f5 < 576.0f) {
 								continue;
 							}
 							if (spawnEntry == null && (spawnEntry = world.spawnRandomCreature(creatureType, i1, j1, k1)) == null) {
@@ -171,7 +178,6 @@ public class LOTRSpawnerAnimals {
 						if (SpawnerAnimals.canCreatureTypeSpawnAtLocation(EnumCreatureType.creature, world, i1, j1, k1)) {
 							EntityLiving entity;
 							float f = i1 + 0.5f;
-							float f1 = j1;
 							float f2 = k1 + 0.5f;
 							try {
 								entity = (EntityLiving) spawnEntry.entityClass.getConstructor(World.class).newInstance(world);
@@ -179,12 +185,9 @@ public class LOTRSpawnerAnimals {
 								exception.printStackTrace();
 								continue;
 							}
-							boolean canSpawn = true;
-							if (entity instanceof LOTRAnimalSpawnConditions && !((LOTRAnimalSpawnConditions) entity).canWorldGenSpawnAt(i1, j1, k1, biome, variant)) {
-								canSpawn = false;
-							}
+							boolean canSpawn = !(entity instanceof LOTRAnimalSpawnConditions) || ((LOTRAnimalSpawnConditions) entity).canWorldGenSpawnAt(i1, j1, k1, biome, variant);
 							if (canSpawn) {
-								entity.setLocationAndAngles(f, f1, f2, rand.nextFloat() * 360.0f, 0.0f);
+								entity.setLocationAndAngles(f, (float) j1, f2, rand.nextFloat() * 360.0f, 0.0f);
 								world.spawnEntityInWorld(entity);
 								entityData = entity.onSpawnWithEgg(entityData);
 								spawned = true;
@@ -203,18 +206,14 @@ public class LOTRSpawnerAnimals {
 	}
 
 	public static class DimInfo {
-		public Map<EnumCreatureType, TypeInfo> types = new HashMap<>();
+		public Map<EnumCreatureType, TypeInfo> types = new EnumMap<>(EnumCreatureType.class);
 
-		public DimInfo() {
-		}
 	}
 
 	public static class TypeInfo {
 		public int failedCycles;
 		public int blockedCycles;
 
-		public TypeInfo() {
-		}
 	}
 
 }

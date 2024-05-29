@@ -1,21 +1,23 @@
 package lotr.common.block;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.client.render.LOTRConnectedTextures;
 import lotr.common.LOTRMod;
 import lotr.common.tileentity.LOTRTileEntityGulduril;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
-import net.minecraft.world.*;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class LOTRBlockOreStorage extends LOTRBlockOreStorageBase implements LOTRConnectedBlock {
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon orcSteelSideIcon;
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon urukSteelSideIcon;
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon morgulSteelSideIcon;
 
 	public LOTRBlockOreStorage() {
@@ -29,7 +31,7 @@ public class LOTRBlockOreStorage extends LOTRBlockOreStorageBase implements LOTR
 
 	@Override
 	public TileEntity createTileEntity(World world, int metadata) {
-		if (this.hasTileEntity(metadata)) {
+		if (hasTileEntity(metadata)) {
 			return new LOTRTileEntityGulduril();
 		}
 		return null;
@@ -41,7 +43,7 @@ public class LOTRBlockOreStorage extends LOTRBlockOreStorageBase implements LOTR
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(IBlockAccess world, int i, int j, int k, int side) {
 		int meta = world.getBlockMetadata(i, j, k);
 		if (meta == 4) {
@@ -50,11 +52,11 @@ public class LOTRBlockOreStorage extends LOTRBlockOreStorageBase implements LOTR
 		return super.getIcon(world, i, j, k, side);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int side, int meta) {
 		if (meta == 4) {
-			return LOTRConnectedTextures.getConnectedIconItem(this, meta);
+			return LOTRConnectedTextures.getConnectedIconItem(this, 4);
 		}
 		if (meta == 5 && side > 1) {
 			return orcSteelSideIcon;
@@ -92,13 +94,13 @@ public class LOTRBlockOreStorage extends LOTRBlockOreStorageBase implements LOTR
 		return world.getBlockMetadata(i, j, k) == 13 && side == ForgeDirection.UP;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
 		oreStorageIcons = new IIcon[oreStorageNames.length];
 		for (int i = 0; i < oreStorageNames.length; ++i) {
 			if (i == 4) {
-				LOTRConnectedTextures.registerConnectedIcons(iconregister, this, i, false);
+				LOTRConnectedTextures.registerConnectedIcons(iconregister, this, 4, false);
 				continue;
 			}
 			oreStorageIcons[i] = iconregister.registerIcon(getTextureName() + "_" + oreStorageNames[i]);

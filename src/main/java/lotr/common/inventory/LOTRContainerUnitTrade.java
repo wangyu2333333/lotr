@@ -1,11 +1,16 @@
 package lotr.common.inventory;
 
 import lotr.common.LOTRLevelData;
-import lotr.common.entity.npc.*;
+import lotr.common.entity.npc.LOTREntityNPC;
+import lotr.common.entity.npc.LOTRHireableBase;
+import lotr.common.entity.npc.LOTRUnitTradeable;
 import lotr.common.fac.LOTRFaction;
 import lotr.common.world.spawning.LOTRInvasions;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.*;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryBasic;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -57,7 +62,7 @@ public class LOTRContainerUnitTrade extends Container {
 		if (slot != null && slot.getHasStack()) {
 			ItemStack itemstack1 = slot.getStack();
 			itemstack = itemstack1.copy();
-			if (i >= 0 && i < alignmentRewardSlots ? !mergeItemStack(itemstack1, alignmentRewardSlots, 36 + alignmentRewardSlots, true) : i >= alignmentRewardSlots && i < 27 + alignmentRewardSlots ? !mergeItemStack(itemstack1, 27 + alignmentRewardSlots, 36 + alignmentRewardSlots, false) : i >= 27 + alignmentRewardSlots && i < 36 + alignmentRewardSlots ? !mergeItemStack(itemstack1, alignmentRewardSlots, 27 + alignmentRewardSlots, false) : !mergeItemStack(itemstack1, alignmentRewardSlots, 27 + alignmentRewardSlots, false)) {
+			if (i < alignmentRewardSlots ? !mergeItemStack(itemstack1, alignmentRewardSlots, 36 + alignmentRewardSlots, true) : i < 27 + alignmentRewardSlots ? !mergeItemStack(itemstack1, 27 + alignmentRewardSlots, 36 + alignmentRewardSlots, false) : !mergeItemStack(itemstack1, alignmentRewardSlots, 27 + alignmentRewardSlots, false)) {
 				return null;
 			}
 			if (itemstack1.stackSize == 0) {

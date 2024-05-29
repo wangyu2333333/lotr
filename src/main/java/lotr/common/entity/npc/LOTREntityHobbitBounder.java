@@ -5,7 +5,10 @@ import lotr.common.entity.ai.*;
 import lotr.common.entity.animal.LOTREntityShirePony;
 import lotr.common.entity.projectile.LOTREntityPebble;
 import lotr.common.item.LOTRItemLeatherHat;
-import net.minecraft.entity.*;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
@@ -28,7 +31,7 @@ public class LOTREntityHobbitBounder extends LOTREntityHobbit {
 		tasks.addTask(6, new EntityAIWatchClosest2(this, LOTREntityNPC.class, 5.0f, 0.02f));
 		tasks.addTask(7, new EntityAIWatchClosest(this, EntityLiving.class, 8.0f, 0.02f));
 		tasks.addTask(8, new EntityAILookIdle(this));
-		int target = this.addTargetTasks(true);
+		int target = addTargetTasks(true);
 		targetTasks.addTask(target + 1, new LOTREntityAIHobbitTargetRuffian(this, LOTREntityBreeRuffian.class, 0, true));
 		spawnRidingHorse = rand.nextInt(3) == 0;
 	}
@@ -125,7 +128,7 @@ public class LOTREntityHobbitBounder extends LOTREntityHobbit {
 		int i = rand.nextInt(3);
 		if (i == 0 || i == 1) {
 			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.daggerIron));
-		} else if (i == 2) {
+		} else {
 			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.daggerBronze));
 		}
 		npcItemsInv.setRangedWeapon(new ItemStack(LOTRMod.sling));

@@ -1,8 +1,8 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenSouthronWell extends LOTRWorldGenSouthronStructure {
 	public LOTRWorldGenSouthronWell(boolean flag) {
@@ -14,7 +14,7 @@ public class LOTRWorldGenSouthronWell extends LOTRWorldGenSouthronStructure {
 		int j1;
 		int k1;
 		int i1;
-		this.setOriginAndRotation(world, i, j, k, rotation, 2);
+		setOriginAndRotation(world, i, j, k, rotation, 2);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			for (i1 = -2; i1 <= 2; ++i1) {

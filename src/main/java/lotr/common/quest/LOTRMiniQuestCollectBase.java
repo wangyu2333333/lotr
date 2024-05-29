@@ -1,7 +1,5 @@
 package lotr.common.quest;
 
-import java.util.*;
-
 import lotr.common.LOTRPlayerData;
 import lotr.common.entity.npc.LOTREntityNPC;
 import net.minecraft.entity.player.EntityPlayer;
@@ -9,18 +7,21 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.StatCollector;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 public abstract class LOTRMiniQuestCollectBase extends LOTRMiniQuest {
 	public int collectTarget;
 	public int amountGiven;
 
-	public LOTRMiniQuestCollectBase(LOTRPlayerData pd) {
+	protected LOTRMiniQuestCollectBase(LOTRPlayerData pd) {
 		super(pd);
 	}
 
 	@Override
 	public float getAlignmentBonus() {
 		float f = collectTarget;
-		return Math.max(f *= rewardFactor, 1.0f);
+		return Math.max(f * rewardFactor, 1.0f);
 	}
 
 	@Override
@@ -30,7 +31,7 @@ public abstract class LOTRMiniQuestCollectBase extends LOTRMiniQuest {
 
 	@Override
 	public float getCompletionFactor() {
-		return (float) amountGiven / (float) collectTarget;
+		return (float) amountGiven / collectTarget;
 	}
 
 	@Override
@@ -53,7 +54,7 @@ public abstract class LOTRMiniQuestCollectBase extends LOTRMiniQuest {
 	@Override
 	public void onInteract(EntityPlayer entityplayer, LOTREntityNPC npc) {
 		int prevAmountGiven = amountGiven;
-		ArrayList<Integer> slotNumbers = new ArrayList<>();
+		Collection<Integer> slotNumbers = new ArrayList<>();
 		slotNumbers.add(entityplayer.inventory.currentItem);
 		for (int slot = 0; slot < entityplayer.inventory.mainInventory.length; ++slot) {
 			if (slotNumbers.contains(slot)) {
@@ -61,9 +62,7 @@ public abstract class LOTRMiniQuestCollectBase extends LOTRMiniQuest {
 			}
 			slotNumbers.add(slot);
 		}
-		Iterator slot = slotNumbers.iterator();
-		while (slot.hasNext()) {
-			int slot2 = (Integer) slot.next();
+		for (int slot2 : slotNumbers) {
 			ItemStack itemstack = entityplayer.inventory.mainInventory[slot2];
 			if (itemstack != null && isQuestItem(itemstack)) {
 				int amountRemaining = collectTarget - amountGiven;

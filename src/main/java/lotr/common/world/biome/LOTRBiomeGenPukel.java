@@ -1,11 +1,10 @@
 package lotr.common.world.biome;
 
-import java.util.Random;
-
 import lotr.common.LOTRAchievement;
 import lotr.common.entity.animal.LOTREntityBear;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
-import lotr.common.world.feature.*;
+import lotr.common.world.feature.LOTRTreeType;
+import lotr.common.world.feature.LOTRWorldGenBoulder;
 import lotr.common.world.map.LOTRWaypoint;
 import lotr.common.world.spawning.LOTREventSpawner;
 import lotr.common.world.structure2.*;
@@ -16,6 +15,8 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.gen.NoiseGeneratorPerlin;
 import net.minecraft.world.gen.feature.WorldGenerator;
+
+import java.util.Random;
 
 public class LOTRBiomeGenPukel extends LOTRBiome {
 	public static NoiseGeneratorPerlin noiseDirt = new NoiseGeneratorPerlin(new Random(285939985023633003L), 1);
@@ -29,18 +30,18 @@ public class LOTRBiomeGenPukel extends LOTRBiome {
 		npcSpawnList.clear();
 		clearBiomeVariants();
 		variantChance = 0.6f;
-		this.addBiomeVariant(LOTRBiomeVariant.FLOWERS);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT, 4.0f);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST, 4.0f);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS, 2.0f);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS_FOREST, 3.0f);
-		this.addBiomeVariant(LOTRBiomeVariant.DEADFOREST_OAK, 2.0f);
-		this.addBiomeVariant(LOTRBiomeVariant.DENSEFOREST_OAK, 6.0f);
-		this.addBiomeVariant(LOTRBiomeVariant.DENSEFOREST_DARK_OAK, 6.0f);
-		this.addBiomeVariant(LOTRBiomeVariant.SHRUBLAND_OAK);
-		this.addBiomeVariant(LOTRBiomeVariant.SCRUBLAND);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS_SCRUBLAND);
-		this.addBiomeVariant(LOTRBiomeVariant.WASTELAND);
+		addBiomeVariant(LOTRBiomeVariant.FLOWERS);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT, 4.0f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST, 4.0f);
+		addBiomeVariant(LOTRBiomeVariant.HILLS, 2.0f);
+		addBiomeVariant(LOTRBiomeVariant.HILLS_FOREST, 3.0f);
+		addBiomeVariant(LOTRBiomeVariant.DEADFOREST_OAK, 2.0f);
+		addBiomeVariant(LOTRBiomeVariant.DENSEFOREST_OAK, 6.0f);
+		addBiomeVariant(LOTRBiomeVariant.DENSEFOREST_DARK_OAK, 6.0f);
+		addBiomeVariant(LOTRBiomeVariant.SHRUBLAND_OAK);
+		addBiomeVariant(LOTRBiomeVariant.SCRUBLAND);
+		addBiomeVariant(LOTRBiomeVariant.HILLS_SCRUBLAND);
+		addBiomeVariant(LOTRBiomeVariant.WASTELAND);
 		decorator.setTreeCluster(10, 24);
 		decorator.treesPerChunk = 1;
 		decorator.willowPerChunk = 1;

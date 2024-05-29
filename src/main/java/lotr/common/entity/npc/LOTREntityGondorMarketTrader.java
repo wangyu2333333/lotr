@@ -1,14 +1,15 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public abstract class LOTREntityGondorMarketTrader extends LOTREntityGondorMan implements LOTRTradeable {
-	public LOTREntityGondorMarketTrader(World world) {
+	protected LOTREntityGondorMarketTrader(World world) {
 		super(world);
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 	}
 
 	@Override
@@ -27,15 +28,6 @@ public abstract class LOTREntityGondorMarketTrader extends LOTREntityGondorMan i
 			return "gondor/marketTrader/friendly";
 		}
 		return "gondor/marketTrader/hostile";
-	}
-
-	@Override
-	public void onAttackModeChange(LOTREntityNPC.AttackMode mode, boolean mounted) {
-		if (mode == LOTREntityNPC.AttackMode.IDLE) {
-			setCurrentItemOrArmor(0, npcItemsInv.getIdleItem());
-		} else {
-			setCurrentItemOrArmor(0, npcItemsInv.getMeleeWeapon());
-		}
 	}
 
 	@Override

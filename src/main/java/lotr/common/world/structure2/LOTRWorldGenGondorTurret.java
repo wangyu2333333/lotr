@@ -1,13 +1,14 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
-import lotr.common.entity.npc.*;
+import lotr.common.entity.npc.LOTREntityGondorArcher;
+import lotr.common.entity.npc.LOTREntityGondorSoldier;
 import lotr.common.world.structure.LOTRChestContents;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenGondorTurret extends LOTRWorldGenStructureBase2 {
 	public LOTRWorldGenGondorTurret(boolean flag) {
@@ -20,7 +21,7 @@ public class LOTRWorldGenGondorTurret extends LOTRWorldGenStructureBase2 {
 		int j12;
 		int k1;
 		int i1;
-		this.setOriginAndRotation(world, i, j, k, rotation, 3);
+		setOriginAndRotation(world, i, j, k, rotation, 3);
 		if (restrictions) {
 			for (i1 = -2; i1 <= 2; ++i1) {
 				for (k1 = -2; k1 <= 2; ++k1) {
@@ -95,7 +96,7 @@ public class LOTRWorldGenGondorTurret extends LOTRWorldGenStructureBase2 {
 		setBlockAndMetadata(world, 0, 2, -1, LOTRMod.doorLebethron, 8);
 		setBlockAndMetadata(world, 0, 5, 0, Blocks.trapdoor, 0);
 		setBlockAndMetadata(world, 0, 5, 1, LOTRMod.slabSingle, 2);
-		this.placeChest(world, random, 1, 5, 1, LOTRMod.chestLebethron, 2, LOTRChestContents.GONDOR_FORTRESS_SUPPLIES);
+		placeChest(world, random, 1, 5, 1, LOTRMod.chestLebethron, 2, LOTRChestContents.GONDOR_FORTRESS_SUPPLIES);
 		for (i1 = -2; i1 <= 2; ++i1) {
 			for (k1 = -2; k1 <= 2; ++k1) {
 				if (Math.abs(i1) != 2 && Math.abs(k1) != 2) {

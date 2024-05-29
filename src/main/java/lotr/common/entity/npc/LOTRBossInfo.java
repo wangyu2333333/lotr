@@ -1,16 +1,19 @@
 package lotr.common.entity.npc;
 
-import java.util.*;
-
-import org.apache.commons.lang3.tuple.Pair;
-
-import lotr.common.*;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
 import lotr.common.entity.ai.LOTRNPCTargetSelector;
 import net.minecraft.block.Block;
-import net.minecraft.entity.*;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.*;
-import net.minecraft.util.*;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.*;
 
 public class LOTRBossInfo {
 	public static int PLAYER_HURT_COOLDOWN = 600;
@@ -82,7 +85,7 @@ public class LOTRBossInfo {
 	}
 
 	public List getNearbyEnemies() {
-		ArrayList<EntityPlayer> enemies = new ArrayList<>();
+		List<EntityPlayer> enemies = new ArrayList<>();
 		List players = theNPC.worldObj.getEntitiesWithinAABB(EntityPlayer.class, theNPC.boundingBox.expand(12.0, 6.0, 12.0));
 		for (Object player : players) {
 			EntityPlayer entityplayer = (EntityPlayer) player;
@@ -156,7 +159,7 @@ public class LOTRBossInfo {
 			lastAttackingPlayer = null;
 		}
 		if (!theNPC.worldObj.isRemote) {
-			HashMap<UUID, Pair<Integer, Float>> playerHurtTimes_new = new HashMap<>();
+			Map<UUID, Pair<Integer, Float>> playerHurtTimes_new = new HashMap<>();
 			for (Map.Entry<UUID, Pair<Integer, Float>> entry : playerHurtTimes.entrySet()) {
 				UUID player = entry.getKey();
 				int time = entry.getValue().getLeft();
@@ -181,9 +184,6 @@ public class LOTRBossInfo {
 			for (int i = 0; i < playerHurtTags.tagCount(); ++i) {
 				NBTTagCompound playerTag = playerHurtTags.getCompoundTagAt(i);
 				UUID player = UUID.fromString(playerTag.getString("UUID"));
-				if (player == null) {
-					continue;
-				}
 				int time = playerTag.getInteger("Time");
 				float damage = playerTag.getFloat("Damage");
 				playerHurtTimes.put(player, Pair.of(time, damage));

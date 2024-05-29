@@ -1,20 +1,25 @@
 package lotr.common.block;
 
-import java.util.Random;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRCreativeTabs;
+import lotr.common.LOTRMod;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.passive.EntityWaterMob;
 import net.minecraft.item.Item;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+import java.util.Random;
+
 public class LOTRBlockCoralReef extends Block {
-	public static String[] plantNames = { "purple", "yellow", "blue", "red", "green" };
+	public static String[] plantNames = {"purple", "yellow", "blue", "red", "green"};
 	public static Random iconRand = new Random();
 	public IIcon[] plantIcons;
 
@@ -33,7 +38,7 @@ public class LOTRBlockCoralReef extends Block {
 		dropXpOnBlockBreak(world, i, j, k, amountXp);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
 		return super.getIcon(i, j);
@@ -70,7 +75,7 @@ public class LOTRBlockCoralReef extends Block {
 
 	@Override
 	public int quantityDroppedWithBonus(int i, Random random) {
-		int drops = this.quantityDropped(random);
+		int drops = quantityDropped(random);
 		if (i > 0) {
 			int factor = random.nextInt(i + 2) - 1;
 			factor = Math.max(factor, 0);
@@ -79,7 +84,7 @@ public class LOTRBlockCoralReef extends Block {
 		return drops;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
 		super.registerBlockIcons(iconregister);

@@ -1,6 +1,7 @@
 package lotr.common.block;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
@@ -12,7 +13,7 @@ public class LOTRBlockSmoothStoneV extends LOTRBlockSmoothStoneBase {
 		setCreativeTab(CreativeTabs.tabBlock);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
 		if (j == 0) {
@@ -21,7 +22,7 @@ public class LOTRBlockSmoothStoneV extends LOTRBlockSmoothStoneBase {
 		return super.getIcon(i, j);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
 	}

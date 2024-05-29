@@ -1,16 +1,20 @@
 package lotr.common.world.biome;
 
-import java.awt.Color;
-import java.util.Random;
-
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.LOTRMod;
-import lotr.common.entity.animal.*;
+import lotr.common.entity.animal.LOTREntityBear;
+import lotr.common.entity.animal.LOTREntityDeer;
+import lotr.common.entity.animal.LOTREntityElk;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
-import lotr.common.world.feature.*;
+import lotr.common.world.feature.LOTRTreeType;
+import lotr.common.world.feature.LOTRWorldGenBoulder;
 import lotr.common.world.map.LOTRWaypoint;
-import lotr.common.world.spawning.*;
-import lotr.common.world.structure2.*;
+import lotr.common.world.spawning.LOTRBiomeSpawnList;
+import lotr.common.world.spawning.LOTREventSpawner;
+import lotr.common.world.spawning.LOTRSpawnList;
+import lotr.common.world.structure2.LOTRWorldGenRuinedHouse;
+import lotr.common.world.structure2.LOTRWorldGenSmallStoneRuin;
 import net.minecraft.block.Block;
 import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.init.Blocks;
@@ -21,6 +25,9 @@ import net.minecraft.world.gen.NoiseGeneratorPerlin;
 import net.minecraft.world.gen.feature.WorldGenerator;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.awt.*;
+import java.util.Random;
 
 public class LOTRBiomeGenTundra extends LOTRBiome {
 	public static NoiseGeneratorPerlin noiseDirt = new NoiseGeneratorPerlin(new Random(47684796930956L), 1);
@@ -46,13 +53,13 @@ public class LOTRBiomeGenTundra extends LOTRBiome {
 		arrspawnListContainer2[0] = LOTRBiomeSpawnList.entry(LOTRSpawnList.RANGERS_NORTH, 10).setSpawnChance(5000);
 		npcSpawnList.newFactionList(10).add(arrspawnListContainer2);
 		variantChance = 0.2f;
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
-		this.addBiomeVariant(LOTRBiomeVariant.STEPPE);
-		this.addBiomeVariant(LOTRBiomeVariant.STEPPE_BARREN);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS);
-		this.addBiomeVariant(LOTRBiomeVariant.DEADFOREST_OAK);
-		this.addBiomeVariant(LOTRBiomeVariant.DEADFOREST_SPRUCE);
-		this.addBiomeVariant(LOTRBiomeVariant.DEADFOREST_OAK_SPRUCE);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
+		addBiomeVariant(LOTRBiomeVariant.STEPPE);
+		addBiomeVariant(LOTRBiomeVariant.STEPPE_BARREN);
+		addBiomeVariant(LOTRBiomeVariant.HILLS);
+		addBiomeVariant(LOTRBiomeVariant.DEADFOREST_OAK);
+		addBiomeVariant(LOTRBiomeVariant.DEADFOREST_SPRUCE);
+		addBiomeVariant(LOTRBiomeVariant.DEADFOREST_OAK_SPRUCE);
 		decorator.treesPerChunk = 0;
 		decorator.flowersPerChunk = 2;
 		decorator.grassPerChunk = 4;
@@ -68,6 +75,13 @@ public class LOTRBiomeGenTundra extends LOTRBiome {
 		decorator.addRandomStructure(new LOTRWorldGenRuinedHouse(false), 1500);
 		decorator.addRandomStructure(new LOTRWorldGenSmallStoneRuin(false), 500);
 		setBanditChance(LOTREventSpawner.EventChance.BANDIT_UNCOMMON);
+	}
+
+	public static boolean isTundraSnowy(int i, int k) {
+		double d1 = noiseSnow.func_151601_a(i * 0.002, k * 0.002);
+		double d2 = noiseSnow.func_151601_a(i * 0.05, k * 0.05);
+		double d3 = noiseSnow.func_151601_a(i * 0.3, k * 0.3);
+		return d1 + d2 * 0.3 + d3 * 0.3 > 0.8;
 	}
 
 	@Override
@@ -134,14 +148,14 @@ public class LOTRBiomeGenTundra extends LOTRBiome {
 		fillerBlockMeta = fillerBlockMeta_pre;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public int getBiomeGrassColor(int i, int j, int k) {
 		int color1 = 10708034;
 		int color2 = 13747522;
 		double d1 = biomeTerrainNoise.func_151601_a(i * 0.002, k * 0.002);
 		double d2 = biomeTerrainNoise.func_151601_a(i * 0.04, k * 0.04);
-		float noise = (float) MathHelper.clamp_double(d1 + (d2 *= 0.4), -2.0, 2.0);
+		float noise = (float) MathHelper.clamp_double(d1 + d2 * 0.4, -2.0, 2.0);
 		noise += 2.0f;
 		noise /= 4.0f;
 		float[] rgb1 = new Color(color1).getColorComponents(null);
@@ -171,12 +185,5 @@ public class LOTRBiomeGenTundra extends LOTRBiome {
 	@Override
 	public float getTreeIncreaseChance() {
 		return 0.04f;
-	}
-
-	public static boolean isTundraSnowy(int i, int k) {
-		double d1 = noiseSnow.func_151601_a(i * 0.002, k * 0.002);
-		double d2 = noiseSnow.func_151601_a(i * 0.05, k * 0.05);
-		double d3 = noiseSnow.func_151601_a(i * 0.3, k * 0.3);
-		return d1 + (d2 *= 0.3) + (d3 *= 0.3) > 0.8;
 	}
 }

@@ -1,14 +1,19 @@
 package lotr.common.world.biome;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRMod;
 import lotr.common.entity.animal.LOTREntityHorse;
 import lotr.common.entity.npc.LOTREntityGaladhrimTrader;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
 import lotr.common.world.feature.LOTRTreeType;
-import lotr.common.world.map.*;
-import lotr.common.world.spawning.*;
+import lotr.common.world.map.LOTRRoadType;
+import lotr.common.world.map.LOTRWaypoint;
+import lotr.common.world.spawning.LOTRBiomeSpawnList;
+import lotr.common.world.spawning.LOTREventSpawner;
+import lotr.common.world.spawning.LOTRSpawnList;
 import lotr.common.world.structure.LOTRWorldGenRivendellHall;
-import lotr.common.world.structure2.*;
+import lotr.common.world.structure2.LOTRWorldGenRivendellForge;
+import lotr.common.world.structure2.LOTRWorldGenRivendellHouse;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 
@@ -31,8 +36,8 @@ public class LOTRBiomeGenRivendell extends LOTRBiome {
 		npcSpawnList.newFactionList(0).add(arrspawnListContainer3);
 		npcSpawnList.conquestGainRate = 0.2f;
 		variantChance = 0.3f;
-		this.addBiomeVariant(LOTRBiomeVariant.FLOWERS);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
+		addBiomeVariant(LOTRBiomeVariant.FLOWERS);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
 		decorator.addOre(new WorldGenMinable(LOTRMod.oreQuendite, 6), 6.0f, 0, 48);
 		decorator.treesPerChunk = 0;
 		decorator.willowPerChunk = 1;

@@ -1,18 +1,21 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
-import lotr.common.item.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
+import lotr.common.item.LOTRItemHaradRobes;
+import lotr.common.item.LOTRItemHaradTurban;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class LOTREntityNearHaradMerchant extends LOTREntityNearHaradrim implements LOTRTravellingTrader {
-	public static int[] robeColors = { 15723226, 14829087, 12653845, 8526876, 2625038 };
+	public static int[] robeColors = {15723226, 14829087, 12653845, 8526876, 2625038};
 
 	public LOTREntityNearHaradMerchant(World world) {
 		super(world);
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 	}
 
 	@Override

@@ -1,16 +1,19 @@
 package lotr.common.world.village;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import lotr.common.entity.LOTREntityNPCRespawner;
-import lotr.common.entity.npc.*;
+import lotr.common.entity.npc.LOTREntityGulfHaradArcher;
+import lotr.common.entity.npc.LOTREntityGulfHaradWarrior;
+import lotr.common.entity.npc.LOTREntityGulfHaradrim;
+import lotr.common.entity.npc.LOTRNames;
 import lotr.common.world.biome.LOTRBiome;
 import lotr.common.world.map.LOTRRoadType;
 import lotr.common.world.structure2.*;
 import net.minecraft.block.Block;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRVillageGenGulfHarad extends LOTRVillageGen {
 	public LOTRVillageGenGulfHarad(LOTRBiome biome, float f) {
@@ -26,12 +29,17 @@ public class LOTRVillageGenGulfHarad extends LOTRVillageGen {
 		return new Instance(this, world, i, k, random, loc);
 	}
 
+	public enum VillageType {
+		VILLAGE, TOWN, FORT
+
+	}
+
 	public static class Instance extends LOTRVillageGen.AbstractInstance<LOTRVillageGenGulfHarad> {
 		public VillageType villageType;
 		public String[] villageName;
 		public int numOuterHouses;
 		public boolean townWall = true;
-		int rTownTower = 90;
+		public int rTownTower = 90;
 
 		public Instance(LOTRVillageGenGulfHarad village, World world, int i, int k, Random random, LocationInfo loc) {
 			super(village, world, i, k, random, loc);
@@ -97,15 +105,13 @@ public class LOTRVillageGenGulfHarad extends LOTRVillageGen {
 			if (villageType == VillageType.TOWN) {
 				Block block = world.getBlock(i, j, k);
 				int meta = world.getBlockMetadata(i, j, k);
-				if (block == LOTRMod.brick3 && (meta == 13 || meta == 14)) {
-					return true;
-				}
+				return block == LOTRMod.brick3 && (meta == 13 || meta == 14);
 			}
 			return false;
 		}
 
 		public void setupFort(Random random) {
-			this.addStructure(new LOTRWorldGenNPCRespawner(false) {
+			addStructure(new LOTRWorldGenNPCRespawner(false) {
 
 				@Override
 				public void setupRespawner(LOTREntityNPCRespawner spawner) {
@@ -115,23 +121,23 @@ public class LOTRVillageGenGulfHarad extends LOTRVillageGen {
 					spawner.setBlockEnemySpawnRange(60);
 				}
 			}, 0, 0, 0);
-			this.addStructure(new LOTRWorldGenGulfWarCamp(false), 0, -15, 0, true);
+			addStructure(new LOTRWorldGenGulfWarCamp(false), 0, -15, 0, true);
 			int towerX = 36;
-			this.addStructure(new LOTRWorldGenGulfTower(false), -towerX, -towerX + 4, 2, true);
-			this.addStructure(new LOTRWorldGenGulfTower(false), towerX, -towerX + 4, 2, true);
-			this.addStructure(new LOTRWorldGenGulfTower(false), -towerX, towerX - 4, 0, true);
-			this.addStructure(new LOTRWorldGenGulfTower(false), towerX, towerX - 4, 0, true);
+			addStructure(new LOTRWorldGenGulfTower(false), -towerX, -towerX + 4, 2, true);
+			addStructure(new LOTRWorldGenGulfTower(false), towerX, -towerX + 4, 2, true);
+			addStructure(new LOTRWorldGenGulfTower(false), -towerX, towerX - 4, 0, true);
+			addStructure(new LOTRWorldGenGulfTower(false), towerX, towerX - 4, 0, true);
 			for (int l = -1; l <= 1; ++l) {
 				int i = l * 16;
 				int k = 28;
-				this.addStructure(getRandomFarm(random), i, k, 0);
-				this.addStructure(getRandomFarm(random), -k, i, 1);
-				this.addStructure(getRandomFarm(random), k, i, 3);
+				addStructure(getRandomFarm(random), i, k, 0);
+				addStructure(getRandomFarm(random), -k, i, 1);
+				addStructure(getRandomFarm(random), k, i, 3);
 			}
 		}
 
 		public void setupTown(Random random) {
-			this.addStructure(new LOTRWorldGenNPCRespawner(false) {
+			addStructure(new LOTRWorldGenNPCRespawner(false) {
 
 				@Override
 				public void setupRespawner(LOTREntityNPCRespawner spawner) {
@@ -141,9 +147,9 @@ public class LOTRVillageGenGulfHarad extends LOTRVillageGen {
 					spawner.setBlockEnemySpawnRange(60);
 				}
 			}, 0, 0, 0);
-			for (int i1 : new int[] { -40, 40 }) {
-				for (int k1 : new int[] { -40, 40 }) {
-					this.addStructure(new LOTRWorldGenNPCRespawner(false) {
+			for (int i1 : new int[]{-40, 40}) {
+				for (int k1 : new int[]{-40, 40}) {
+					addStructure(new LOTRWorldGenNPCRespawner(false) {
 
 						@Override
 						public void setupRespawner(LOTREntityNPCRespawner spawner) {
@@ -155,35 +161,35 @@ public class LOTRVillageGenGulfHarad extends LOTRVillageGen {
 					}, i1, k1, 0);
 				}
 			}
-			this.addStructure(new LOTRWorldGenGulfPyramid(false), 0, -11, 0, true);
+			addStructure(new LOTRWorldGenGulfPyramid(false), 0, -11, 0, true);
 			int lightR = 15;
-			this.addStructure(new LOTRWorldGenGulfVillageLight(false), -lightR, -lightR, 0, true);
-			this.addStructure(new LOTRWorldGenGulfVillageLight(false), lightR, -lightR, 0, true);
-			this.addStructure(new LOTRWorldGenGulfVillageLight(false), -lightR, lightR, 0, true);
-			this.addStructure(new LOTRWorldGenGulfVillageLight(false), lightR, lightR, 0, true);
-			this.addStructure(new LOTRWorldGenGulfBazaar(false), -74, 0, 1, true);
-			this.addStructure(new LOTRWorldGenGulfAltar(false), 74, 0, 3, true);
-			this.addStructure(new LOTRWorldGenGulfTotem(false), 0, 79, 0, true);
+			addStructure(new LOTRWorldGenGulfVillageLight(false), -lightR, -lightR, 0, true);
+			addStructure(new LOTRWorldGenGulfVillageLight(false), lightR, -lightR, 0, true);
+			addStructure(new LOTRWorldGenGulfVillageLight(false), -lightR, lightR, 0, true);
+			addStructure(new LOTRWorldGenGulfVillageLight(false), lightR, lightR, 0, true);
+			addStructure(new LOTRWorldGenGulfBazaar(false), -74, 0, 1, true);
+			addStructure(new LOTRWorldGenGulfAltar(false), 74, 0, 3, true);
+			addStructure(new LOTRWorldGenGulfTotem(false), 0, 79, 0, true);
 			for (int l = 0; l <= 2; ++l) {
 				int i = 5;
 				int k = 32 + l * 20;
-				this.addStructure(new LOTRWorldGenGulfHouse(false), -i, -k, 1, true);
-				this.addStructure(new LOTRWorldGenGulfHouse(false), i, -k, 3, true);
-				this.addStructure(new LOTRWorldGenGulfHouse(false), -i, k, 1, true);
-				this.addStructure(new LOTRWorldGenGulfHouse(false), i, k, 3, true);
-				this.addStructure(new LOTRWorldGenGulfHouse(false), k, -i, 2, true);
-				this.addStructure(new LOTRWorldGenGulfHouse(false), k, i, 0, true);
+				addStructure(new LOTRWorldGenGulfHouse(false), -i, -k, 1, true);
+				addStructure(new LOTRWorldGenGulfHouse(false), i, -k, 3, true);
+				addStructure(new LOTRWorldGenGulfHouse(false), -i, k, 1, true);
+				addStructure(new LOTRWorldGenGulfHouse(false), i, k, 3, true);
+				addStructure(new LOTRWorldGenGulfHouse(false), k, -i, 2, true);
+				addStructure(new LOTRWorldGenGulfHouse(false), k, i, 0, true);
 				if (l != 0) {
 					continue;
 				}
-				this.addStructure(new LOTRWorldGenGulfSmithy(false), -k - 6, -i, 2, true);
-				this.addStructure(new LOTRWorldGenGulfTavern(false), -k - 6, i, 0, true);
+				addStructure(new LOTRWorldGenGulfSmithy(false), -k - 6, -i, 2, true);
+				addStructure(new LOTRWorldGenGulfTavern(false), -k - 6, i, 0, true);
 			}
-			int xzTownTower = (int) (rTownTower / Math.sqrt(2.0));
-			this.addStructure(new LOTRWorldGenGulfTower(false), -xzTownTower, -xzTownTower + 4, 2, true);
-			this.addStructure(new LOTRWorldGenGulfTower(false), xzTownTower, -xzTownTower + 4, 2, true);
-			this.addStructure(new LOTRWorldGenGulfTower(false), -xzTownTower, xzTownTower - 4, 0, true);
-			this.addStructure(new LOTRWorldGenGulfTower(false), xzTownTower, xzTownTower - 4, 0, true);
+			int xzTownTower = (int) (rTownTower / 1.4142135623730951);
+			addStructure(new LOTRWorldGenGulfTower(false), -xzTownTower, -xzTownTower + 4, 2, true);
+			addStructure(new LOTRWorldGenGulfTower(false), xzTownTower, -xzTownTower + 4, 2, true);
+			addStructure(new LOTRWorldGenGulfTower(false), -xzTownTower, xzTownTower - 4, 0, true);
+			addStructure(new LOTRWorldGenGulfTower(false), xzTownTower, xzTownTower - 4, 0, true);
 			int turn = 0;
 			int numTurns = 24;
 			while (turn <= numTurns) {
@@ -191,7 +197,7 @@ public class LOTRVillageGenGulfHarad extends LOTRVillageGen {
 				if (turn % 3 == 0) {
 					continue;
 				}
-				float turnF = (float) turn / (float) numTurns;
+				float turnF = (float) turn / numTurns;
 				float turnR = (float) Math.toRadians(turnF * 360.0f);
 				float sin = MathHelper.sin(turnR);
 				float cos = MathHelper.cos(turnR);
@@ -210,13 +216,13 @@ public class LOTRVillageGenGulfHarad extends LOTRVillageGen {
 				int i = Math.round(l * cos);
 				int k = Math.round(l * sin);
 				if (random.nextInt(3) == 0) {
-					this.addStructure(new LOTRWorldGenHayBales(false), i, k, r);
+					addStructure(new LOTRWorldGenHayBales(false), i, k, r);
 					continue;
 				}
-				this.addStructure(getRandomFarm(random), i, k, r);
+				addStructure(getRandomFarm(random), i, k, r);
 			}
-			this.addStructure(new LOTRWorldGenGulfVillageSign(false).setSignText(villageName), -5, -96, 0, true);
-			this.addStructure(new LOTRWorldGenGulfVillageSign(false).setSignText(villageName), 5, -96, 0, true);
+			addStructure(new LOTRWorldGenGulfVillageSign(false).setSignText(villageName), -5, -96, 0, true);
+			addStructure(new LOTRWorldGenGulfVillageSign(false).setSignText(villageName), 5, -96, 0, true);
 			if (townWall) {
 				int rSq = 9604;
 				int rMax = 99;
@@ -232,14 +238,14 @@ public class LOTRVillageGenGulfHarad extends LOTRVillageGen {
 						if (i1 == 7 && k < 0) {
 							wall.setTall();
 						}
-						this.addStructure(wall, i, k, 0);
+						addStructure(wall, i, k, 0);
 					}
 				}
 			}
 		}
 
 		public void setupVillage(Random random) {
-			this.addStructure(new LOTRWorldGenNPCRespawner(false) {
+			addStructure(new LOTRWorldGenNPCRespawner(false) {
 
 				@Override
 				public void setupRespawner(LOTREntityNPCRespawner spawner) {
@@ -249,7 +255,7 @@ public class LOTRVillageGenGulfHarad extends LOTRVillageGen {
 					spawner.setBlockEnemySpawnRange(64);
 				}
 			}, 0, 0, 0);
-			this.addStructure(new LOTRWorldGenNPCRespawner(false) {
+			addStructure(new LOTRWorldGenNPCRespawner(false) {
 
 				@Override
 				public void setupRespawner(LOTREntityNPCRespawner spawner) {
@@ -259,13 +265,13 @@ public class LOTRVillageGenGulfHarad extends LOTRVillageGen {
 					spawner.setBlockEnemySpawnRange(64);
 				}
 			}, 0, 0, 0);
-			this.addStructure(new LOTRWorldGenGulfTotem(false), 0, -2, 0, true);
-			this.addStructure(new LOTRWorldGenGulfTavern(false), 0, 24, 0, true);
+			addStructure(new LOTRWorldGenGulfTotem(false), 0, -2, 0, true);
+			addStructure(new LOTRWorldGenGulfTavern(false), 0, 24, 0, true);
 			int rSignsInner = 11;
-			this.addStructure(new LOTRWorldGenGulfVillageSign(false).setSignText(villageName), -rSignsInner, 0, 1, true);
-			this.addStructure(new LOTRWorldGenGulfVillageSign(false).setSignText(villageName), rSignsInner, 0, 3, true);
+			addStructure(new LOTRWorldGenGulfVillageSign(false).setSignText(villageName), -rSignsInner, 0, 1, true);
+			addStructure(new LOTRWorldGenGulfVillageSign(false).setSignText(villageName), rSignsInner, 0, 3, true);
 			for (int h = 0; h < numOuterHouses; ++h) {
-				float turn = (float) h / (float) (numOuterHouses - 1);
+				float turn = (float) h / (numOuterHouses - 1);
 				float turnMin = 0.15f;
 				float turnMax = 1.0f - turnMin;
 				float turnInRange = turnMin + (turnMax - turnMin) * turn;
@@ -287,7 +293,7 @@ public class LOTRVillageGenGulfHarad extends LOTRVillageGen {
 				int l = 24;
 				int i = Math.round(l * cos);
 				int k = Math.round(l * sin);
-				this.addStructure(getRandomHouse(random), i, k, r);
+				addStructure(getRandomHouse(random), i, k, r);
 			}
 			int numFarms = numOuterHouses * 2;
 			float frac = 1.0f / numFarms;
@@ -311,10 +317,10 @@ public class LOTRVillageGenGulfHarad extends LOTRVillageGen {
 				int i = Math.round(l * cos);
 				int k = Math.round(l * sin);
 				if (random.nextInt(3) == 0) {
-					this.addStructure(new LOTRWorldGenHayBales(false), i, k, r);
+					addStructure(new LOTRWorldGenHayBales(false), i, k, r);
 					continue;
 				}
-				this.addStructure(getRandomFarm(random), i, k, r);
+				addStructure(getRandomFarm(random), i, k, r);
 			}
 		}
 
@@ -324,11 +330,6 @@ public class LOTRVillageGenGulfHarad extends LOTRVillageGen {
 			villageName = LOTRNames.getHaradVillageName(random);
 			numOuterHouses = MathHelper.getRandomIntegerInRange(random, 5, 8);
 		}
-
-	}
-
-	public enum VillageType {
-		VILLAGE, TOWN, FORT;
 
 	}
 

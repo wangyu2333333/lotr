@@ -1,17 +1,15 @@
 package lotr.client.render.entity;
 
 import lotr.client.model.LOTRModelHuman;
-import lotr.common.entity.npc.*;
+import lotr.common.entity.npc.LOTREntityDunlending;
+import lotr.common.entity.npc.LOTREntityDunlendingBartender;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 
 public class LOTRRenderDunlending extends LOTRRenderDunlendingBase {
 	public static LOTRRandomSkins dunlendingOutfits;
-	public static ResourceLocation outfitApron;
-	static {
-		outfitApron = new ResourceLocation("lotr:mob/dunland/bartender_apron.png");
-	}
+	public static ResourceLocation outfitApron = new ResourceLocation("lotr:mob/dunland/bartender_apron.png");
 
 	public ModelBiped outfitModel = new LOTRModelHuman(0.6f, false);
 

@@ -1,8 +1,11 @@
 package lotr.common.network;
 
-import cpw.mods.fml.common.network.simpleimpl.*;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import lotr.common.*;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
 import net.minecraft.entity.player.EntityPlayer;
 
 public class LOTRPacketOptions implements IMessage {
@@ -37,23 +40,23 @@ public class LOTRPacketOptions implements IMessage {
 				int option = packet.option;
 				boolean enable = packet.enable;
 				switch (option) {
-				case 0:
-					LOTRLevelData.getData(entityplayer).setFriendlyFire(enable);
-					break;
-				case 1:
-					LOTRLevelData.getData(entityplayer).setEnableHiredDeathMessages(enable);
-					break;
-				case 3:
-					LOTRLevelData.getData(entityplayer).setHideMapLocation(enable);
-					break;
-				case 4:
-					LOTRLevelData.getData(entityplayer).setFemRankOverride(enable);
-					break;
-				case 5:
-					LOTRLevelData.getData(entityplayer).setEnableConquestKills(enable);
-					break;
-				default:
-					break;
+					case 0:
+						LOTRLevelData.getData(entityplayer).setFriendlyFire(enable);
+						break;
+					case 1:
+						LOTRLevelData.getData(entityplayer).setEnableHiredDeathMessages(enable);
+						break;
+					case 3:
+						LOTRLevelData.getData(entityplayer).setHideMapLocation(enable);
+						break;
+					case 4:
+						LOTRLevelData.getData(entityplayer).setFemRankOverride(enable);
+						break;
+					case 5:
+						LOTRLevelData.getData(entityplayer).setEnableConquestKills(enable);
+						break;
+					default:
+						break;
 				}
 			}
 			return null;

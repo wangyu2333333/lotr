@@ -1,6 +1,7 @@
 package lotr.common.block;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.LOTRMod;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -15,7 +16,7 @@ public class LOTRBlockSlabDirt extends LOTRBlockSlabBase {
 		setStepSound(Block.soundTypeGravel);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
 		j &= 7;
@@ -23,21 +24,21 @@ public class LOTRBlockSlabDirt extends LOTRBlockSlabBase {
 			return Blocks.dirt.getIcon(i, 0);
 		}
 		switch (j) {
-		case 1:
-			return LOTRMod.dirtPath.getIcon(i, 0);
-		case 2:
-			return LOTRMod.mud.getIcon(i, 0);
-		case 3:
-			return LOTRMod.mordorDirt.getIcon(i, 0);
-		case 4:
-			return LOTRMod.dirtPath.getIcon(i, 1);
-		default:
-			break;
+			case 1:
+				return LOTRMod.dirtPath.getIcon(i, 0);
+			case 2:
+				return LOTRMod.mud.getIcon(i, 0);
+			case 3:
+				return LOTRMod.mordorDirt.getIcon(i, 0);
+			case 4:
+				return LOTRMod.dirtPath.getIcon(i, 1);
+			default:
+				break;
 		}
 		return super.getIcon(i, j);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
 	}

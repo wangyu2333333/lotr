@@ -1,6 +1,8 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
 import lotr.common.item.LOTRItemLeatherHat;
 import lotr.common.world.spawning.LOTRInvasions;
 import net.minecraft.entity.IEntityLivingData;
@@ -12,7 +14,7 @@ import net.minecraft.world.World;
 public class LOTREntityBreeFarmer extends LOTREntityBreeMan implements LOTRTradeable, LOTRUnitTradeable {
 	public LOTREntityBreeFarmer(World world) {
 		super(world);
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 	}
 
 	@Override

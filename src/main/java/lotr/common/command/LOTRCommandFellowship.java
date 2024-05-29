@@ -1,20 +1,88 @@
 package lotr.common.command;
 
-import java.util.*;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.mojang.authlib.GameProfile;
-
-import lotr.common.*;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRPlayerData;
 import lotr.common.fellowship.LOTRFellowship;
-import net.minecraft.command.*;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.command.PlayerNotFoundException;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.JsonToNBT;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTException;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.*;
 
 public class LOTRCommandFellowship extends CommandBase {
+	public static String[] fixArgsForFellowship(String[] args, int startIndex, boolean autocompleting) {
+		if (!args[startIndex].isEmpty() && args[startIndex].charAt(0) == '\"') {
+			int endIndex = startIndex;
+			boolean foundEnd = false;
+			while (!foundEnd) {
+				if (!args[endIndex].isEmpty() && args[endIndex].charAt(args[endIndex].length() - 1) == '\"') {
+					foundEnd = true;
+					continue;
+				}
+				if (endIndex >= args.length - 1) {
+					if (autocompleting) {
+						break;
+					}
+					throw new WrongUsageException("commands.lotr.fellowship.edit.nameError");
+				}
+				++endIndex;
+			}
+			StringBuilder fsName = new StringBuilder();
+			for (int i = startIndex; i <= endIndex; ++i) {
+				if (i > startIndex) {
+					fsName.append(" ");
+				}
+				fsName.append(args[i]);
+			}
+			if (!autocompleting || foundEnd) {
+				fsName = new StringBuilder(fsName.toString().replace("\"", ""));
+			}
+			int diff = endIndex - startIndex;
+			String[] argsNew = new String[args.length - diff];
+			for (int i = 0; i < argsNew.length; ++i) {
+				argsNew[i] = i < startIndex ? args[i] : i == startIndex ? fsName.toString() : args[i + diff];
+			}
+			return argsNew;
+		}
+		if (!autocompleting) {
+			throw new WrongUsageException("commands.lotr.fellowship.edit.nameError");
+		}
+		return args;
+	}
+
+	public static List<String> listFellowshipsMatchingLastWord(String[] argsFixed, String[] argsOriginal, int fsNameIndex, LOTRPlayerData playerData, boolean leadingOnly) {
+		String fsName = argsFixed[fsNameIndex];
+		List<String> allFellowshipNames = leadingOnly ? playerData.listAllLeadingFellowshipNames() : playerData.listAllFellowshipNames();
+		ArrayList<String> autocompletes = new ArrayList<>();
+		for (String nextFsName : allFellowshipNames) {
+			String autocompFsName = "\"" + nextFsName + "\"";
+			if (!autocompFsName.toLowerCase(Locale.ROOT).startsWith(fsName.toLowerCase(Locale.ROOT))) {
+				continue;
+			}
+			if (argsOriginal.length > argsFixed.length) {
+				int diff = argsOriginal.length - argsFixed.length;
+				for (int j = 0; j < diff; ++j) {
+					autocompFsName = autocompFsName.substring(autocompFsName.indexOf(' ') + 1);
+				}
+			}
+			if (autocompFsName.contains(" ")) {
+				autocompFsName = autocompFsName.substring(0, autocompFsName.indexOf(' '));
+			}
+			autocompletes.add(autocompFsName);
+		}
+		return CommandBase.getListOfStringsMatchingLastWord(argsOriginal, autocompletes.toArray(new String[0]));
+	}
+
 	@Override
 	public List addTabCompletionOptions(ICommandSender sender, String[] args) {
 		if (!sender.canCommandSenderUseCommand(getRequiredPermissionLevel(), getCommandName())) {
@@ -33,14 +101,14 @@ public class LOTRCommandFellowship extends CommandBase {
 			}
 			if ("option".equals(function)) {
 				String[] argsOriginal = Arrays.copyOf(args, args.length);
-				String ownerName = (args = LOTRCommandFellowship.fixArgsForFellowship(args, 2, true))[1];
+				String ownerName = (args = fixArgsForFellowship(args, 2, true))[1];
 				UUID ownerID = getPlayerIDByName(sender, ownerName);
 				if (ownerID != null) {
 					LOTRFellowship fellowship;
 					LOTRPlayerData playerData = LOTRLevelData.getData(ownerID);
 					String fsName = args[2];
 					if (args.length == 3) {
-						return LOTRCommandFellowship.listFellowshipsMatchingLastWord(args, argsOriginal, 2, playerData, true);
+						return listFellowshipsMatchingLastWord(args, argsOriginal, 2, playerData, true);
 					}
 					if (fsName != null && (fellowship = playerData.getFellowshipByName(fsName)) != null) {
 						if (args.length == 4) {
@@ -147,11 +215,11 @@ public class LOTRCommandFellowship extends CommandBase {
 	@Override
 	public void processCommand(ICommandSender sender, String[] args) {
 		if (args.length >= 3 && "create".equals(args[0])) {
-			args = LOTRCommandFellowship.fixArgsForFellowship(args, 2, false);
+			args = fixArgsForFellowship(args, 2, false);
 			String playerName = args[1];
 			String fsName = args[2];
 			if (fsName == null) {
-				throw new WrongUsageException("commands.lotr.fellowship.edit.notFound", playerName, fsName);
+				throw new WrongUsageException("commands.lotr.fellowship.edit.notFound", playerName, null);
 			}
 			UUID playerID = getPlayerIDByName(sender, playerName);
 			if (playerID == null) {
@@ -169,13 +237,13 @@ public class LOTRCommandFellowship extends CommandBase {
 		if (!"option".equals(args[0])) {
 			throw new WrongUsageException(getCommandUsage(sender));
 		}
-		if ((args = LOTRCommandFellowship.fixArgsForFellowship(args, 2, false)).length < 4) {
+		if ((args = fixArgsForFellowship(args, 2, false)).length < 4) {
 			throw new PlayerNotFoundException();
 		}
 		String ownerName = args[1];
 		String fsName = args[2];
 		if (fsName == null) {
-			throw new WrongUsageException("commands.lotr.fellowship.edit.notFound", ownerName, fsName);
+			throw new WrongUsageException("commands.lotr.fellowship.edit.notFound", ownerName, null);
 		}
 		String option = args[3];
 		UUID ownerID = getPlayerIDByName(sender, ownerName);
@@ -193,11 +261,11 @@ public class LOTRCommandFellowship extends CommandBase {
 			return;
 		}
 		if ("rename".equals(option)) {
-			String newName = "";
+			StringBuilder newName = new StringBuilder();
 			int startIndex = 4;
-			if (args[startIndex].startsWith("\"")) {
+			if (!args[startIndex].isEmpty() && args[startIndex].charAt(0) == '\"') {
 				int endIndex = startIndex;
-				while (!args[endIndex].endsWith("\"")) {
+				while (!(!args[endIndex].isEmpty() && args[endIndex].charAt(args[endIndex].length() - 1) == '\"')) {
 					endIndex++;
 					if (endIndex < args.length) {
 						continue;
@@ -206,17 +274,17 @@ public class LOTRCommandFellowship extends CommandBase {
 				}
 				for (int i = startIndex; i <= endIndex; ++i) {
 					if (i > startIndex) {
-						newName = newName + " ";
+						newName.append(" ");
 					}
-					newName = newName + args[i];
+					newName.append(args[i]);
 				}
-				newName = newName.replace("\"", "");
+				newName = new StringBuilder(newName.toString().replace("\"", ""));
 			}
-			if (StringUtils.isBlank(newName)) {
+			if (StringUtils.isBlank(newName.toString())) {
 				throw new WrongUsageException("commands.lotr.fellowship.rename.error");
 			}
-			ownerData.renameFellowship(fellowship, newName);
-			CommandBase.func_152373_a(sender, this, "commands.lotr.fellowship.rename", ownerName, fsName, newName);
+			ownerData.renameFellowship(fellowship, newName.toString());
+			CommandBase.func_152373_a(sender, this, "commands.lotr.fellowship.rename", ownerName, fsName, newName.toString());
 			return;
 		}
 		if ("icon".equals(option)) {
@@ -226,17 +294,17 @@ public class LOTRCommandFellowship extends CommandBase {
 				CommandBase.func_152373_a(sender, this, "commands.lotr.fellowship.icon", ownerName, fsName, "[none]");
 				return;
 			}
-			ItemStack itemstack = null;
+			ItemStack itemstack;
 			try {
 				NBTBase nbt = JsonToNBT.func_150315_a(iconData);
 				if (!(nbt instanceof NBTTagCompound)) {
-					CommandBase.func_152373_a(sender, (ICommand) this, "commands.lotr.fellowship.icon.tagError", "Not a valid tag");
+					CommandBase.func_152373_a(sender, this, "commands.lotr.fellowship.icon.tagError", "Not a valid tag");
 					return;
 				}
 				NBTTagCompound compound = (NBTTagCompound) nbt;
 				itemstack = ItemStack.loadItemStackFromNBT(compound);
 			} catch (NBTException nbtexception) {
-				CommandBase.func_152373_a(sender, (ICommand) this, "commands.lotr.fellowship.icon.tagError", nbtexception.getMessage());
+				CommandBase.func_152373_a(sender, this, "commands.lotr.fellowship.icon.tagError", nbtexception.getMessage());
 				return;
 			}
 			if (itemstack != null) {
@@ -244,7 +312,7 @@ public class LOTRCommandFellowship extends CommandBase {
 				CommandBase.func_152373_a(sender, this, "commands.lotr.fellowship.icon", ownerName, fsName, itemstack.getDisplayName());
 				return;
 			}
-			CommandBase.func_152373_a(sender, (ICommand) this, "commands.lotr.fellowship.icon.tagError", "No item");
+			CommandBase.func_152373_a(sender, this, "commands.lotr.fellowship.icon.tagError", "No item");
 			return;
 		}
 		if ("pvp".equals(option) || "hired-ff".equals(option)) {
@@ -266,9 +334,6 @@ public class LOTRCommandFellowship extends CommandBase {
 				}
 				CommandBase.func_152373_a(sender, this, "commands.lotr.fellowship.pvp.allow", ownerName, fsName);
 				return;
-			}
-			if (!"hired-ff".equals(option)) {
-				throw new WrongUsageException(getCommandUsage(sender));
 			}
 			ownerData.setFellowshipPreventHiredFF(fellowship, prevent);
 			if (prevent) {
@@ -296,9 +361,6 @@ public class LOTRCommandFellowship extends CommandBase {
 			}
 			CommandBase.func_152373_a(sender, this, "commands.lotr.fellowship.mapShow.off", ownerName, fsName);
 			return;
-		}
-		if (args.length < 3) {
-			throw new WrongUsageException(getCommandUsage(sender));
 		}
 		String playerName = args[4];
 		UUID playerID = getPlayerIDByName(sender, playerName);
@@ -361,68 +423,5 @@ public class LOTRCommandFellowship extends CommandBase {
 		}
 		ownerData.setFellowshipAdmin(fellowship, playerID, false, ownerName);
 		CommandBase.func_152373_a(sender, this, "commands.lotr.fellowship.deop", ownerName, fsName, playerName);
-	}
-
-	public static String[] fixArgsForFellowship(String[] args, int startIndex, boolean autocompleting) {
-		if (args[startIndex].startsWith("\"")) {
-			int endIndex = startIndex;
-			boolean foundEnd = false;
-			while (!foundEnd) {
-				if (args[endIndex].endsWith("\"")) {
-					foundEnd = true;
-					continue;
-				}
-				if (endIndex >= args.length - 1) {
-					if (autocompleting) {
-						break;
-					}
-					throw new WrongUsageException("commands.lotr.fellowship.edit.nameError");
-				}
-				++endIndex;
-			}
-			String fsName = "";
-			for (int i = startIndex; i <= endIndex; ++i) {
-				if (i > startIndex) {
-					fsName = fsName + " ";
-				}
-				fsName = fsName + args[i];
-			}
-			if (!autocompleting || foundEnd) {
-				fsName = fsName.replace("\"", "");
-			}
-			int diff = endIndex - startIndex;
-			String[] argsNew = new String[args.length - diff];
-			for (int i = 0; i < argsNew.length; ++i) {
-				argsNew[i] = i < startIndex ? args[i] : i == startIndex ? fsName : args[i + diff];
-			}
-			return argsNew;
-		}
-		if (!autocompleting) {
-			throw new WrongUsageException("commands.lotr.fellowship.edit.nameError");
-		}
-		return args;
-	}
-
-	public static List<String> listFellowshipsMatchingLastWord(String[] argsFixed, String[] argsOriginal, int fsNameIndex, LOTRPlayerData playerData, boolean leadingOnly) {
-		String fsName = argsFixed[fsNameIndex];
-		List<String> allFellowshipNames = leadingOnly ? playerData.listAllLeadingFellowshipNames() : playerData.listAllFellowshipNames();
-		ArrayList<String> autocompletes = new ArrayList<>();
-		for (String nextFsName : allFellowshipNames) {
-			String autocompFsName = "\"" + nextFsName + "\"";
-			if (!autocompFsName.toLowerCase().startsWith(fsName.toLowerCase())) {
-				continue;
-			}
-			if (argsOriginal.length > argsFixed.length) {
-				int diff = argsOriginal.length - argsFixed.length;
-				for (int j = 0; j < diff; ++j) {
-					autocompFsName = autocompFsName.substring(autocompFsName.indexOf(" ") + 1);
-				}
-			}
-			if (autocompFsName.indexOf(" ") >= 0) {
-				autocompFsName = autocompFsName.substring(0, autocompFsName.indexOf(" "));
-			}
-			autocompletes.add(autocompFsName);
-		}
-		return CommandBase.getListOfStringsMatchingLastWord(argsOriginal, autocompletes.toArray(new String[0]));
 	}
 }

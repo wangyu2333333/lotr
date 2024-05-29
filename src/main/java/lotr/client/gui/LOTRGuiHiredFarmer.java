@@ -1,16 +1,21 @@
 package lotr.client.gui;
 
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import lotr.common.LOTRSquadrons;
-import lotr.common.entity.npc.*;
-import lotr.common.network.*;
-import net.minecraft.client.gui.*;
-import net.minecraft.util.*;
+import lotr.common.entity.npc.LOTREntityNPC;
+import lotr.common.entity.npc.LOTRHiredNPCInfo;
+import lotr.common.network.LOTRPacketHandler;
+import lotr.common.network.LOTRPacketNPCSquadron;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.util.StatCollector;
+import net.minecraft.util.StringUtils;
 
 public class LOTRGuiHiredFarmer extends LOTRGuiHiredNPC {
 	public LOTRGuiButtonOptions buttonGuardMode;
 	public LOTRGuiSlider sliderGuardRange;
 	public GuiTextField squadronNameField;
-	public boolean sendSquadronUpdate = false;
+	public boolean sendSquadronUpdate;
 
 	public LOTRGuiHiredFarmer(LOTREntityNPC npc) {
 		super(npc);
@@ -22,7 +27,7 @@ public class LOTRGuiHiredFarmer extends LOTRGuiHiredNPC {
 			return;
 		}
 		if (button.enabled) {
-			this.sendActionPacket(button.id);
+			sendActionPacket(button.id);
 		}
 	}
 
@@ -80,7 +85,7 @@ public class LOTRGuiHiredFarmer extends LOTRGuiHiredNPC {
 		super.onGuiClosed();
 		if (sendSquadronUpdate) {
 			String squadron = theNPC.hiredNPCInfo.getSquadron();
-			LOTRPacketNPCSquadron packet = new LOTRPacketNPCSquadron(theNPC, squadron);
+			IMessage packet = new LOTRPacketNPCSquadron(theNPC, squadron);
 			LOTRPacketHandler.networkWrapper.sendToServer(packet);
 		}
 	}
@@ -93,7 +98,7 @@ public class LOTRGuiHiredFarmer extends LOTRGuiHiredNPC {
 		if (sliderGuardRange.dragging) {
 			int i = sliderGuardRange.getSliderValue();
 			theNPC.hiredNPCInfo.setGuardRange(i);
-			this.sendActionPacket(sliderGuardRange.id, i);
+			sendActionPacket(sliderGuardRange.id, i);
 		}
 		squadronNameField.updateCursorCounter();
 	}

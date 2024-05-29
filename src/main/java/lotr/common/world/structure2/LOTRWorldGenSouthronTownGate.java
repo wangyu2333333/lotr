@@ -1,10 +1,10 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import lotr.common.entity.npc.LOTRNames;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenSouthronTownGate extends LOTRWorldGenSouthronStructure {
 	public String[] signText = LOTRNames.getHaradVillageName(new Random());
@@ -33,7 +33,7 @@ public class LOTRWorldGenSouthronTownGate extends LOTRWorldGenSouthronStructure 
 		int k12;
 		int step;
 		int i12;
-		this.setOriginAndRotation(world, i, j, k, rotation, 4);
+		setOriginAndRotation(world, i, j, k, rotation, 4);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			for (i12 = -8; i12 <= 8; ++i12) {

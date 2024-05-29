@@ -1,12 +1,18 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
 import lotr.common.entity.ai.*;
 import lotr.common.fac.LOTRFaction;
-import lotr.common.quest.*;
-import lotr.common.world.biome.*;
+import lotr.common.quest.LOTRMiniQuest;
+import lotr.common.quest.LOTRMiniQuestFactory;
+import lotr.common.world.biome.LOTRBiomeGenAdornland;
+import lotr.common.world.biome.LOTRBiomeGenDunland;
 import lotr.common.world.structure.LOTRChestContents;
-import net.minecraft.entity.*;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -34,7 +40,7 @@ public class LOTREntityDunlending extends LOTREntityMan {
 		tasks.addTask(7, new EntityAIWatchClosest2(this, LOTREntityNPC.class, 5.0f, 0.02f));
 		tasks.addTask(8, new EntityAIWatchClosest(this, EntityLiving.class, 8.0f, 0.02f));
 		tasks.addTask(9, new EntityAILookIdle(this));
-		this.addTargetTasks(true);
+		addTargetTasks(true);
 	}
 
 	@Override
@@ -95,9 +101,7 @@ public class LOTREntityDunlending extends LOTREntityMan {
 			int j = MathHelper.floor_double(boundingBox.minY);
 			int k = MathHelper.floor_double(posZ);
 			BiomeGenBase biome = worldObj.getBiomeGenForCoords(i, k);
-			if (j > 62 && worldObj.getBlock(i, j - 1, k) == biome.topBlock) {
-				return true;
-			}
+			return j > 62 && worldObj.getBlock(i, j - 1, k) == biome.topBlock;
 		}
 		return false;
 	}
@@ -149,31 +153,31 @@ public class LOTREntityDunlending extends LOTREntityMan {
 		data = super.onSpawnWithEgg(data);
 		int i = rand.nextInt(9);
 		switch (i) {
-		case 0:
-		case 1:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.dunlendingClub));
-			break;
-		case 2:
-		case 3:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.dunlendingTrident));
-			break;
-		case 4:
-			npcItemsInv.setMeleeWeapon(new ItemStack(Items.wooden_sword));
-			break;
-		case 5:
-			npcItemsInv.setMeleeWeapon(new ItemStack(Items.stone_sword));
-			break;
-		case 6:
-			npcItemsInv.setMeleeWeapon(new ItemStack(Items.stone_axe));
-			break;
-		case 7:
-			npcItemsInv.setMeleeWeapon(new ItemStack(Items.stone_hoe));
-			break;
-		case 8:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.spearStone));
-			break;
-		default:
-			break;
+			case 0:
+			case 1:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.dunlendingClub));
+				break;
+			case 2:
+			case 3:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.dunlendingTrident));
+				break;
+			case 4:
+				npcItemsInv.setMeleeWeapon(new ItemStack(Items.wooden_sword));
+				break;
+			case 5:
+				npcItemsInv.setMeleeWeapon(new ItemStack(Items.stone_sword));
+				break;
+			case 6:
+				npcItemsInv.setMeleeWeapon(new ItemStack(Items.stone_axe));
+				break;
+			case 7:
+				npcItemsInv.setMeleeWeapon(new ItemStack(Items.stone_hoe));
+				break;
+			case 8:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.spearStone));
+				break;
+			default:
+				break;
 		}
 		npcItemsInv.setIdleItem(npcItemsInv.getMeleeWeapon());
 		if (rand.nextInt(4) == 0) {

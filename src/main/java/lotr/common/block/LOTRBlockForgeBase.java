@@ -1,33 +1,51 @@
 package lotr.common.block;
 
-import java.util.Random;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRCreativeTabs;
+import lotr.common.LOTRMod;
 import lotr.common.tileentity.LOTRTileEntityForgeBase;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.inventory.*;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.EnumSkyBlock;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+
+import java.util.Random;
 
 public abstract class LOTRBlockForgeBase extends BlockContainer {
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon[] forgeIcons;
 
-	public LOTRBlockForgeBase() {
+	protected LOTRBlockForgeBase() {
 		super(Material.rock);
 		setCreativeTab(LOTRCreativeTabs.tabUtil);
 		setHardness(4.0f);
 		setStepSound(Block.soundTypeStone);
 	}
 
+	public static boolean isForgeActive(IBlockAccess world, int i, int j, int k) {
+		int meta = world.getBlockMetadata(i, j, k);
+		return (meta & 8) != 0;
+	}
+
+	public static void toggleForgeActive(World world, int i, int j, int k) {
+		int meta = world.getBlockMetadata(i, j, k);
+		world.setBlockMetadataWithNotify(i, j, k, meta ^ 8, 2);
+		world.updateLightByType(EnumSkyBlock.Block, i, j, k);
+	}
+
 	@Override
 	public void breakBlock(World world, int i, int j, int k, Block block, int meta) {
-		LOTRTileEntityForgeBase forge = (LOTRTileEntityForgeBase) world.getTileEntity(i, j, k);
+		IInventory forge = (IInventory) world.getTileEntity(i, j, k);
 		if (forge != null) {
 			LOTRMod.dropContainerItems(forge, world, i, j, k);
 			world.func_147453_f(i, j, k, block);
@@ -40,17 +58,17 @@ public abstract class LOTRBlockForgeBase extends BlockContainer {
 		return Container.calcRedstoneFromInventory((IInventory) world.getTileEntity(i, j, k));
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(IBlockAccess world, int i, int j, int k, int side) {
 		if (side == 1 || side == 0) {
 			return forgeIcons[1];
 		}
 		int meta = world.getBlockMetadata(i, j, k) & 7;
-		return side != meta ? forgeIcons[0] : LOTRBlockForgeBase.isForgeActive(world, i, j, k) ? forgeIcons[3] : forgeIcons[2];
+		return side != meta ? forgeIcons[0] : isForgeActive(world, i, j, k) ? forgeIcons[3] : forgeIcons[2];
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
 		return i == 1 || i == 0 ? forgeIcons[1] : i == 3 ? forgeIcons[2] : forgeIcons[0];
@@ -58,7 +76,7 @@ public abstract class LOTRBlockForgeBase extends BlockContainer {
 
 	@Override
 	public int getLightValue(IBlockAccess world, int i, int j, int k) {
-		return LOTRBlockForgeBase.isForgeActive(world, i, j, k) ? 13 : 0;
+		return isForgeActive(world, i, j, k) ? 13 : 0;
 	}
 
 	@Override
@@ -92,10 +110,10 @@ public abstract class LOTRBlockForgeBase extends BlockContainer {
 		}
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void randomDisplayTick(World world, int i, int j, int k, Random random) {
-		if (LOTRBlockForgeBase.isForgeActive(world, i, j, k)) {
+		if (isForgeActive(world, i, j, k)) {
 			int meta = world.getBlockMetadata(i, j, k) & 7;
 			float f = i + 0.5f;
 			float f1 = j + 0.0f + random.nextFloat() * 6.0f / 16.0f;
@@ -103,24 +121,24 @@ public abstract class LOTRBlockForgeBase extends BlockContainer {
 			float f3 = 0.52f;
 			float f4 = random.nextFloat() * 0.6f - 0.3f;
 			switch (meta) {
-			case 4:
-				world.spawnParticle("smoke", f - f3, f1, f2 + f4, 0.0, 0.0, 0.0);
-				world.spawnParticle("flame", f - f3, f1, f2 + f4, 0.0, 0.0, 0.0);
-				break;
-			case 5:
-				world.spawnParticle("smoke", f + f3, f1, f2 + f4, 0.0, 0.0, 0.0);
-				world.spawnParticle("flame", f + f3, f1, f2 + f4, 0.0, 0.0, 0.0);
-				break;
-			case 2:
-				world.spawnParticle("smoke", f + f4, f1, f2 - f3, 0.0, 0.0, 0.0);
-				world.spawnParticle("flame", f + f4, f1, f2 - f3, 0.0, 0.0, 0.0);
-				break;
-			case 3:
-				world.spawnParticle("smoke", f + f4, f1, f2 + f3, 0.0, 0.0, 0.0);
-				world.spawnParticle("flame", f + f4, f1, f2 + f3, 0.0, 0.0, 0.0);
-				break;
-			default:
-				break;
+				case 4:
+					world.spawnParticle("smoke", f - f3, f1, f2 + f4, 0.0, 0.0, 0.0);
+					world.spawnParticle("flame", f - f3, f1, f2 + f4, 0.0, 0.0, 0.0);
+					break;
+				case 5:
+					world.spawnParticle("smoke", f + f3, f1, f2 + f4, 0.0, 0.0, 0.0);
+					world.spawnParticle("flame", f + f3, f1, f2 + f4, 0.0, 0.0, 0.0);
+					break;
+				case 2:
+					world.spawnParticle("smoke", f + f4, f1, f2 - f3, 0.0, 0.0, 0.0);
+					world.spawnParticle("flame", f + f4, f1, f2 - f3, 0.0, 0.0, 0.0);
+					break;
+				case 3:
+					world.spawnParticle("smoke", f + f4, f1, f2 + f3, 0.0, 0.0, 0.0);
+					world.spawnParticle("flame", f + f4, f1, f2 + f3, 0.0, 0.0, 0.0);
+					break;
+				default:
+					break;
 			}
 			if (useLargeSmoke()) {
 				for (int l = 0; l < 6; ++l) {
@@ -139,7 +157,7 @@ public abstract class LOTRBlockForgeBase extends BlockContainer {
 		}
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
 		forgeIcons = new IIcon[4];
@@ -173,15 +191,4 @@ public abstract class LOTRBlockForgeBase extends BlockContainer {
 	}
 
 	public abstract boolean useLargeSmoke();
-
-	public static boolean isForgeActive(IBlockAccess world, int i, int j, int k) {
-		int meta = world.getBlockMetadata(i, j, k);
-		return (meta & 8) != 0;
-	}
-
-	public static void toggleForgeActive(World world, int i, int j, int k) {
-		int meta = world.getBlockMetadata(i, j, k);
-		world.setBlockMetadataWithNotify(i, j, k, meta ^ 8, 2);
-		world.updateLightByType(EnumSkyBlock.Block, i, j, k);
-	}
 }

@@ -1,9 +1,13 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
-import lotr.common.entity.ai.*;
+import lotr.common.LOTRCapes;
+import lotr.common.LOTRMod;
+import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
+import lotr.common.entity.ai.LOTREntityAIRangedAttack;
 import net.minecraft.block.Block;
-import net.minecraft.entity.*;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -13,12 +17,12 @@ import net.minecraft.world.World;
 public abstract class LOTREntityRanger extends LOTREntityDunedain {
 	public EntityAIBase rangedAttackAI = createDunedainRangedAI();
 	public EntityAIBase meleeAttackAI;
-	public int sneakCooldown = 0;
+	public int sneakCooldown;
 	public EntityLivingBase prevRangerTarget;
 
-	public LOTREntityRanger(World world) {
+	protected LOTREntityRanger(World world) {
 		super(world);
-		this.addTargetTasks(true);
+		addTargetTasks(true);
 		npcCape = LOTRCapes.RANGER;
 	}
 
@@ -71,6 +75,13 @@ public abstract class LOTREntityRanger extends LOTREntityDunedain {
 
 	public boolean isRangerSneaking() {
 		return dataWatcher.getWatchableObjectByte(17) == 1;
+	}
+
+	public void setRangerSneaking(boolean flag) {
+		dataWatcher.updateObject(17, flag ? (byte) 1 : 0);
+		if (flag) {
+			sneakCooldown = 20;
+		}
 	}
 
 	@Override
@@ -139,13 +150,6 @@ public abstract class LOTREntityRanger extends LOTREntityDunedain {
 			if (!worldObj.isRemote && !isRangerSneaking() && ridingEntity == null) {
 				setRangerSneaking(true);
 			}
-		}
-	}
-
-	public void setRangerSneaking(boolean flag) {
-		dataWatcher.updateObject(17, flag ? (byte) 1 : 0);
-		if (flag) {
-			sneakCooldown = 20;
 		}
 	}
 

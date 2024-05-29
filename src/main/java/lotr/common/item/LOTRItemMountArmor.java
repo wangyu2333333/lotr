@@ -1,13 +1,20 @@
 package lotr.common.item;
 
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRCreativeTabs;
+import lotr.common.LOTRReflection;
 import lotr.common.entity.animal.*;
-import lotr.common.entity.npc.*;
+import lotr.common.entity.npc.LOTREntityWarg;
+import lotr.common.entity.npc.LOTRNPCMount;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.init.Items;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+
+import java.util.Locale;
 
 public class LOTRItemMountArmor extends Item {
 	public ItemArmor.ArmorMaterial armorMaterial;
@@ -38,7 +45,7 @@ public class LOTRItemMountArmor extends Item {
 	}
 
 	public String getArmorTexture() {
-		String path = null;
+		String path;
 		if (templateItem != null) {
 			int index = 0;
 			if (templateItem == Items.iron_horse_armor) {
@@ -53,7 +60,7 @@ public class LOTRItemMountArmor extends Item {
 			path = LOTRReflection.getHorseArmorTextures()[index];
 		} else {
 			String mountName = mountType.textureName;
-			String materialName = armorMaterial.name().toLowerCase();
+			String materialName = armorMaterial.name().toLowerCase(Locale.ROOT);
 			if (materialName.startsWith("lotr_")) {
 				materialName = materialName.substring("lotr_".length());
 			}
@@ -66,7 +73,7 @@ public class LOTRItemMountArmor extends Item {
 		return damageReduceAmount;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIconFromDamage(int i) {
 		if (templateItem != null) {
@@ -75,7 +82,7 @@ public class LOTRItemMountArmor extends Item {
 		return super.getIconFromDamage(i);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIconIndex(ItemStack itemstack) {
 		if (templateItem != null) {
@@ -86,12 +93,7 @@ public class LOTRItemMountArmor extends Item {
 
 	@Override
 	public boolean getIsRepairable(ItemStack itemstack, ItemStack repairItem) {
-		return armorMaterial.func_151685_b() == repairItem.getItem() ? true : super.getIsRepairable(itemstack, repairItem);
-	}
-
-	@Override
-	public int getItemEnchantability() {
-		return 0;
+		return armorMaterial.func_151685_b() == repairItem.getItem() || super.getIsRepairable(itemstack, repairItem);
 	}
 
 	@Override
@@ -128,7 +130,7 @@ public class LOTRItemMountArmor extends Item {
 		return mountType == Mount.HORSE;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerIcons(IIconRegister iconregister) {
 		if (templateItem == null) {

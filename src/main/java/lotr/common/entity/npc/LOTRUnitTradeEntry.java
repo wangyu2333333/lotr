@@ -1,14 +1,18 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRPlayerData;
 import lotr.common.entity.LOTREntities;
 import lotr.common.entity.animal.LOTREntityHorse;
 import lotr.common.fac.LOTRFaction;
 import lotr.common.item.LOTRItemCoin;
-import net.minecraft.entity.*;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.*;
-import net.minecraft.util.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 public class LOTRUnitTradeEntry {
@@ -21,7 +25,7 @@ public class LOTRUnitTradeEntry {
 	public float alignmentRequired;
 	public PledgeType pledgeType = PledgeType.NONE;
 	public LOTRHiredNPCInfo.Task task = LOTRHiredNPCInfo.Task.WARRIOR;
-	public String extraInfo = null;
+	public String extraInfo;
 
 	public LOTRUnitTradeEntry(Class c, Class c1, String s, int cost, float alignment) {
 		this(c, cost, alignment);
@@ -74,7 +78,7 @@ public class LOTRUnitTradeEntry {
 			f = alignSurplus / 2000.0f;
 		}
 		f = MathHelper.clamp_float(f, 0.0f, 1.0f);
-		cost *= 1.0f - (f *= 0.5f);
+		cost *= 1.0f - f * 0.5f;
 		int costI = Math.round(cost);
 		return Math.max(costI, 1);
 	}
@@ -92,6 +96,11 @@ public class LOTRUnitTradeEntry {
 
 	public PledgeType getPledgeType() {
 		return pledgeType;
+	}
+
+	public LOTRUnitTradeEntry setPledgeType(PledgeType t) {
+		pledgeType = t;
+		return this;
 	}
 
 	public String getUnitTradeName() {
@@ -150,7 +159,7 @@ public class LOTRUnitTradeEntry {
 	}
 
 	public LOTRUnitTradeEntry setMountArmor(Item item) {
-		return this.setMountArmor(item, 1.0f);
+		return setMountArmor(item, 1.0f);
 	}
 
 	public LOTRUnitTradeEntry setMountArmor(Item item, float chance) {
@@ -161,11 +170,6 @@ public class LOTRUnitTradeEntry {
 
 	public LOTRUnitTradeEntry setPledgeExclusive() {
 		return setPledgeType(PledgeType.FACTION);
-	}
-
-	public LOTRUnitTradeEntry setPledgeType(PledgeType t) {
-		pledgeType = t;
-		return this;
 	}
 
 	public LOTRUnitTradeEntry setTask(LOTRHiredNPCInfo.Task t) {
@@ -180,6 +184,16 @@ public class LOTRUnitTradeEntry {
 
 		PledgeType(int i) {
 			typeID = i;
+		}
+
+		public static PledgeType forID(int i) {
+			for (PledgeType t : values()) {
+				if (t.typeID != i) {
+					continue;
+				}
+				return t;
+			}
+			return NONE;
 		}
 
 		public boolean canAcceptPlayer(EntityPlayer entityplayer, LOTRFaction fac) {
@@ -205,16 +219,6 @@ public class LOTRUnitTradeEntry {
 				return null;
 			}
 			return StatCollector.translateToLocalFormatted("lotr.hiredNPC.commandReq.pledge." + name(), fac.factionName());
-		}
-
-		public static PledgeType forID(int i) {
-			for (PledgeType t : PledgeType.values()) {
-				if (t.typeID != i) {
-					continue;
-				}
-				return t;
-			}
-			return NONE;
 		}
 	}
 

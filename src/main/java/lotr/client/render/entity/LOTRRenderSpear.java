@@ -1,7 +1,5 @@
 package lotr.client.render.entity;
 
-import org.lwjgl.opengl.GL11;
-
 import cpw.mods.fml.common.FMLLog;
 import lotr.client.model.LOTRModelBoar;
 import lotr.common.LOTRMod;
@@ -11,14 +9,17 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
-import net.minecraftforge.client.*;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.client.IItemRenderer;
+import net.minecraftforge.client.MinecraftForgeClient;
+import org.lwjgl.opengl.GL11;
 
 public class LOTRRenderSpear extends Render {
 	public static ModelBase boarModel = new LOTRModelBoar();
 
 	static {
-		LOTRRenderSpear.boarModel.isChild = false;
+		boarModel.isChild = false;
 	}
 
 	@Override
@@ -47,7 +48,7 @@ public class LOTRRenderSpear extends Render {
 			if (customRenderer != null) {
 				customRenderer.renderItem(IItemRenderer.ItemRenderType.EQUIPPED, itemstack, new Object[2]);
 			} else {
-				FMLLog.severe("Error rendering spear: no custom renderer for " + itemstack.toString());
+				FMLLog.severe("Error rendering spear: no custom renderer for " + itemstack);
 			}
 		}
 		GL11.glDisable(32826);

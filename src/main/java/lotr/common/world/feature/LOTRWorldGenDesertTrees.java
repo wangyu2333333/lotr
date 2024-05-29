@@ -1,13 +1,13 @@
 package lotr.common.world.feature;
 
-import java.util.Random;
-
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
-import net.minecraft.world.*;
+import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenAbstractTree;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.Random;
 
 public class LOTRWorldGenDesertTrees extends WorldGenAbstractTree {
 	public boolean isNatural;
@@ -32,7 +32,7 @@ public class LOTRWorldGenDesertTrees extends WorldGenAbstractTree {
 		int height = 3 + random.nextInt(3);
 		boolean flag = true;
 		if (!isNatural) {
-			if (j >= 1 && height + 1 <= 256) {
+			if (j >= 1) {
 				for (int j1 = j; j1 <= j + height + 1; ++j1) {
 					int range = 1;
 					if (j1 == j) {
@@ -54,7 +54,7 @@ public class LOTRWorldGenDesertTrees extends WorldGenAbstractTree {
 				flag = false;
 			}
 		}
-		isSoil = (below = world.getBlock(i, j - 1, k)).canSustainPlant((IBlockAccess) world, i, j - 1, k, ForgeDirection.UP, (IPlantable) Blocks.sapling) || isNatural && (below == Blocks.sand || below == Blocks.stone);
+		isSoil = (below = world.getBlock(i, j - 1, k)).canSustainPlant(world, i, j - 1, k, ForgeDirection.UP, (IPlantable) Blocks.sapling) || isNatural && (below == Blocks.sand || below == Blocks.stone);
 		if (!isSoil) {
 			flag = false;
 		}
@@ -73,21 +73,21 @@ public class LOTRWorldGenDesertTrees extends WorldGenAbstractTree {
 				}
 				if (random.nextInt(3) != 0) {
 					switch (branch) {
-					case 0: {
-						--i1;
-						break;
-					}
-					case 1: {
-						++k1;
-						break;
-					}
-					case 2: {
-						++i1;
-						break;
-					}
-					case 3: {
-						--k1;
-					}
+						case 0: {
+							--i1;
+							break;
+						}
+						case 1: {
+							++k1;
+							break;
+						}
+						case 2: {
+							++i1;
+							break;
+						}
+						case 3: {
+							--k1;
+						}
 					}
 				}
 				if (!isReplaceable(world, i1, j1, k1)) {

@@ -1,15 +1,18 @@
 package lotr.client.render;
 
-import java.awt.image.BufferedImage;
-import java.util.*;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.*;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
 
+import java.awt.image.BufferedImage;
+import java.util.Collection;
+import java.util.HashSet;
+
 public class LOTRBufferedImageIcon extends TextureAtlasSprite {
-	public static Set<String> loadedResources = new HashSet<>();
+	public static Collection<String> loadedResources = new HashSet<>();
 	public String iconName;
 	public BufferedImage imageRGB;
 

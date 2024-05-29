@@ -1,12 +1,13 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
-import lotr.common.*;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
 import lotr.common.entity.npc.LOTREntityTauredain;
 import lotr.common.world.structure.LOTRChestContents;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenTauredainHouseSimple extends LOTRWorldGenTauredainHouse {
 	public LOTRWorldGenTauredainHouseSimple(boolean flag) {
@@ -15,7 +16,7 @@ public class LOTRWorldGenTauredainHouseSimple extends LOTRWorldGenTauredainHouse
 
 	@Override
 	public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
-		this.setOriginAndRotation(world, i, j, k, rotation, 3);
+		setOriginAndRotation(world, i, j, k, rotation, 3);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			int minHeight = 0;
@@ -70,13 +71,13 @@ public class LOTRWorldGenTauredainHouseSimple extends LOTRWorldGenTauredainHouse
 		setBlockAndMetadata(world, -2, 1, 2, bedBlock, 8);
 		setBlockAndMetadata(world, 2, 1, 1, bedBlock, 0);
 		setBlockAndMetadata(world, 2, 1, 2, bedBlock, 8);
-		this.placeChest(world, random, 0, 1, 2, LOTRMod.chestBasket, 2, LOTRChestContents.TAUREDAIN_HOUSE);
+		placeChest(world, random, 0, 1, 2, LOTRMod.chestBasket, 2, LOTRChestContents.TAUREDAIN_HOUSE);
 		placeTauredainFlowerPot(world, -2, 2, 0, random);
 		placeTauredainFlowerPot(world, -1, 2, 2, random);
 		placeTauredainFlowerPot(world, 0, 4, -2, random);
 		placeTauredainFlowerPot(world, 0, 4, 2, random);
 		placePlateWithCertainty(world, random, 1, 2, 2, LOTRMod.woodPlateBlock, LOTRFoods.TAUREDAIN);
-		this.placeMug(world, random, 2, 2, 0, 3, LOTRFoods.TAUREDAIN_DRINK);
+		placeMug(world, random, 2, 2, 0, 3, LOTRFoods.TAUREDAIN_DRINK);
 		int men = 1 + random.nextInt(2);
 		for (int l = 0; l < men; ++l) {
 			LOTREntityTauredain tauredain = new LOTREntityTauredain(world);

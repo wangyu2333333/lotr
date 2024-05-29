@@ -1,15 +1,14 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import com.google.common.math.IntMath;
-
 import lotr.common.LOTRMod;
 import lotr.common.entity.npc.LOTREntityEasterlingBlacksmith;
 import lotr.common.world.structure.LOTRChestContents;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenEasterlingSmithy extends LOTRWorldGenEasterlingStructureTown {
 	public LOTRWorldGenEasterlingSmithy(boolean flag) {
@@ -28,7 +27,7 @@ public class LOTRWorldGenEasterlingSmithy extends LOTRWorldGenEasterlingStructur
 		int j12;
 		int i22;
 		int k2;
-		this.setOriginAndRotation(world, i, j, k, rotation, 7);
+		setOriginAndRotation(world, i, j, k, rotation, 7);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			int minHeight = 0;
@@ -72,9 +71,6 @@ public class LOTRWorldGenEasterlingSmithy extends LOTRWorldGenEasterlingStructur
 						setBlockAndMetadata(world, i14, 4, k1, woodBeamBlock, woodBeamMeta | 4);
 						continue;
 					}
-					if (i22 != 6) {
-						continue;
-					}
 					setBlockAndMetadata(world, i14, 4, k1, woodBeamBlock, woodBeamMeta | 8);
 					continue;
 				}
@@ -101,7 +97,7 @@ public class LOTRWorldGenEasterlingSmithy extends LOTRWorldGenEasterlingStructur
 		}
 		setBlockAndMetadata(world, -4, 2, -6, LOTRMod.reedBars, 0);
 		setBlockAndMetadata(world, 4, 2, -6, LOTRMod.reedBars, 0);
-		for (int k12 : new int[] { -4, 0 }) {
+		for (int k12 : new int[]{-4, 0}) {
 			setBlockAndMetadata(world, -6, 2, k12 - 1, brickStairBlock, 7);
 			setAir(world, -6, 2, k12);
 			setBlockAndMetadata(world, -6, 2, k12 + 1, brickStairBlock, 6);
@@ -111,11 +107,11 @@ public class LOTRWorldGenEasterlingSmithy extends LOTRWorldGenEasterlingStructur
 			setBlockAndMetadata(world, 6, 2, k12 + 1, brickStairBlock, 6);
 			setBlockAndMetadata(world, 6, 3, k12, brickStairBlock, 4);
 		}
-		for (int k12 : new int[] { -7, 7 }) {
+		for (int k12 : new int[]{-7, 7}) {
 			setBlockAndMetadata(world, -6, 3, k12, fenceBlock, fenceMeta);
 			setBlockAndMetadata(world, 6, 3, k12, fenceBlock, fenceMeta);
 		}
-		int[] k13 = { -7, 7 };
+		int[] k13 = {-7, 7};
 		k1 = k13.length;
 		for (i22 = 0; i22 < k1; ++i22) {
 			int i15 = k13[i22];
@@ -225,16 +221,13 @@ public class LOTRWorldGenEasterlingSmithy extends LOTRWorldGenEasterlingStructur
 				setBlockAndMetadata(world, -1, 8, k15, roofStairBlock, 4);
 				setBlockAndMetadata(world, 1, 8, k15, roofStairBlock, 5);
 			}
-			if (k22 < 0) {
-				continue;
-			}
 			setBlockAndMetadata(world, 0, 9, k15, roofSlabBlock, roofSlabMeta);
 		}
 		setBlockAndMetadata(world, 0, 9, -4, roofStairBlock, 3);
 		setBlockAndMetadata(world, 0, 9, 4, roofStairBlock, 2);
 		setBlockAndMetadata(world, -4, 9, 0, roofStairBlock, 0);
 		setBlockAndMetadata(world, 4, 9, 0, roofStairBlock, 1);
-		for (int k12 : new int[] { -3, 3 }) {
+		for (int k12 : new int[]{-3, 3}) {
 			setBlockAndMetadata(world, -1, 7, k12, plankBlock, plankMeta);
 			setBlockAndMetadata(world, 0, 7, k12, LOTRMod.reedBars, 0);
 			setBlockAndMetadata(world, 1, 7, k12, plankBlock, plankMeta);
@@ -242,7 +235,7 @@ public class LOTRWorldGenEasterlingSmithy extends LOTRWorldGenEasterlingStructur
 			setBlockAndMetadata(world, 0, 8, k12, plankBlock, plankMeta);
 			setBlockAndMetadata(world, 1, 8, k12, roofBlock, roofMeta);
 		}
-		for (int i15 : new int[] { -3, 3 }) {
+		for (int i15 : new int[]{-3, 3}) {
 			setBlockAndMetadata(world, i15, 7, -1, plankBlock, plankMeta);
 			setBlockAndMetadata(world, i15, 7, 0, LOTRMod.reedBars, 0);
 			setBlockAndMetadata(world, i15, 7, 1, plankBlock, plankMeta);
@@ -264,7 +257,7 @@ public class LOTRWorldGenEasterlingSmithy extends LOTRWorldGenEasterlingStructur
 				continue;
 			}
 			if (i12 == 4) {
-				setBlockAndMetadata(world, i12, 1, -2, fenceGateBlock, 0);
+				setBlockAndMetadata(world, 4, 1, -2, fenceGateBlock, 0);
 				continue;
 			}
 			setBlockAndMetadata(world, i12, 1, -2, fenceBlock, fenceMeta);
@@ -273,7 +266,7 @@ public class LOTRWorldGenEasterlingSmithy extends LOTRWorldGenEasterlingStructur
 		setBlockAndMetadata(world, 4, 1, 5, tableBlock, 0);
 		setBlockAndMetadata(world, 5, 1, 5, woodBeamBlock, woodBeamMeta);
 		for (int k16 = 3; k16 <= 4; ++k16) {
-			this.placeChest(world, random, 5, 1, k16, 5, LOTRChestContents.EASTERLING_SMITHY);
+			placeChest(world, random, 5, 1, k16, 5, LOTRChestContents.EASTERLING_SMITHY);
 		}
 		placeWeaponRack(world, 4, 3, 5, 6, random.nextBoolean() ? null : getEasterlingWeaponItem(random));
 		placeWeaponRack(world, 5, 3, 4, 7, random.nextBoolean() ? null : getEasterlingWeaponItem(random));

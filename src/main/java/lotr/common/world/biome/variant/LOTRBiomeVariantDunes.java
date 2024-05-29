@@ -1,10 +1,10 @@
 package lotr.common.world.biome.variant;
 
-import java.util.Random;
-
 import lotr.common.util.LOTRFunctions;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.gen.NoiseGeneratorPerlin;
+
+import java.util.Random;
 
 public class LOTRBiomeVariantDunes extends LOTRBiomeVariant {
 	public static NoiseGeneratorPerlin duneWaveNoise = new NoiseGeneratorPerlin(new Random(305620668206968L), 1);
@@ -20,7 +20,7 @@ public class LOTRBiomeVariantDunes extends LOTRBiomeVariant {
 		double d3 = d1 * 0.9 + d2 * 0.1;
 		d3 = MathHelper.clamp_double(d3, -1.0, 1.0);
 		int maxDuneHeight = 12;
-		return Math.round(LOTRFunctions.normalisedSin((i + (float) (d3 *= 15.0)) * 0.09f) * maxDuneHeight);
+		return Math.round(LOTRFunctions.normalisedSin((i + (float) (d3 * 15.0)) * 0.09f) * maxDuneHeight);
 	}
 
 	@Override

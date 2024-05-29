@@ -1,25 +1,36 @@
 package lotr.common.item;
 
-import java.util.*;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRCreativeTabs;
+import lotr.common.LOTRLevelData;
 import lotr.common.block.LOTRBlockSaplingBase;
-import lotr.common.entity.npc.*;
-import lotr.common.fac.*;
-import net.minecraft.block.*;
+import lotr.common.entity.npc.LOTREntityHuorn;
+import lotr.common.entity.npc.LOTREntityTree;
+import lotr.common.entity.npc.LOTRHiredNPCInfo;
+import lotr.common.fac.LOTRAlignmentValues;
+import lotr.common.fac.LOTRFaction;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockSapling;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
-import net.minecraft.item.*;
-import net.minecraft.potion.*;
+import net.minecraft.item.EnumAction;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class LOTRItemEntDraught extends Item {
-	public static DraughtInfo[] draughtTypes = { new DraughtInfo("green", 0, 0.0f).addEffect(Potion.moveSpeed.id, 120).addEffect(Potion.digSpeed.id, 120).addEffect(Potion.damageBoost.id, 120), new DraughtInfo("brown", 20, 3.0f), new DraughtInfo("gold", 0, 0.0f), new DraughtInfo("yellow", 0, 0.0f).addEffect(Potion.regeneration.id, 60), new DraughtInfo("red", 0, 0.0f).addEffect(Potion.fireResistance.id, 180), new DraughtInfo("silver", 0, 0.0f).addEffect(Potion.nightVision.id, 180), new DraughtInfo("blue", 0, 0.0f).addEffect(Potion.waterBreathing.id, 150) };
-	@SideOnly(value = Side.CLIENT)
+	public static DraughtInfo[] draughtTypes = {new DraughtInfo("green", 0, 0.0f).addEffect(Potion.moveSpeed.id, 120).addEffect(Potion.digSpeed.id, 120).addEffect(Potion.damageBoost.id, 120), new DraughtInfo("brown", 20, 3.0f), new DraughtInfo("gold", 0, 0.0f), new DraughtInfo("yellow", 0, 0.0f).addEffect(Potion.regeneration.id, 60), new DraughtInfo("red", 0, 0.0f).addEffect(Potion.fireResistance.id, 180), new DraughtInfo("silver", 0, 0.0f).addEffect(Potion.nightVision.id, 180), new DraughtInfo("blue", 0, 0.0f).addEffect(Potion.waterBreathing.id, 150)};
+	@SideOnly(Side.CLIENT)
 	public IIcon[] draughtIcons;
 
 	public LOTRItemEntDraught() {
@@ -30,7 +41,7 @@ public class LOTRItemEntDraught extends Item {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag) {
 		LOTRItemMug.addPotionEffectsToTooltip(itemstack, entityplayer, list, flag, getDraughtInfo(itemstack).effects);
 	}
@@ -48,7 +59,7 @@ public class LOTRItemEntDraught extends Item {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon getIconFromDamage(int i) {
 		if (i >= draughtIcons.length) {
 			i = 0;
@@ -67,7 +78,7 @@ public class LOTRItemEntDraught extends Item {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public void getSubItems(Item item, CreativeTabs tab, List list) {
 		for (int i = 0; i < draughtTypes.length; ++i) {
 			list.add(new ItemStack(item, 1, i));
@@ -76,7 +87,7 @@ public class LOTRItemEntDraught extends Item {
 
 	@Override
 	public String getUnlocalizedName(ItemStack itemstack) {
-		return super.getUnlocalizedName() + "." + itemstack.getItemDamage();
+		return getUnlocalizedName() + "." + itemstack.getItemDamage();
 	}
 
 	@Override
@@ -162,11 +173,11 @@ public class LOTRItemEntDraught extends Item {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public void registerIcons(IIconRegister iconregister) {
 		draughtIcons = new IIcon[draughtTypes.length];
 		for (int i = 0; i < draughtTypes.length; ++i) {
-			draughtIcons[i] = iconregister.registerIcon(getIconString() + "_" + LOTRItemEntDraught.draughtTypes[i].name);
+			draughtIcons[i] = iconregister.registerIcon(getIconString() + "_" + draughtTypes[i].name);
 		}
 	}
 

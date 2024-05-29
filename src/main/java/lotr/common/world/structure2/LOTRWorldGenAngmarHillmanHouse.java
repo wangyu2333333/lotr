@@ -1,7 +1,5 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import lotr.common.entity.npc.LOTREntityAngmarHillman;
 import lotr.common.item.LOTRItemBanner;
@@ -9,6 +7,8 @@ import lotr.common.world.structure.LOTRChestContents;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenAngmarHillmanHouse extends LOTRWorldGenStructureBase2 {
 	public Block woodBlock;
@@ -29,7 +29,7 @@ public class LOTRWorldGenAngmarHillmanHouse extends LOTRWorldGenStructureBase2 {
 		int j1;
 		int i12;
 		int j12;
-		this.setOriginAndRotation(world, i, j, k, rotation, 5);
+		setOriginAndRotation(world, i, j, k, rotation, 5);
 		if (restrictions) {
 			int minHeight = 0;
 			int maxHeight = 0;
@@ -93,7 +93,7 @@ public class LOTRWorldGenAngmarHillmanHouse extends LOTRWorldGenStructureBase2 {
 			setBlockAndMetadata(world, -3, j14, 5, woodBlock, woodMeta);
 			setBlockAndMetadata(world, 3, j14, 5, woodBlock, woodMeta);
 		}
-		for (int j15 : new int[] { 1, 4 }) {
+		for (int j15 : new int[]{1, 4}) {
 			for (i1 = -2; i1 <= 2; ++i1) {
 				setBlockAndMetadata(world, i1, j15, -5, woodBlock, woodMeta | 4);
 				setBlockAndMetadata(world, i1, j15, 5, woodBlock, woodMeta | 4);
@@ -109,7 +109,7 @@ public class LOTRWorldGenAngmarHillmanHouse extends LOTRWorldGenStructureBase2 {
 			setBlockAndMetadata(world, -3, 3, k14, stairBlock, 5);
 			setBlockAndMetadata(world, 3, 3, k14, stairBlock, 4);
 		}
-		int[] k14 = { -3, 3 };
+		int[] k14 = {-3, 3};
 		k1 = k14.length;
 		for (j1 = 0; j1 < k1; ++j1) {
 			int i14 = k14[j1];
@@ -123,7 +123,7 @@ public class LOTRWorldGenAngmarHillmanHouse extends LOTRWorldGenStructureBase2 {
 			}
 			setBlockAndMetadata(world, 0, 7, k15, plankBlock, plankMeta);
 		}
-		for (int k12 : new int[] { -5, 5 }) {
+		for (int k12 : new int[]{-5, 5}) {
 			for (i1 = -2; i1 <= 2; ++i1) {
 				setBlockAndMetadata(world, i1, 4, k12, woodBlock, woodMeta | 4);
 				setBlockAndMetadata(world, i1, 5, k12, woodBlock, woodMeta | 4);
@@ -173,7 +173,7 @@ public class LOTRWorldGenAngmarHillmanHouse extends LOTRWorldGenStructureBase2 {
 		setBlockAndMetadata(world, 0, 1, 3, LOTRMod.strawBed, 0);
 		setBlockAndMetadata(world, 0, 1, 4, LOTRMod.strawBed, 8);
 		setBlockAndMetadata(world, -1, 1, 4, Blocks.crafting_table, 0);
-		this.placeChest(world, random, 1, 1, 4, 2, LOTRChestContents.ANGMAR_HILLMAN_HOUSE);
+		placeChest(world, random, 1, 1, 4, 2, LOTRChestContents.ANGMAR_HILLMAN_HOUSE);
 		placeWallBanner(world, 0, 4, 5, LOTRItemBanner.BannerType.RHUDAUR, 2);
 		setBlockAndMetadata(world, -1, 3, 4, Blocks.skull, 2);
 		setBlockAndMetadata(world, 1, 3, 4, Blocks.skull, 2);

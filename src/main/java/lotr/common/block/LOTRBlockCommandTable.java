@@ -1,22 +1,28 @@
 package lotr.common.block;
 
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRCommonProxy;
+import lotr.common.LOTRCreativeTabs;
+import lotr.common.LOTRMod;
+import lotr.common.LOTRSquadrons;
 import lotr.common.tileentity.LOTRTileEntityCommandTable;
 import lotr.common.world.map.LOTRConquestGrid;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.entity.player.*;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 public class LOTRBlockCommandTable extends BlockContainer {
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon topIcon;
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon sideIcon;
 
 	public LOTRBlockCommandTable() {
@@ -32,7 +38,7 @@ public class LOTRBlockCommandTable extends BlockContainer {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int i, int j) {
 		if (i == 1 || i == 0) {
 			return topIcon;
@@ -78,7 +84,7 @@ public class LOTRBlockCommandTable extends BlockContainer {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconregister) {
 		sideIcon = iconregister.registerIcon(getTextureName() + "_side");
 		topIcon = iconregister.registerIcon(getTextureName() + "_top");

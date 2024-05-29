@@ -1,17 +1,23 @@
 package lotr.common.world;
 
-import java.util.*;
-
 import lotr.common.LOTRMod;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
+import net.minecraft.util.LongHashMap;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.world.Teleporter;
+import net.minecraft.world.WorldServer;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Random;
 
 public class LOTRTeleporterElvenPortal extends Teleporter {
 	public WorldServer theWorld;
 	public LongHashMap portalPositions = new LongHashMap();
-	public List portalTimes = new ArrayList();
+	public Collection portalTimes = new ArrayList();
 	public Random rand = new Random();
 
 	public LOTRTeleporterElvenPortal(WorldServer world) {
@@ -39,7 +45,8 @@ public class LOTRTeleporterElvenPortal extends Teleporter {
 			double xDistance = i12 + 0.5 - entity.posX;
 			for (int k12 = k - range; k12 <= k + range; ++k12) {
 				double zDistance = k12 + 0.5 - entity.posZ;
-				block2: for (j1 = theWorld.getActualHeight() - 1; j1 >= 0; --j1) {
+				block2:
+				for (j1 = theWorld.getActualHeight() - 1; j1 >= 0; --j1) {
 					if (!theWorld.isAirBlock(i12, j1, k12)) {
 						continue;
 					}
@@ -173,21 +180,21 @@ public class LOTRTeleporterElvenPortal extends Teleporter {
 			}
 			int side = rand.nextInt(4);
 			switch (side) {
-			case 0: {
-				entity.setLocationAndAngles(i - 2 + 0.5, j + 1, k - 1 + 0.25 + rand.nextFloat() * 2.0f, entity.rotationYaw, entity.rotationPitch);
-				break;
-			}
-			case 1: {
-				entity.setLocationAndAngles(i + 2 + 0.5, j + 1, k - 1 + 0.25 + rand.nextFloat() * 2.0f, entity.rotationYaw, entity.rotationPitch);
-				break;
-			}
-			case 2: {
-				entity.setLocationAndAngles(i - 1 + 0.25 + rand.nextFloat() * 2.0f, j + 1, k - 2 + 0.25, entity.rotationYaw, entity.rotationPitch);
-				break;
-			}
-			case 3: {
-				entity.setLocationAndAngles(i - 1 + 0.25 + rand.nextFloat() * 2.0f, j + 1, k + 2 + 0.25, entity.rotationYaw, entity.rotationPitch);
-			}
+				case 0: {
+					entity.setLocationAndAngles(i - 2 + 0.5, j + 1, k - 1 + 0.25 + rand.nextFloat() * 2.0f, entity.rotationYaw, entity.rotationPitch);
+					break;
+				}
+				case 1: {
+					entity.setLocationAndAngles(i + 2 + 0.5, j + 1, k - 1 + 0.25 + rand.nextFloat() * 2.0f, entity.rotationYaw, entity.rotationPitch);
+					break;
+				}
+				case 2: {
+					entity.setLocationAndAngles(i - 1 + 0.25 + rand.nextFloat() * 2.0f, j + 1, k - 2 + 0.25, entity.rotationYaw, entity.rotationPitch);
+					break;
+				}
+				case 3: {
+					entity.setLocationAndAngles(i - 1 + 0.25 + rand.nextFloat() * 2.0f, j + 1, k + 2 + 0.25, entity.rotationYaw, entity.rotationPitch);
+				}
 			}
 			return true;
 		}

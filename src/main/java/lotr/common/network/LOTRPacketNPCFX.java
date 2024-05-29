@@ -1,6 +1,8 @@
 package lotr.common.network;
 
-import cpw.mods.fml.common.network.simpleimpl.*;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import lotr.common.LOTRMod;
 import lotr.common.entity.npc.LOTREntityNPC;
@@ -33,7 +35,7 @@ public class LOTRPacketNPCFX implements IMessage {
 	}
 
 	public enum FXType {
-		HEARTS, EATING, SMOKE;
+		HEARTS, EATING, SMOKE
 
 	}
 

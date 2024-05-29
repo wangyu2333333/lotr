@@ -1,9 +1,11 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRMod;
 import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
 import lotr.common.fac.LOTRFaction;
-import net.minecraft.entity.*;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -58,24 +60,24 @@ public class LOTREntityUtumnoOrc extends LOTREntityOrc {
 		data = super.onSpawnWithEgg(data);
 		int i = rand.nextInt(6);
 		switch (i) {
-		case 0:
-		case 1:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.swordUtumno));
-			break;
-		case 2:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.battleaxeUtumno));
-			break;
-		case 3:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.daggerUtumno));
-			break;
-		case 4:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.daggerUtumnoPoisoned));
-			break;
-		case 5:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.hammerUtumno));
-			break;
-		default:
-			break;
+			case 0:
+			case 1:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.swordUtumno));
+				break;
+			case 2:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.battleaxeUtumno));
+				break;
+			case 3:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.daggerUtumno));
+				break;
+			case 4:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.daggerUtumnoPoisoned));
+				break;
+			case 5:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.hammerUtumno));
+				break;
+			default:
+				break;
 		}
 		if (rand.nextInt(6) == 0) {
 			npcItemsInv.setSpearBackup(npcItemsInv.getMeleeWeapon());

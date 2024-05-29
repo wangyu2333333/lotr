@@ -1,11 +1,14 @@
 package lotr.common.entity.animal;
 
-import java.util.List;
-
 import lotr.common.LOTRMod;
-import lotr.common.entity.ai.*;
+import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
+import lotr.common.entity.ai.LOTREntityAILionChase;
+import lotr.common.entity.ai.LOTREntityAIMFMate;
 import lotr.common.item.LOTRItemLionRug;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityAgeable;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -14,14 +17,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
+import java.util.List;
+
 public abstract class LOTREntityLionBase extends LOTREntityAnimalMF {
 	public EntityAIBase attackAI = new LOTREntityAIAttackOnCollide(this, 1.5, false);
 	public EntityAIBase panicAI = new EntityAIPanic(this, 1.5);
 	public EntityAIBase targetNearAI = new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true);
-	public int hostileTick = 0;
+	public int hostileTick;
 	public boolean prevIsChild = true;
 
-	public LOTREntityLionBase(World world) {
+	protected LOTREntityLionBase(World world) {
 		super(world);
 		setSize(1.4f, 1.6f);
 		getNavigator().setAvoidsWater(true);
@@ -62,8 +67,7 @@ public abstract class LOTREntityLionBase extends LOTREntityAnimalMF {
 				List<LOTREntityLionBase> list = worldObj.getEntitiesWithinAABBExcludingEntity(this, boundingBox.expand(range, range, range));
 				for (LOTREntityLionBase obj : list) {
 					LOTREntityLionBase lion;
-					Entity entity = obj;
-					if (!(entity instanceof LOTREntityLionBase) || (lion = (LOTREntityLionBase) entity).isChild()) {
+					if (!(obj instanceof LOTREntityLionBase) || (lion = obj).isChild()) {
 						continue;
 					}
 					lion.becomeAngryAt((EntityLivingBase) attacker);
@@ -101,7 +105,7 @@ public abstract class LOTREntityLionBase extends LOTREntityAnimalMF {
 		}
 		if (flag) {
 			int rugChance = 30 - i * 5;
-			if (rand.nextInt(rugChance = Math.max(rugChance, 1)) == 0) {
+			if (rand.nextInt(Math.max(rugChance, 1)) == 0) {
 				entityDropItem(new ItemStack(LOTRMod.lionRug, 1, getLionRugType().lionID), 0.0f);
 			}
 		}
@@ -167,6 +171,10 @@ public abstract class LOTREntityLionBase extends LOTREntityAnimalMF {
 		return dataWatcher.getWatchableObjectByte(20) == 1;
 	}
 
+	public void setHostile(boolean flag) {
+		dataWatcher.updateObject(20, flag ? (byte) 1 : 0);
+	}
+
 	@Override
 	public void onLivingUpdate() {
 		boolean isChild;
@@ -206,10 +214,6 @@ public abstract class LOTREntityLionBase extends LOTREntityAnimalMF {
 	public void readEntityFromNBT(NBTTagCompound nbt) {
 		super.readEntityFromNBT(nbt);
 		hostileTick = nbt.getInteger("Angry");
-	}
-
-	public void setHostile(boolean flag) {
-		dataWatcher.updateObject(20, flag ? (byte) 1 : 0);
 	}
 
 	@Override

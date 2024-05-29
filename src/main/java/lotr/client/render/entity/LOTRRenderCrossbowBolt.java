@@ -1,14 +1,14 @@
 package lotr.client.render.entity;
 
-import org.lwjgl.opengl.GL11;
-
 import lotr.common.entity.projectile.LOTREntityCrossbowBolt;
 import lotr.common.item.LOTRItemCrossbowBolt;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 public class LOTRRenderCrossbowBolt extends Render {
 	public static ResourceLocation boltTexture = new ResourceLocation("lotr:item/crossbowBolt.png");
@@ -29,7 +29,7 @@ public class LOTRRenderCrossbowBolt extends Render {
 		}
 		float f2 = 0.0f;
 		float f3 = 0.5f;
-		float f4 = (0 + yOffset * 10) / 32.0f;
+		float f4 = (yOffset * 10) / 32.0f;
 		float f5 = (5 + yOffset * 10) / 32.0f;
 		float f6 = 0.0f;
 		float f7 = 0.15625f;

@@ -1,10 +1,12 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
-import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
 import lotr.common.fac.LOTRFaction;
 import lotr.common.item.LOTRItemMug;
-import lotr.common.quest.*;
+import lotr.common.quest.LOTRMiniQuest;
+import lotr.common.quest.LOTRMiniQuestFactory;
 import lotr.common.world.biome.LOTRBiomeGenDorwinion;
 import lotr.common.world.structure.LOTRChestContents;
 import net.minecraft.entity.IEntityLivingData;
@@ -30,11 +32,6 @@ public class LOTREntityDorwinionElf extends LOTREntityElf {
 	}
 
 	@Override
-	public EntityAIBase createElfMeleeAttackAI() {
-		return new LOTREntityAIAttackOnCollide(this, 1.5, false);
-	}
-
-	@Override
 	public EntityAIBase createElfRangedAttackAI() {
 		return createElfMeleeAttackAI();
 	}
@@ -49,7 +46,7 @@ public class LOTREntityDorwinionElf extends LOTREntityElf {
 		super.dropElfItems(flag, i);
 		if (flag) {
 			int dropChance = 20 - i * 4;
-			if (rand.nextInt(dropChance = Math.max(dropChance, 1)) == 0) {
+			if (rand.nextInt(Math.max(dropChance, 1)) == 0) {
 				ItemStack drink = LOTRFoods.DORWINION_DRINK.getRandomBrewableDrink(rand);
 				LOTRItemMug.setStrengthMeta(drink, 1 + rand.nextInt(3));
 				entityDropItem(drink, 0.0f);

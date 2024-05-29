@@ -1,25 +1,31 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
-import lotr.common.entity.ai.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRMod;
+import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
+import lotr.common.entity.ai.LOTREntityAIBalrogCharge;
+import lotr.common.entity.ai.LOTREntityAIFollowHiringPlayer;
 import lotr.common.fac.LOTRFaction;
 import lotr.common.world.LOTRWorldProviderUtumno;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.*;
-import net.minecraft.entity.ai.attributes.*;
+import net.minecraft.entity.ai.attributes.IAttribute;
+import net.minecraft.entity.ai.attributes.RangedAttribute;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.*;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
 public class LOTREntityBalrog extends LOTREntityNPC {
 	public static IAttribute balrogChargeDamage = new RangedAttribute("lotr.balrogChargeDamage", 2.0, 0.0, Double.MAX_VALUE).setDescription("Balrog Charge Damage");
 	public int chargeLean;
 	public int prevChargeLean;
-	public int chargeFrustration = 0;
+	public int chargeFrustration;
 
 	public LOTREntityBalrog(World world) {
 		super(world);
@@ -34,7 +40,7 @@ public class LOTREntityBalrog extends LOTREntityNPC {
 		tasks.addTask(5, new EntityAIWatchClosest2(this, LOTREntityNPC.class, 16.0f, 0.02f));
 		tasks.addTask(6, new EntityAIWatchClosest(this, EntityLiving.class, 12.0f, 0.02f));
 		tasks.addTask(7, new EntityAILookIdle(this));
-		this.addTargetTasks(true);
+		addTargetTasks(true);
 		spawnsInDarkness = true;
 		isImmuneToFire = true;
 	}
@@ -165,6 +171,10 @@ public class LOTREntityBalrog extends LOTREntityNPC {
 		return dataWatcher.getWatchableObjectByte(20) == 1;
 	}
 
+	public void setBalrogCharging(boolean flag) {
+		dataWatcher.updateObject(20, (byte) (flag ? 1 : 0));
+	}
+
 	public boolean isWreathedInFlame() {
 		return isEntityAlive() && !isWet();
 	}
@@ -188,7 +198,21 @@ public class LOTREntityBalrog extends LOTREntityNPC {
 
 	@Override
 	public void onDeath(DamageSource damagesource) {
-		if (!worldObj.isRemote) {
+		if (worldObj.isRemote) {
+			for (int l = 0; l < 100; ++l) {
+				double d = posX + width * MathHelper.randomFloatClamp(rand, -1.0f, 1.0f);
+				double d1 = posY + height * MathHelper.randomFloatClamp(rand, 0.0f, 1.0f);
+				double d2 = posZ + width * MathHelper.randomFloatClamp(rand, -1.0f, 1.0f);
+				double d3 = rand.nextGaussian() * 0.03;
+				double d4 = rand.nextGaussian() * 0.03;
+				double d5 = rand.nextGaussian() * 0.03;
+				if (rand.nextInt(3) == 0) {
+					worldObj.spawnParticle("explode", d, d1, d2, d3, d4, d5);
+					continue;
+				}
+				worldObj.spawnParticle("flame", d, d1, d2, d3, d4, d5);
+			}
+		} else {
 			int exRange = 8;
 			int i = MathHelper.floor_double(posX);
 			int j = MathHelper.floor_double(posY);
@@ -204,20 +228,6 @@ public class LOTREntityBalrog extends LOTREntityNPC {
 					}
 				}
 			}
-		} else {
-			for (int l = 0; l < 100; ++l) {
-				double d = posX + width * MathHelper.randomFloatClamp(rand, -1.0f, 1.0f);
-				double d1 = posY + height * MathHelper.randomFloatClamp(rand, 0.0f, 1.0f);
-				double d2 = posZ + width * MathHelper.randomFloatClamp(rand, -1.0f, 1.0f);
-				double d3 = rand.nextGaussian() * 0.03;
-				double d4 = rand.nextGaussian() * 0.03;
-				double d5 = rand.nextGaussian() * 0.03;
-				if (rand.nextInt(3) == 0) {
-					worldObj.spawnParticle("explode", d, d1, d2, d3, d4, d5);
-					continue;
-				}
-				worldObj.spawnParticle("flame", d, d1, d2, d3, d4, d5);
-			}
 		}
 		super.onDeath(damagesource);
 		playSound(getHurtSound(), getSoundVolume() * 2.0f, getSoundPitch() * 0.75f);
@@ -225,7 +235,8 @@ public class LOTREntityBalrog extends LOTREntityNPC {
 
 	@Override
 	public void onLivingUpdate() {
-		block12: {
+		block12:
+		{
 			int l;
 			super.onLivingUpdate();
 			if (getHealth() < getMaxHealth() && ticksExisted % 10 == 0) {
@@ -290,24 +301,20 @@ public class LOTREntityBalrog extends LOTREntityNPC {
 		} else {
 			int i = rand.nextInt(3);
 			switch (i) {
-			case 0:
-				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.swordUtumno));
-				break;
-			case 1:
-				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.battleaxeUtumno));
-				break;
-			case 2:
-				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.hammerUtumno));
-				break;
-			default:
-				break;
+				case 0:
+					npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.swordUtumno));
+					break;
+				case 1:
+					npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.battleaxeUtumno));
+					break;
+				case 2:
+					npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.hammerUtumno));
+					break;
+				default:
+					break;
 			}
 		}
 		npcItemsInv.setIdleItem(npcItemsInv.getMeleeWeapon());
 		return data;
-	}
-
-	public void setBalrogCharging(boolean flag) {
-		dataWatcher.updateObject(20, (byte) (flag ? 1 : 0));
 	}
 }

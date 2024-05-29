@@ -1,14 +1,17 @@
 package lotr.common.dispenser;
 
 import lotr.common.block.LOTRBlockRhunFireJar;
-import net.minecraft.block.*;
-import net.minecraft.dispenser.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockDispenser;
+import net.minecraft.dispenser.BehaviorDefaultDispenseItem;
+import net.minecraft.dispenser.IBehaviorDispenseItem;
+import net.minecraft.dispenser.IBlockSource;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 public class LOTRDispenseRhunFireJar extends BehaviorDefaultDispenseItem {
-	public BehaviorDefaultDispenseItem dispenseDefault = new BehaviorDefaultDispenseItem();
+	public IBehaviorDispenseItem dispenseDefault = new BehaviorDefaultDispenseItem();
 
 	@Override
 	public ItemStack dispenseStack(IBlockSource dispenser, ItemStack itemstack) {

@@ -1,9 +1,15 @@
 package lotr.common.inventory;
 
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import lotr.common.item.LOTRItemDaleCracker;
-import lotr.common.network.*;
+import lotr.common.network.LOTRPacketHandler;
+import lotr.common.network.LOTRPacketSealCracker;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.*;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryBasic;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 public class LOTRContainerDaleCracker extends Container {
@@ -59,9 +65,9 @@ public class LOTRContainerDaleCracker extends Container {
 		}
 	}
 
-	public void receiveSealingPacket(EntityPlayer entityplayer) {
+	public void receiveSealingPacket(ICommandSender entityplayer) {
 		if (!isCrackerInvEmpty()) {
-			InventoryBasic tempContents = new InventoryBasic("crackerTemp", false, crackerInventory.getSizeInventory());
+			IInventory tempContents = new InventoryBasic("crackerTemp", false, crackerInventory.getSizeInventory());
 			for (int i = 0; i < tempContents.getSizeInventory(); ++i) {
 				tempContents.setInventorySlotContents(i, crackerInventory.getStackInSlot(i));
 				crackerInventory.setInventorySlotContents(i, null);
@@ -73,7 +79,7 @@ public class LOTRContainerDaleCracker extends Container {
 	}
 
 	public void sendSealingPacket(EntityPlayer entityplayer) {
-		LOTRPacketSealCracker packet = new LOTRPacketSealCracker();
+		IMessage packet = new LOTRPacketSealCracker();
 		LOTRPacketHandler.networkWrapper.sendToServer(packet);
 	}
 

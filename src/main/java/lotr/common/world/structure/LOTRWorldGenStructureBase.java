@@ -1,12 +1,15 @@
 package lotr.common.world.structure;
 
-import java.util.Random;
-
-import lotr.common.*;
-import lotr.common.block.*;
-import lotr.common.entity.*;
-import lotr.common.entity.item.*;
-import lotr.common.item.*;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
+import lotr.common.block.LOTRBlockFlowerPot;
+import lotr.common.block.LOTRBlockMug;
+import lotr.common.entity.LOTREntities;
+import lotr.common.entity.LOTREntityNPCRespawner;
+import lotr.common.entity.item.LOTREntityBanner;
+import lotr.common.entity.item.LOTREntityBannerWall;
+import lotr.common.item.LOTRItemBanner;
+import lotr.common.item.LOTRItemMug;
 import lotr.common.recipe.LOTRBrewingRecipes;
 import lotr.common.tileentity.*;
 import lotr.common.world.structure2.LOTRStructureTimelapse;
@@ -14,19 +17,23 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.*;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
 
+import java.util.Random;
+
 public abstract class LOTRWorldGenStructureBase extends WorldGenerator {
 	public boolean restrictions = true;
-	public EntityPlayer usingPlayer = null;
+	public EntityPlayer usingPlayer;
 	public boolean notifyChanges;
 	public LOTRStructureTimelapse.ThreadTimelapse threadTimelapse;
 
-	public LOTRWorldGenStructureBase(boolean flag) {
+	protected LOTRWorldGenStructureBase(boolean flag) {
 		super(flag);
 		notifyChanges = flag;
 	}
@@ -36,7 +43,7 @@ public abstract class LOTRWorldGenStructureBase extends WorldGenerator {
 		setBlockAndNotifyAdequately(world, i, j + 1, k, LOTRMod.armorStand, direction | 4);
 		TileEntity tileentity = world.getTileEntity(i, j, k);
 		if (tileentity instanceof LOTRTileEntityArmorStand) {
-			LOTRTileEntityArmorStand armorStand = (LOTRTileEntityArmorStand) tileentity;
+			IInventory armorStand = (IInventory) tileentity;
 			for (int l = 0; l < armor.length; ++l) {
 				ItemStack armorPart = armor[l];
 				if (armorPart == null) {
@@ -70,7 +77,7 @@ public abstract class LOTRWorldGenStructureBase extends WorldGenerator {
 	}
 
 	public void placeBarrel(World world, Random random, int i, int j, int k, int meta, LOTRFoods foodList) {
-		this.placeBarrel(world, random, i, j, k, meta, foodList.getRandomBrewableDrink(random));
+		placeBarrel(world, random, i, j, k, meta, foodList.getRandomBrewableDrink(random));
 	}
 
 	public void placeFlowerPot(World world, int i, int j, int k, ItemStack itemstack) {
@@ -87,7 +94,7 @@ public abstract class LOTRWorldGenStructureBase extends WorldGenerator {
 	}
 
 	public void placeMug(World world, Random random, int i, int j, int k, int meta, ItemStack drink, LOTRFoods foodList) {
-		this.placeMug(world, random, i, j, k, meta, drink, foodList.getPlaceableDrinkVessels());
+		placeMug(world, random, i, j, k, meta, drink, foodList.getPlaceableDrinkVessels());
 	}
 
 	public void placeMug(World world, Random random, int i, int j, int k, int meta, ItemStack drink, LOTRItemMug.Vessel[] vesselTypes) {
@@ -105,7 +112,7 @@ public abstract class LOTRWorldGenStructureBase extends WorldGenerator {
 	}
 
 	public void placeMug(World world, Random random, int i, int j, int k, int meta, LOTRFoods foodList) {
-		this.placeMug(world, random, i, j, k, meta, foodList.getRandomPlaceableDrink(random), foodList);
+		placeMug(world, random, i, j, k, meta, foodList.getRandomPlaceableDrink(random), foodList);
 	}
 
 	public void placeNPCRespawner(LOTREntityNPCRespawner entity, World world, int i, int j, int k) {

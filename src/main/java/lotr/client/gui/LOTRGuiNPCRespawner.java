@@ -1,9 +1,14 @@
 package lotr.client.gui;
 
-import lotr.common.entity.*;
-import lotr.common.network.*;
-import net.minecraft.client.gui.*;
-import net.minecraft.util.*;
+import lotr.common.entity.LOTREntities;
+import lotr.common.entity.LOTREntityNPCRespawner;
+import lotr.common.network.LOTRPacketEditNPCRespawner;
+import lotr.common.network.LOTRPacketHandler;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.util.StatCollector;
+import net.minecraft.util.StringUtils;
 
 public class LOTRGuiNPCRespawner extends LOTRGuiScreenBase {
 	public int xSize = 256;
@@ -27,7 +32,7 @@ public class LOTRGuiNPCRespawner extends LOTRGuiScreenBase {
 	public LOTRGuiSlider sliderSpawnIntervalS;
 	public LOTRGuiSlider sliderNoPlayerRange;
 	public GuiButton buttonDestroy;
-	public boolean destroySpawner = false;
+	public boolean destroySpawner;
 
 	public LOTRGuiNPCRespawner(LOTREntityNPCRespawner entity) {
 		theSpawner = entity;
@@ -67,15 +72,15 @@ public class LOTRGuiNPCRespawner extends LOTRGuiScreenBase {
 		} else {
 			buttonMounts.setState(StatCollector.translateToLocal("lotr.gui.npcRespawner.mounts.2"));
 		}
-		if (!theSpawner.blockEnemySpawns()) {
-			sliderBlockEnemy.setOverrideStateString(StatCollector.translateToLocal("lotr.gui.npcRespawner.blockEnemy.off"));
-		} else {
+		if (theSpawner.blockEnemySpawns()) {
 			sliderBlockEnemy.setOverrideStateString(null);
-		}
-		if (!theSpawner.hasHomeRange()) {
-			sliderHomeRange.setOverrideStateString(StatCollector.translateToLocal("lotr.gui.npcRespawner.homeRange.off"));
 		} else {
+			sliderBlockEnemy.setOverrideStateString(StatCollector.translateToLocal("lotr.gui.npcRespawner.blockEnemy.off"));
+		}
+		if (theSpawner.hasHomeRange()) {
 			sliderHomeRange.setOverrideStateString(null);
+		} else {
+			sliderHomeRange.setOverrideStateString(StatCollector.translateToLocal("lotr.gui.npcRespawner.homeRange.off"));
 		}
 		String timepre = StatCollector.translateToLocal("lotr.gui.npcRespawner.spawnInterval");
 		int timepreX = sliderSpawnIntervalM.xPosition - 5 - fontRendererObj.getStringWidth(timepre);

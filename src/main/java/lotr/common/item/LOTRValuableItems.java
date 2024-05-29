@@ -1,16 +1,18 @@
 package lotr.common.item;
 
-import java.util.*;
-
 import lotr.common.recipe.LOTRRecipes;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LOTRValuableItems {
 	public static List<ItemStack> toolMaterials = new ArrayList<>();
-	public static boolean initTools = false;
+	public static boolean initTools;
 
 	public static boolean canMagpieSteal(ItemStack itemstack) {
-		LOTRValuableItems.registerToolMaterials();
+		registerToolMaterials();
 		Item item = itemstack.getItem();
 		if (item instanceof LOTRItemCoin || item instanceof LOTRItemRing || item instanceof LOTRItemGem) {
 			return true;
@@ -25,7 +27,7 @@ public class LOTRValuableItems {
 	}
 
 	public static List<ItemStack> getToolMaterials() {
-		LOTRValuableItems.registerToolMaterials();
+		registerToolMaterials();
 		return toolMaterials;
 	}
 

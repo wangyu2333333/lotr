@@ -1,6 +1,8 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
 import lotr.common.item.LOTRItemHaradRobes;
 import lotr.common.world.spawning.LOTRInvasions;
 import net.minecraft.entity.IEntityLivingData;
@@ -11,7 +13,7 @@ import net.minecraft.world.World;
 public class LOTREntityEasterlingFarmer extends LOTREntityEasterling implements LOTRTradeable, LOTRUnitTradeable {
 	public LOTREntityEasterlingFarmer(World world) {
 		super(world);
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 	}
 
 	@Override

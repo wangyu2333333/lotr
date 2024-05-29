@@ -1,7 +1,11 @@
 package lotr.common.entity.ai;
 
-import lotr.common.entity.npc.*;
-import net.minecraft.entity.*;
+import lotr.common.entity.npc.LOTREntityNPC;
+import lotr.common.entity.npc.LOTRNPCMount;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.pathfinding.PathEntity;
 import net.minecraft.util.Vec3;
@@ -43,7 +47,7 @@ public class LOTREntityAIHorseMoveToRiderTarget extends EntityAIBase {
 		if (rider == null || !rider.isEntityAlive() || !(rider instanceof LOTREntityNPC)) {
 			return false;
 		}
-		EntityLivingBase riderTarget = ((LOTREntityNPC) rider).getAttackTarget();
+		EntityLivingBase riderTarget = ((EntityLiving) rider).getAttackTarget();
 		if (riderTarget == null || !riderTarget.isEntityAlive()) {
 			return false;
 		}
@@ -53,7 +57,7 @@ public class LOTREntityAIHorseMoveToRiderTarget extends EntityAIBase {
 
 	@Override
 	public void startExecuting() {
-		speed = ((LOTREntityNPC) livingHorse.riddenByEntity).getEntityAttribute(LOTREntityNPC.horseAttackSpeed).getAttributeValue();
+		speed = ((EntityLivingBase) livingHorse.riddenByEntity).getEntityAttribute(LOTREntityNPC.horseAttackSpeed).getAttributeValue();
 		livingHorse.getNavigator().setPath(entityPathEntity, speed);
 		pathCheckTimer = 0;
 	}

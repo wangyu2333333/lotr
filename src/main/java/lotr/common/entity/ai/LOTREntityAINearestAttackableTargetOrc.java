@@ -1,6 +1,7 @@
 package lotr.common.entity.ai;
 
-import lotr.common.*;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
 import lotr.common.fac.LOTRFaction;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.EntityCreature;
@@ -19,7 +20,7 @@ public class LOTREntityAINearestAttackableTargetOrc extends LOTREntityAINearestA
 	public boolean isPlayerSuitableAlignmentTarget(EntityPlayer entityplayer) {
 		LOTRFaction faction = LOTRMod.getNPCFaction(taskOwner);
 		if (faction == LOTRFaction.MORDOR) {
-			float alignment = LOTRLevelData.getData(entityplayer).getAlignment(faction);
+			float alignment = LOTRLevelData.getData(entityplayer).getAlignment(LOTRFaction.MORDOR);
 			if (alignment >= 100.0f) {
 				return false;
 			}

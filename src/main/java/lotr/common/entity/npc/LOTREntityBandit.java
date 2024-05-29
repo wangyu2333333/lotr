@@ -1,22 +1,32 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
-import lotr.common.entity.ai.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
+import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
+import lotr.common.entity.ai.LOTREntityAIBanditFlee;
+import lotr.common.entity.ai.LOTREntityAIBanditSteal;
+import lotr.common.entity.ai.LOTREntityAINearestAttackableTargetBandit;
 import lotr.common.fac.LOTRFaction;
 import lotr.common.inventory.LOTRInventoryNPC;
-import lotr.common.item.*;
-import net.minecraft.entity.*;
+import lotr.common.item.LOTRItemLeatherHat;
+import lotr.common.item.LOTRItemMug;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
 
 public class LOTREntityBandit extends LOTREntityMan implements IBandit {
 	public static int MAX_THEFTS = 3;
-	public static ItemStack[] weapons = { new ItemStack(LOTRMod.daggerBronze), new ItemStack(LOTRMod.daggerIron) };
+	public static ItemStack[] weapons = {new ItemStack(LOTRMod.daggerBronze), new ItemStack(LOTRMod.daggerIron)};
 	public LOTRInventoryNPC banditInventory = new LOTRInventoryNPC("BanditInventory", this, MAX_THEFTS);
 
 	public LOTREntityBandit(World world) {
@@ -34,7 +44,7 @@ public class LOTREntityBandit extends LOTREntityMan implements IBandit {
 		tasks.addTask(6, new EntityAIWatchClosest2(this, LOTREntityNPC.class, 5.0f, 0.05f));
 		tasks.addTask(7, new EntityAIWatchClosest(this, EntityLiving.class, 8.0f, 0.02f));
 		tasks.addTask(8, new EntityAILookIdle(this));
-		this.addTargetTasks(true, LOTREntityAINearestAttackableTargetBandit.class);
+		addTargetTasks(true, LOTREntityAINearestAttackableTargetBandit.class);
 	}
 
 	@Override

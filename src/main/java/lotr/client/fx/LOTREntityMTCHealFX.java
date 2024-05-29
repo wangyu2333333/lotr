@@ -1,6 +1,7 @@
 package lotr.client.fx;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.particle.EntitySpellParticleFX;
 import net.minecraft.world.World;
 
@@ -27,7 +28,7 @@ public class LOTREntityMTCHealFX extends EntitySpellParticleFX {
 		return 1.0f;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public int getBrightnessForRender(float f) {
 		return 15728880;
@@ -43,7 +44,7 @@ public class LOTREntityMTCHealFX extends EntitySpellParticleFX {
 		}
 		setParticleTextureIndex(baseTextureIndex + 7 - particleAge * 8 / particleMaxAge);
 		moveEntity(motionX, motionY, motionZ);
-		particleAlpha = 0.5f + 0.5f * ((float) particleAge / (float) particleMaxAge);
+		particleAlpha = 0.5f + 0.5f * ((float) particleAge / particleMaxAge);
 	}
 
 	@Override

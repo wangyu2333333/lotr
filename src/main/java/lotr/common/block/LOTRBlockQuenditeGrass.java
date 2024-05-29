@@ -1,9 +1,9 @@
 package lotr.common.block;
 
-import java.util.Random;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRCreativeTabs;
+import lotr.common.LOTRMod;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -12,8 +12,10 @@ import net.minecraft.item.Item;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
+import java.util.Random;
+
 public class LOTRBlockQuenditeGrass extends Block {
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon grassSideIcon;
 
 	public LOTRBlockQuenditeGrass() {
@@ -21,11 +23,11 @@ public class LOTRBlockQuenditeGrass extends Block {
 		setCreativeTab(LOTRCreativeTabs.tabBlock);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
 		if (i == 0) {
-			return Blocks.dirt.getIcon(i, j);
+			return Blocks.dirt.getIcon(0, j);
 		}
 		if (i == 1) {
 			return blockIcon;
@@ -38,7 +40,7 @@ public class LOTRBlockQuenditeGrass extends Block {
 		return Item.getItemFromBlock(Blocks.dirt);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void randomDisplayTick(World world, int i, int j, int k, Random random) {
 		if (random.nextInt(8) == 0) {
@@ -49,7 +51,7 @@ public class LOTRBlockQuenditeGrass extends Block {
 		}
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
 		blockIcon = iconregister.registerIcon("lotr:quenditeGrass_top");

@@ -1,12 +1,13 @@
 package lotr.common.world.feature;
 
-import java.util.Random;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.util.MathHelper;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
+
+import java.util.Random;
 
 public class LOTRWorldGenMountainsideBush extends WorldGenerator {
 	public Block leafBlock;
@@ -31,7 +32,7 @@ public class LOTRWorldGenMountainsideBush extends WorldGenerator {
 		return true;
 	}
 
-	public boolean isStone(World world, int i, int j, int k) {
+	public boolean isStone(IBlockAccess world, int i, int j, int k) {
 		return world.getBlock(i, j, k).getMaterial() == Material.rock;
 	}
 }

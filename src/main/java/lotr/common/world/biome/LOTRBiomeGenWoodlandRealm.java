@@ -1,14 +1,23 @@
 package lotr.common.world.biome;
 
 import lotr.common.LOTRAchievement;
-import lotr.common.entity.animal.*;
-import lotr.common.entity.npc.*;
+import lotr.common.entity.animal.LOTREntityBear;
+import lotr.common.entity.animal.LOTREntityButterfly;
+import lotr.common.entity.animal.LOTREntityDeer;
+import lotr.common.entity.animal.LOTREntityElk;
+import lotr.common.entity.npc.LOTREntityDorwinionMerchantElf;
+import lotr.common.entity.npc.LOTREntityGaladhrimTrader;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
 import lotr.common.world.feature.LOTRTreeType;
-import lotr.common.world.map.*;
-import lotr.common.world.spawning.*;
+import lotr.common.world.map.LOTRRoadType;
+import lotr.common.world.map.LOTRWaypoint;
+import lotr.common.world.spawning.LOTRBiomeSpawnList;
+import lotr.common.world.spawning.LOTREventSpawner;
+import lotr.common.world.spawning.LOTRInvasions;
+import lotr.common.world.spawning.LOTRSpawnList;
 import lotr.common.world.structure.LOTRWorldGenWoodElfTower;
-import lotr.common.world.structure2.*;
+import lotr.common.world.structure2.LOTRWorldGenWoodElfHouse;
+import lotr.common.world.structure2.LOTRWorldGenWoodElvenForge;
 import net.minecraft.world.biome.BiomeGenBase;
 
 public class LOTRBiomeGenWoodlandRealm extends LOTRBiome {
@@ -34,13 +43,13 @@ public class LOTRBiomeGenWoodlandRealm extends LOTRBiome {
 		arrspawnListContainer3[2] = LOTRBiomeSpawnList.entry(LOTRSpawnList.MIRK_TROLLS, 1).setConquestThreshold(100.0f);
 		npcSpawnList.newFactionList(0).add(arrspawnListContainer3);
 		npcSpawnList.conquestGainRate = 0.2f;
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_BEECH, 0.1f);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_BIRCH, 0.1f);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LARCH, 0.1f);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_PINE, 0.1f);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_ASPEN, 0.1f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_BEECH, 0.1f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_BIRCH, 0.1f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LARCH, 0.1f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_PINE, 0.1f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_ASPEN, 0.1f);
 		variantChance = 0.3f;
 		decorator.treesPerChunk = 1;
 		decorator.willowPerChunk = 2;

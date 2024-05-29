@@ -1,15 +1,18 @@
 package lotr.common.block;
 
-import java.util.ArrayList;
-
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRCreativeTabs;
+import lotr.common.LOTRLevelData;
 import lotr.common.world.structure.LOTRChestContents;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
 
 public class LOTRBlockRemains extends Block {
 	public LOTRBlockRemains() {
@@ -26,7 +29,7 @@ public class LOTRBlockRemains extends Block {
 		if (world.rand.nextBoolean()) {
 			++dropCount;
 		}
-		InventoryBasic dropInv = new InventoryBasic("remains", true, dropCount * 5);
+		IInventory dropInv = new InventoryBasic("remains", true, dropCount * 5);
 		LOTRChestContents.fillInventory(dropInv, world.rand, LOTRChestContents.MARSH_REMAINS, dropCount);
 		for (int l = 0; l < dropInv.getSizeInventory(); ++l) {
 			ItemStack drop = dropInv.getStackInSlot(l);

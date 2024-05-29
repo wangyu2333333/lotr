@@ -1,14 +1,23 @@
 package lotr.common.playerdetails;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
-
-import org.apache.commons.io.*;
-import org.apache.logging.log4j.*;
-
 import com.google.common.math.IntMath;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import org.apache.commons.io.Charsets;
+import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class PlayerDetailsApiClient {
 	public static String API_URL = "https://sd58ui0e24.execute-api.eu-west-2.amazonaws.com/lotrmod/playerdetails/{playerId}";
@@ -34,16 +43,17 @@ public class PlayerDetailsApiClient {
 			}
 
 			public void executeRequest(int attemptNumber) {
-				block6: {
+				block6:
+				{
 					try {
-						URL url = new URL(PlayerDetailsApiClient.API_URL.replace("{playerId}", playerId.toString()));
+						URL url = new URL(API_URL.replace("{playerId}", playerId.toString()));
 						LOGGER.debug("Making call to fetch playerdetails at {} (attempt #{})", url, attemptNumber);
 						try {
 							HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 							int statusCode = connection.getResponseCode();
 							LOGGER.debug("Got response with status {} from playerdetails API (playerId = {})", statusCode, playerId);
 							if (statusCode == 200) {
-								PlayerDetailsApiClient.this.parseSuccessResponseWithCallback(playerId, callback, connection);
+								parseSuccessResponseWithCallback(playerId, callback, connection);
 								break block6;
 							}
 							int statusFamily = statusCode / 100;
@@ -72,12 +82,13 @@ public class PlayerDetailsApiClient {
 		thread.start();
 	}
 
+	@SuppressWarnings("MalformedFormatString")
 	public PlayerDetails parsePlayerDetailsFromResponse(UUID playerId, JsonObject json) {
 		UUID responsePlayerId = UUID.fromString(json.get("uuid").getAsString());
 		if (!responsePlayerId.equals(playerId)) {
 			throw new IllegalArgumentException(String.format("Player ID in response ({}) did not match requested ID ({})", responsePlayerId, playerId));
 		}
-		ArrayList<String> groups = new ArrayList<>();
+		List<String> groups = new ArrayList<>();
 		if (json.has("groups")) {
 			for (JsonElement elem : json.get("groups").getAsJsonArray()) {
 				groups.add(elem.getAsString());

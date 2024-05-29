@@ -1,9 +1,10 @@
 package lotr.common.block;
 
-import java.util.Random;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
 import lotr.common.fac.LOTRFaction;
 import lotr.common.tileentity.LOTRTileEntityMorgulPortal;
 import lotr.common.world.LOTRTeleporterMorgulPortal;
@@ -12,9 +13,11 @@ import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
+import java.util.Random;
+
 public class LOTRBlockMorgulPortal extends LOTRBlockPortal {
 	public LOTRBlockMorgulPortal() {
-		super(new LOTRFaction[] { LOTRFaction.MORDOR, LOTRFaction.ANGMAR, LOTRFaction.DOL_GULDUR }, LOTRTeleporterMorgulPortal.class);
+		super(new LOTRFaction[]{LOTRFaction.MORDOR, LOTRFaction.ANGMAR, LOTRFaction.DOL_GULDUR}, LOTRTeleporterMorgulPortal.class);
 	}
 
 	@Override
@@ -35,7 +38,7 @@ public class LOTRBlockMorgulPortal extends LOTRBlockPortal {
 					}
 					continue;
 				}
-				if (!(Math.abs(i1 - i) == 2 || Math.abs(k1 - k) == 2 ? !LOTRMod.isOpaque(world, i1, j, k1) : world.getBlock(i1, j, k1) != (portalAlreadyMade ? LOTRMod.morgulPortal : Blocks.lava) || !LOTRMod.isOpaque(world, i1, j - 1, k1))) {
+				if (Math.abs(i1 - i) == 2 || Math.abs(k1 - k) == 2 ? LOTRMod.isOpaque(world, i1, j, k1) : world.getBlock(i1, j, k1) == (portalAlreadyMade ? LOTRMod.morgulPortal : Blocks.lava) && LOTRMod.isOpaque(world, i1, j - 1, k1)) {
 					continue;
 				}
 				return false;
@@ -44,7 +47,7 @@ public class LOTRBlockMorgulPortal extends LOTRBlockPortal {
 		return true;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void randomDisplayTick(World world, int i, int j, int k, Random random) {
 		double d = i + random.nextFloat();

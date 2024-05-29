@@ -1,9 +1,10 @@
 package lotr.client.render.entity;
 
 import lotr.client.model.LOTRModelHuman;
-import lotr.common.entity.npc.LOTREntityNPC;
+import lotr.common.entity.LOTRRandomSkinEntity;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.util.ResourceLocation;
 
 public class LOTRRenderBlacksmith extends LOTRRenderBiped {
@@ -20,7 +21,7 @@ public class LOTRRenderBlacksmith extends LOTRRenderBiped {
 
 	@Override
 	public ResourceLocation getEntityTexture(Entity entity) {
-		return skins.getRandomSkin((LOTREntityNPC) entity);
+		return skins.getRandomSkin((LOTRRandomSkinEntity) entity);
 	}
 
 	@Override

@@ -1,10 +1,15 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
-import lotr.common.entity.ai.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
+import lotr.common.entity.ai.LOTREntityAINearestAttackableTargetWoodElf;
+import lotr.common.entity.ai.LOTREntityAIRangedAttack;
 import lotr.common.fac.LOTRFaction;
 import lotr.common.item.LOTRItemMug;
-import lotr.common.quest.*;
+import lotr.common.quest.LOTRMiniQuest;
+import lotr.common.quest.LOTRMiniQuestFactory;
 import lotr.common.world.biome.LOTRBiomeGenWoodlandRealm;
 import lotr.common.world.structure.LOTRChestContents;
 import net.minecraft.entity.IEntityLivingData;
@@ -20,7 +25,11 @@ public class LOTREntityWoodElf extends LOTREntityElf {
 	public LOTREntityWoodElf(World world) {
 		super(world);
 		tasks.addTask(2, rangedAttackAI);
-		this.addTargetTasks(true, LOTREntityAINearestAttackableTargetWoodElf.class);
+		addTargetTasks(true, LOTREntityAINearestAttackableTargetWoodElf.class);
+	}
+
+	public static float getWoodlandTrustLevel() {
+		return LOTRFaction.WOOD_ELF.getFirstRank().alignment;
 	}
 
 	@Override
@@ -51,7 +60,7 @@ public class LOTREntityWoodElf extends LOTREntityElf {
 		super.dropElfItems(flag, i);
 		if (flag) {
 			int dropChance = 20 - i * 4;
-			if (rand.nextInt(dropChance = Math.max(dropChance, 1)) == 0) {
+			if (rand.nextInt(Math.max(dropChance, 1)) == 0) {
 				ItemStack elfDrink = new ItemStack(LOTRMod.mugRedWine);
 				elfDrink.setItemDamage(1 + rand.nextInt(3));
 				LOTRItemMug.setVessel(elfDrink, LOTRFoods.ELF_DRINK.getRandomVessel(rand), true);
@@ -104,7 +113,7 @@ public class LOTREntityWoodElf extends LOTREntityElf {
 			if (hiredNPCInfo.getHiringPlayer() == entityplayer) {
 				return "woodElf/elf/hired";
 			}
-			if (LOTRLevelData.getData(entityplayer).getAlignment(getFaction()) >= LOTREntityWoodElf.getWoodlandTrustLevel()) {
+			if (LOTRLevelData.getData(entityplayer).getAlignment(getFaction()) >= getWoodlandTrustLevel()) {
 				return "woodElf/elf/friendly";
 			}
 			return "woodElf/elf/neutral";
@@ -124,9 +133,5 @@ public class LOTREntityWoodElf extends LOTREntityElf {
 	@Override
 	public void setupNPCName() {
 		familyInfo.setName(LOTRNames.getSindarinName(rand, familyInfo.isMale()));
-	}
-
-	public static float getWoodlandTrustLevel() {
-		return LOTRFaction.WOOD_ELF.getFirstRank().alignment;
 	}
 }

@@ -1,11 +1,10 @@
 package lotr.client.gui;
 
-import org.lwjgl.opengl.GL11;
-
 import lotr.common.LOTRMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.multiplayer.WorldClient;
+import org.lwjgl.opengl.GL11;
 
 public class LOTRGuiButtonMenu extends GuiButton {
 	public Class<? extends LOTRGuiMenuBase> menuScreenClass;
@@ -31,14 +30,14 @@ public class LOTRGuiButtonMenu extends GuiButton {
 			mc.getTextureManager().bindTexture(LOTRGuiMenu.menuIconsTexture);
 			GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			field_146123_n = i >= xPosition && j >= yPosition && i < xPosition + width && j < yPosition + height;
-			drawTexturedModalRect(xPosition, yPosition, 0 + (enabled ? 0 : width * 2) + (field_146123_n ? width : 0), id * height, width, height);
+			drawTexturedModalRect(xPosition, yPosition, (enabled ? 0 : width * 2) + (field_146123_n ? width : 0), id * height, width, height);
 			mouseDragged(mc, i, j);
 		}
 	}
 
 	public LOTRGuiMenuBase openMenu() {
 		try {
-			return menuScreenClass.newInstance();
+			return menuScreenClass.getConstructor().newInstance();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

@@ -1,12 +1,18 @@
 package lotr.common.network;
 
-import java.util.UUID;
-
-import cpw.mods.fml.common.network.simpleimpl.*;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import lotr.common.*;
-import lotr.common.world.map.*;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
+import lotr.common.LOTRPlayerData;
+import lotr.common.world.map.LOTRAbstractWaypoint;
+import lotr.common.world.map.LOTRCustomWaypoint;
+import lotr.common.world.map.LOTRWaypoint;
 import net.minecraft.entity.player.EntityPlayer;
+
+import java.util.UUID;
 
 public class LOTRPacketFTScreen implements IMessage {
 	public boolean isCustom;
@@ -62,13 +68,13 @@ public class LOTRPacketFTScreen implements IMessage {
 			EntityPlayer entityplayer = LOTRMod.proxy.getClientPlayer();
 			LOTRPlayerData playerData = LOTRLevelData.getData(entityplayer);
 			LOTRAbstractWaypoint waypoint = null;
-			if (!custom) {
+			if (custom) {
+				UUID sharingPlayerID = packet.sharingPlayer;
+				waypoint = sharingPlayerID != null ? playerData.getSharedCustomWaypointByID(sharingPlayerID, wpID) : playerData.getCustomWaypointByID(wpID);
+			} else {
 				if (wpID >= 0 && wpID < LOTRWaypoint.values().length) {
 					waypoint = LOTRWaypoint.values()[wpID];
 				}
-			} else {
-				UUID sharingPlayerID = packet.sharingPlayer;
-				waypoint = sharingPlayerID != null ? playerData.getSharedCustomWaypointByID(sharingPlayerID, wpID) : playerData.getCustomWaypointByID(wpID);
 			}
 			if (waypoint != null) {
 				LOTRMod.proxy.displayFTScreen(waypoint, packet.startX, packet.startZ);

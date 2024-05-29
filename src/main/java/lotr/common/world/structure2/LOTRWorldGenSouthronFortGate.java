@@ -1,8 +1,8 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenSouthronFortGate extends LOTRWorldGenSouthronStructure {
 	public LOTRWorldGenSouthronFortGate(boolean flag) {
@@ -19,7 +19,7 @@ public class LOTRWorldGenSouthronFortGate extends LOTRWorldGenSouthronStructure 
 		int j1;
 		int k1;
 		int i1;
-		this.setOriginAndRotation(world, i, j, k, rotation, 1);
+		setOriginAndRotation(world, i, j, k, rotation, 1);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			for (i1 = -5; i1 <= 5; ++i1) {

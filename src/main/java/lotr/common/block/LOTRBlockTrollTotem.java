@@ -1,9 +1,10 @@
 package lotr.common.block;
 
-import java.util.List;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRCreativeTabs;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
 import lotr.common.fac.LOTRFaction;
 import lotr.common.tileentity.LOTRTileEntityTrollTotem;
 import net.minecraft.block.BlockContainer;
@@ -13,10 +14,14 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 public class LOTRBlockTrollTotem extends BlockContainer {
 	public LOTRBlockTrollTotem() {
@@ -34,7 +39,7 @@ public class LOTRBlockTrollTotem extends BlockContainer {
 		return i & 3;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
 		return Blocks.stone.getIcon(i, 0);
@@ -45,7 +50,7 @@ public class LOTRBlockTrollTotem extends BlockContainer {
 		return LOTRMod.proxy.getTrollTotemRenderID();
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void getSubBlocks(Item item, CreativeTabs tab, List list) {
 		for (int i = 0; i <= 2; ++i) {
@@ -92,18 +97,18 @@ public class LOTRBlockTrollTotem extends BlockContainer {
 				world.setBlockMetadataWithNotify(i, j - 1, k, 2 | rotation << 2, 3);
 			}
 			if (world.getBlock(i, j + 1, k) == this && (world.getBlockMetadata(i, j + 1, k) & 3) == 0) {
-				world.setBlockMetadataWithNotify(i, j + 1, k, 0 | rotation << 2, 3);
+				world.setBlockMetadataWithNotify(i, j + 1, k, rotation << 2, 3);
 			}
 		}
 		if (meta == 2 && world.getBlock(i, j + 1, k) == this && (world.getBlockMetadata(i, j + 1, k) & 3) == 1) {
 			world.setBlockMetadataWithNotify(i, j + 1, k, 1 | rotation << 2, 3);
 			if (world.getBlock(i, j + 2, k) == this && (world.getBlockMetadata(i, j + 2, k) & 3) == 0) {
-				world.setBlockMetadataWithNotify(i, j + 2, k, 0 | rotation << 2, 3);
+				world.setBlockMetadataWithNotify(i, j + 2, k, rotation << 2, 3);
 			}
 		}
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
 	}

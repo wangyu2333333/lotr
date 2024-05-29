@@ -5,9 +5,12 @@ import lotr.common.entity.animal.LOTREntityCamel;
 import lotr.common.entity.npc.LOTREntityNomadMerchant;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
 import lotr.common.world.map.LOTRWaypoint;
-import lotr.common.world.spawning.*;
+import lotr.common.world.spawning.LOTRBiomeSpawnList;
+import lotr.common.world.spawning.LOTRSpawnList;
 import lotr.common.world.structure.LOTRWorldGenHaradObelisk;
-import lotr.common.world.structure2.*;
+import lotr.common.world.structure2.LOTRWorldGenHaradRuinedFort;
+import lotr.common.world.structure2.LOTRWorldGenMumakSkeleton;
+import lotr.common.world.structure2.LOTRWorldGenStoneRuin;
 import lotr.common.world.village.LOTRVillageGenHaradNomad;
 import net.minecraft.world.biome.BiomeGenBase;
 
@@ -21,8 +24,8 @@ public class LOTRBiomeGenNearHaradRiverbank extends LOTRBiomeGenNearHaradFertile
 		arrspawnListContainer[1] = LOTRBiomeSpawnList.entry(LOTRSpawnList.NOMAD_WARRIORS, 10).setSpawnChance(1000);
 		npcSpawnList.newFactionList(100).add(arrspawnListContainer);
 		clearBiomeVariants();
-		this.addBiomeVariant(LOTRBiomeVariant.FLOWERS);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
+		addBiomeVariant(LOTRBiomeVariant.FLOWERS);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
 		variantChance = 0.3f;
 		decorator.treesPerChunk = 0;
 		decorator.grassPerChunk = 10;
@@ -48,11 +51,6 @@ public class LOTRBiomeGenNearHaradRiverbank extends LOTRBiomeGenNearHaradFertile
 	@Override
 	public LOTRWaypoint.Region getBiomeWaypoints() {
 		return LOTRWaypoint.Region.HARAD_DESERT;
-	}
-
-	@Override
-	public float getChanceToSpawnAnimals() {
-		return 0.5f;
 	}
 
 	@Override

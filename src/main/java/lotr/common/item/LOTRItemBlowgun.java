@@ -1,11 +1,16 @@
 package lotr.common.item;
 
-import lotr.common.*;
-import lotr.common.enchant.*;
+import lotr.common.LOTRCreativeTabs;
+import lotr.common.LOTRMod;
+import lotr.common.enchant.LOTREnchantment;
+import lotr.common.enchant.LOTREnchantmentHelper;
 import lotr.common.entity.projectile.LOTREntityDart;
-import net.minecraft.enchantment.*;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.*;
+import net.minecraft.item.EnumAction;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class LOTRItemBlowgun extends Item {
@@ -18,6 +23,30 @@ public class LOTRItemBlowgun extends Item {
 
 	public LOTRItemBlowgun(LOTRMaterial material) {
 		this(material.toToolMaterial());
+	}
+
+	public static void applyBlowgunModifiers(LOTREntityDart dart, ItemStack itemstack) {
+		int punch = LOTREnchantmentHelper.calcRangedKnockback(itemstack);
+		if (punch > 0) {
+			dart.knockbackStrength = punch;
+		}
+		if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, itemstack) + LOTREnchantmentHelper.calcFireAspect(itemstack) > 0) {
+			dart.setFire(100);
+		}
+		for (LOTREnchantment ench : LOTREnchantment.allEnchantments) {
+			if (!ench.applyToProjectile() || !LOTREnchantmentHelper.hasEnchant(itemstack, ench)) {
+				continue;
+			}
+			LOTREnchantmentHelper.setProjectileEnchantment(dart, ench);
+		}
+	}
+
+	public static float getBlowgunLaunchSpeedFactor(ItemStack itemstack) {
+		float f = 1.0f;
+		if (itemstack != null) {
+			f *= LOTREnchantmentHelper.calcRangedDamageFactor(itemstack);
+		}
+		return f;
 	}
 
 	@Override
@@ -73,7 +102,7 @@ public class LOTRItemBlowgun extends Item {
 		}
 		if (dartItem != null) {
 			int useTick = getMaxItemUseDuration(itemstack) - i;
-			float charge = (float) useTick / (float) getMaxDrawTime();
+			float charge = (float) useTick / getMaxDrawTime();
 			if (charge < 0.65f) {
 				return;
 			}
@@ -90,43 +119,19 @@ public class LOTRItemBlowgun extends Item {
 			if (!world.isRemote) {
 				ItemStack shotDart = dartItem.copy();
 				shotDart.stackSize = 1;
-				LOTREntityDart dart = ((LOTRItemDart) shotDart.getItem()).createDart(world, entityplayer, shotDart, charge * 2.0f * LOTRItemBlowgun.getBlowgunLaunchSpeedFactor(itemstack));
+				LOTREntityDart dart = ((LOTRItemDart) shotDart.getItem()).createDart(world, entityplayer, shotDart, charge * 2.0f * getBlowgunLaunchSpeedFactor(itemstack));
 				if (dart.dartDamageFactor < 1.0f) {
 					dart.dartDamageFactor = 1.0f;
 				}
 				if (charge >= 1.0f) {
 					dart.setIsCritical(true);
 				}
-				LOTRItemBlowgun.applyBlowgunModifiers(dart, itemstack);
+				applyBlowgunModifiers(dart, itemstack);
 				if (entityplayer.capabilities.isCreativeMode) {
 					dart.canBePickedUp = 2;
 				}
 				world.spawnEntityInWorld(dart);
 			}
 		}
-	}
-
-	public static void applyBlowgunModifiers(LOTREntityDart dart, ItemStack itemstack) {
-		int punch = LOTREnchantmentHelper.calcRangedKnockback(itemstack);
-		if (punch > 0) {
-			dart.knockbackStrength = punch;
-		}
-		if (EnchantmentHelper.getEnchantmentLevel(Enchantment.flame.effectId, itemstack) + LOTREnchantmentHelper.calcFireAspect(itemstack) > 0) {
-			dart.setFire(100);
-		}
-		for (LOTREnchantment ench : LOTREnchantment.allEnchantments) {
-			if (!ench.applyToProjectile() || !LOTREnchantmentHelper.hasEnchant(itemstack, ench)) {
-				continue;
-			}
-			LOTREnchantmentHelper.setProjectileEnchantment(dart, ench);
-		}
-	}
-
-	public static float getBlowgunLaunchSpeedFactor(ItemStack itemstack) {
-		float f = 1.0f;
-		if (itemstack != null) {
-			f *= LOTREnchantmentHelper.calcRangedDamageFactor(itemstack);
-		}
-		return f;
 	}
 }

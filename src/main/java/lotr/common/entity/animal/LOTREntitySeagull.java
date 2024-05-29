@@ -1,12 +1,13 @@
 package lotr.common.entity.animal;
 
-import java.util.List;
-
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.init.Items;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 public class LOTREntitySeagull extends LOTREntityBird {
 	public static float SEAGULL_SCALE = 1.4f;
@@ -14,11 +15,6 @@ public class LOTREntitySeagull extends LOTREntityBird {
 	public LOTREntitySeagull(World world) {
 		super(world);
 		setSize(width * SEAGULL_SCALE, height * SEAGULL_SCALE);
-	}
-
-	@Override
-	public void applyEntityAttributes() {
-		super.applyEntityAttributes();
 	}
 
 	@Override
@@ -68,7 +64,7 @@ public class LOTREntitySeagull extends LOTREntityBird {
 	@Override
 	public IEntityLivingData onSpawnWithEgg(IEntityLivingData data) {
 		data = super.onSpawnWithEgg(data);
-		this.setBirdType(LOTREntityBird.BirdType.COMMON);
+		setBirdType(LOTREntityBird.BirdType.COMMON);
 		return data;
 	}
 }

@@ -1,11 +1,13 @@
 package lotr.common.command;
 
-import java.util.List;
-
 import lotr.common.LOTRLevelData;
-import net.minecraft.command.*;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.command.WrongUsageException;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
+
+import java.util.List;
 
 public class LOTRCommandPledgeCooldown extends CommandBase {
 	@Override
@@ -45,9 +47,6 @@ public class LOTRCommandPledgeCooldown extends CommandBase {
 				entityplayer = CommandBase.getPlayer(sender, args[1]);
 			} else {
 				entityplayer = CommandBase.getCommandSenderAsPlayer(sender);
-				if (entityplayer == null) {
-					throw new PlayerNotFoundException();
-				}
 			}
 			LOTRLevelData.getData(entityplayer).setPledgeBreakCooldown(cd);
 			CommandBase.func_152373_a(sender, this, "commands.lotr.pledgeCooldown.set", entityplayer.getCommandSenderName(), cd, LOTRLevelData.getHMSTime_Ticks(cd));

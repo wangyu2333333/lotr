@@ -1,6 +1,7 @@
 package lotr.common.world.biome;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRMod;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
 import lotr.common.world.structure2.LOTRWorldGenStoneRuin;
 
@@ -11,7 +12,7 @@ public class LOTRBiomeGenDorwinionHills extends LOTRBiomeGenDorwinion {
 		fillerBlockMeta = 5;
 		biomeTerrain.setXZScale(50.0);
 		clearBiomeVariants();
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
 		decorator.flowersPerChunk = 3;
 		decorator.grassPerChunk = 10;
 		decorator.doubleGrassPerChunk = 5;

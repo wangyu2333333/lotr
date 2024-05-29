@@ -1,17 +1,19 @@
 package lotr.common;
 
-import java.awt.Color;
-import java.util.*;
-
 import com.google.common.math.IntMath;
-
-import lotr.common.network.*;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import lotr.common.network.LOTRPacketDate;
+import lotr.common.network.LOTRPacketHandler;
 import lotr.common.world.LOTRWorldInfo;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LOTRDate {
 	public static int ticksInDay = LOTRTime.DAY_LENGTH;
@@ -42,8 +44,8 @@ public class LOTRDate {
 
 	public static void sendUpdatePacket(EntityPlayerMP entityplayer, boolean update) {
 		NBTTagCompound nbt = new NBTTagCompound();
-		LOTRDate.saveDates(nbt);
-		LOTRPacketDate packet = new LOTRPacketDate(nbt, update);
+		saveDates(nbt);
+		IMessage packet = new LOTRPacketDate(nbt, update);
 		LOTRPacketHandler.networkWrapper.sendTo(packet, entityplayer);
 	}
 
@@ -52,7 +54,7 @@ public class LOTRDate {
 		LOTRLevelData.markDirty();
 		for (Object obj : MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
 			EntityPlayerMP entityplayer = (EntityPlayerMP) obj;
-			LOTRDate.sendUpdatePacket(entityplayer, true);
+			sendUpdatePacket(entityplayer, true);
 		}
 	}
 
@@ -65,18 +67,16 @@ public class LOTRDate {
 			prevWorldTime = worldTime;
 		}
 		if (worldTime / ticksInDay != prevWorldTime / ticksInDay) {
-			LOTRDate.setDate(ShireReckoning.currentDay + 1);
+			setDate(ShireReckoning.currentDay + 1);
 		}
 		prevWorldTime = worldTime;
 	}
 
 	public enum Season {
-		SPRING("spring", 0, new float[] { 1.0f, 1.0f, 1.0f }), SUMMER("summer", 1, new float[] { 1.15f, 1.15f, 0.9f }), AUTUMN("autumn", 2, new float[] { 1.2f, 1.0f, 0.7f }), WINTER("winter", 3, new float[] { 1.0f, 0.8f, 0.8f });
+		SPRING("spring", 0, new float[]{1.0f, 1.0f, 1.0f}), SUMMER("summer", 1, new float[]{1.15f, 1.15f, 0.9f}), AUTUMN("autumn", 2, new float[]{1.2f, 1.0f, 0.7f}), WINTER("winter", 3, new float[]{1.0f, 0.8f, 0.8f});
 
-		public static Season[] allSeasons;
-		static {
-			allSeasons = new Season[] { SPRING, SUMMER, AUTUMN, WINTER };
-		}
+		public static Season[] allSeasons = new Season[]{SPRING, SUMMER, AUTUMN, WINTER};
+
 		public String name;
 		public int seasonID;
 
@@ -106,15 +106,15 @@ public class LOTRDate {
 
 	public static class ShireReckoning {
 		public static Date startDate = new Date(1401, Month.HALIMATH, 22);
-		public static int currentDay = 0;
+		public static int currentDay;
 		public static Map<Integer, Date> cachedDates = new HashMap<>();
 
 		public static Season getSeason() {
-			return ShireReckoning.getShireDate().month.season;
+			return getShireDate().month.season;
 		}
 
 		public static Date getShireDate() {
-			return ShireReckoning.getShireDate(currentDay);
+			return getShireDate(currentDay);
 		}
 
 		public static Date getShireDate(int day) {
@@ -137,112 +137,6 @@ public class LOTRDate {
 
 		public static boolean isLeapYear(int year) {
 			return year % 4 == 0 && year % 100 != 0;
-		}
-
-		public static class Date {
-			public int year;
-			public Month month;
-			public int monthDate;
-			public Day day;
-
-			public Date(int y, Month m, int d) {
-				year = y;
-				month = m;
-				monthDate = d;
-			}
-
-			public Date copy() {
-				return new Date(year, month, monthDate);
-			}
-
-			public Date decrement() {
-				int newYear = year;
-				Month newMonth = month;
-				int newDate = monthDate;
-				if (--newDate < 0) {
-					int monthID = newMonth.ordinal();
-					if (--monthID < 0) {
-						monthID = Month.values().length - 1;
-						--newYear;
-					}
-					newMonth = Month.values()[monthID];
-					if (newMonth.isLeapYear && !ShireReckoning.isLeapYear(newYear)) {
-						monthID--;
-						newMonth = Month.values()[monthID];
-					}
-					newDate = newMonth.days;
-				}
-				return new Date(newYear, newMonth, newDate);
-			}
-
-			public String getDateName(boolean longName) {
-				String[] dayYear = getDayAndYearNames(longName);
-				return dayYear[0] + ", " + dayYear[1];
-			}
-
-			public Day getDay() {
-				if (!month.hasWeekdayName) {
-					return null;
-				}
-				if (day == null) {
-					int yearDay = 0;
-					int monthID = month.ordinal();
-					for (int i = 0; i < monthID; ++i) {
-						Month m = Month.values()[i];
-						if (!m.hasWeekdayName) {
-							continue;
-						}
-						yearDay += m.days;
-					}
-					int dayID = IntMath.mod((yearDay += monthDate) - 1, Day.values().length);
-					day = Day.values()[dayID];
-				}
-				return day;
-			}
-
-			public String[] getDayAndYearNames(boolean longName) {
-				StringBuilder builder = new StringBuilder();
-				if (month.hasWeekdayName) {
-					builder.append(getDay().getDayName());
-				}
-				builder.append(" ");
-				if (!month.isSingleDay()) {
-					builder.append(monthDate);
-					builder.append(" ");
-				}
-				builder.append(month.getMonthName());
-				String dateName = builder.toString();
-				builder = new StringBuilder();
-				if (longName) {
-					builder.append(StatCollector.translateToLocal("lotr.date.shire.long"));
-				} else {
-					builder.append(StatCollector.translateToLocal("lotr.date.shire"));
-				}
-				builder.append(" ");
-				builder.append(year);
-				String yearName = builder.toString();
-				return new String[] { dateName, yearName };
-			}
-
-			public Date increment() {
-				int newYear = year;
-				Month newMonth = month;
-				int newDate = monthDate;
-				if (++newDate > newMonth.days) {
-					newDate = 1;
-					int monthID = newMonth.ordinal();
-					if (++monthID >= Month.values().length) {
-						monthID = 0;
-						++newYear;
-					}
-					newMonth = Month.values()[monthID];
-					if (newMonth.isLeapYear && !ShireReckoning.isLeapYear(newYear)) {
-						monthID++;
-						newMonth = Month.values()[monthID];
-					}
-				}
-				return new Date(newYear, newMonth, newDate);
-			}
 		}
 
 		public enum Day {
@@ -286,6 +180,112 @@ public class LOTRDate {
 
 			public boolean isSingleDay() {
 				return days == 1;
+			}
+		}
+
+		public static class Date {
+			public int year;
+			public Month month;
+			public int monthDate;
+			public Day day;
+
+			public Date(int y, Month m, int d) {
+				year = y;
+				month = m;
+				monthDate = d;
+			}
+
+			public Date copy() {
+				return new Date(year, month, monthDate);
+			}
+
+			public Date decrement() {
+				int newYear = year;
+				Month newMonth = month;
+				int newDate = monthDate;
+				if (--newDate < 0) {
+					int monthID = newMonth.ordinal();
+					if (--monthID < 0) {
+						monthID = Month.values().length - 1;
+						--newYear;
+					}
+					newMonth = Month.values()[monthID];
+					if (newMonth.isLeapYear && !isLeapYear(newYear)) {
+						monthID--;
+						newMonth = Month.values()[monthID];
+					}
+					newDate = newMonth.days;
+				}
+				return new Date(newYear, newMonth, newDate);
+			}
+
+			public String getDateName(boolean longName) {
+				String[] dayYear = getDayAndYearNames(longName);
+				return dayYear[0] + ", " + dayYear[1];
+			}
+
+			public Day getDay() {
+				if (!month.hasWeekdayName) {
+					return null;
+				}
+				if (day == null) {
+					int yearDay = 0;
+					int monthID = month.ordinal();
+					for (int i = 0; i < monthID; ++i) {
+						Month m = Month.values()[i];
+						if (!m.hasWeekdayName) {
+							continue;
+						}
+						yearDay += m.days;
+					}
+					int dayID = IntMath.mod(yearDay + monthDate - 1, Day.values().length);
+					day = Day.values()[dayID];
+				}
+				return day;
+			}
+
+			public String[] getDayAndYearNames(boolean longName) {
+				StringBuilder builder = new StringBuilder();
+				if (month.hasWeekdayName) {
+					builder.append(getDay().getDayName());
+				}
+				builder.append(" ");
+				if (!month.isSingleDay()) {
+					builder.append(monthDate);
+					builder.append(" ");
+				}
+				builder.append(month.getMonthName());
+				String dateName = builder.toString();
+				builder = new StringBuilder();
+				if (longName) {
+					builder.append(StatCollector.translateToLocal("lotr.date.shire.long"));
+				} else {
+					builder.append(StatCollector.translateToLocal("lotr.date.shire"));
+				}
+				builder.append(" ");
+				builder.append(year);
+				String yearName = builder.toString();
+				return new String[]{dateName, yearName};
+			}
+
+			public Date increment() {
+				int newYear = year;
+				Month newMonth = month;
+				int newDate = monthDate;
+				if (++newDate > newMonth.days) {
+					newDate = 1;
+					int monthID = newMonth.ordinal();
+					if (++monthID >= Month.values().length) {
+						monthID = 0;
+						++newYear;
+					}
+					newMonth = Month.values()[monthID];
+					if (newMonth.isLeapYear && !isLeapYear(newYear)) {
+						monthID++;
+						newMonth = Month.values()[monthID];
+					}
+				}
+				return new Date(newYear, newMonth, newDate);
 			}
 		}
 

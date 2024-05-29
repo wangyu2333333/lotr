@@ -1,6 +1,7 @@
 package lotr.client.model;
 
-import net.minecraft.client.model.*;
+import net.minecraft.client.model.ModelBase;
+import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 
 public class LOTRModelKebabStand extends ModelBase {
@@ -19,12 +20,12 @@ public class LOTRModelKebabStand extends ModelBase {
 		ModelRenderer panelRight = new ModelRenderer(this, 18, 15);
 		panelRight.setRotationPoint(-4.0f, 0.0f, 6.0f);
 		panelRight.addBox(-4.0f, -16.0f, 0.0f, 4, 15, 1);
-		panelRight.rotateAngleY = (float) Math.toRadians(-45.0);
+		panelRight.rotateAngleY = -0.7853981633974483f;
 		stand.addChild(panelRight);
 		ModelRenderer panelLeft = new ModelRenderer(this, 18, 15);
 		panelLeft.setRotationPoint(4.0f, 0.0f, 6.0f);
 		panelLeft.addBox(0.0f, -16.0f, 0.0f, 4, 15, 1);
-		panelLeft.rotateAngleY = (float) Math.toRadians(45.0);
+		panelLeft.rotateAngleY = 0.7853981633974483f;
 		stand.addChild(panelLeft);
 		textureWidth = 32;
 		textureHeight = 32;

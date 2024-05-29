@@ -1,12 +1,12 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import lotr.common.entity.npc.LOTREntityMoredainWarrior;
 import lotr.common.world.structure.LOTRChestContents;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenMoredainHutHunter extends LOTRWorldGenMoredainHut {
 	public LOTRWorldGenMoredainHutHunter(boolean flag) {
@@ -85,7 +85,7 @@ public class LOTRWorldGenMoredainHutHunter extends LOTRWorldGenMoredainHut {
 		setBlockAndMetadata(world, 1, 3, -3, thatchSlabBlock, thatchSlabMeta);
 		setBlockAndMetadata(world, -1, 1, 0, LOTRMod.strawBed, 0);
 		setBlockAndMetadata(world, -1, 1, 1, LOTRMod.strawBed, 8);
-		this.placeChest(world, random, 1, 1, 1, LOTRMod.chestBasket, 2, LOTRChestContents.MOREDAIN_HUT);
+		placeChest(world, random, 1, 1, 1, LOTRMod.chestBasket, 2, LOTRChestContents.MOREDAIN_HUT);
 		setBlockAndMetadata(world, 0, 3, 1, Blocks.torch, 4);
 		setBlockAndMetadata(world, 0, 3, -1, Blocks.torch, 3);
 		LOTREntityMoredainWarrior moredain = new LOTREntityMoredainWarrior(world);

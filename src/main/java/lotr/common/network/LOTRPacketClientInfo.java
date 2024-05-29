@@ -1,14 +1,19 @@
 package lotr.common.network;
 
-import java.util.*;
-
-import cpw.mods.fml.common.network.simpleimpl.*;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import lotr.common.*;
+import lotr.common.LOTRDimension;
 import lotr.common.LOTRDimension.DimensionRegion;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRPlayerData;
 import lotr.common.fac.LOTRFaction;
 import lotr.common.quest.LOTRMiniQuestEvent;
 import net.minecraft.entity.player.EntityPlayerMP;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 public class LOTRPacketClientInfo implements IMessage {
 	public LOTRFaction viewingFaction;
@@ -37,7 +42,7 @@ public class LOTRPacketClientInfo implements IMessage {
 		}
 		changedRegionsSize = data.readByte();
 		if (changedRegionsSize > 0) {
-			changedRegionMap = new HashMap<>();
+			changedRegionMap = new EnumMap<>(LOTRDimension.DimensionRegion.class);
 			for (int l = 0; l < changedRegionsSize; ++l) {
 				LOTRDimension.DimensionRegion reg = LOTRDimension.DimensionRegion.forID(data.readByte());
 				LOTRFaction fac = LOTRFaction.forID(data.readByte());
@@ -90,9 +95,9 @@ public class LOTRPacketClientInfo implements IMessage {
 			}
 			changedRegionMap = packet.changedRegionMap;
 			if (changedRegionMap != null) {
-				for (LOTRDimension.DimensionRegion reg : changedRegionMap.keySet()) {
-					LOTRFaction fac = changedRegionMap.get(reg);
-					pd.setRegionLastViewedFaction(reg, fac);
+				for (Map.Entry<DimensionRegion, LOTRFaction> entry : changedRegionMap.entrySet()) {
+					LOTRFaction fac = entry.getValue();
+					pd.setRegionLastViewedFaction(entry.getKey(), fac);
 				}
 			}
 			pd.setShowWaypoints(packet.showWP);

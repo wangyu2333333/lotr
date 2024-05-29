@@ -44,6 +44,11 @@ public class LOTREntityOrcBomb extends EntityTNTPrimed {
 		return dataWatcher.getWatchableObjectByte(16);
 	}
 
+	public void setBombStrengthLevel(int i) {
+		dataWatcher.updateObject(16, (byte) i);
+		orcBombFuse = 40 + LOTRBlockOrcBomb.getBombStrengthLevel(i) * 20;
+	}
+
 	@Override
 	public void onUpdate() {
 		prevPosX = posX;
@@ -78,17 +83,8 @@ public class LOTREntityOrcBomb extends EntityTNTPrimed {
 		orcBombFuse = nbt.getInteger("OrcBombFuse");
 	}
 
-	public void setBombStrengthLevel(int i) {
-		dataWatcher.updateObject(16, (byte) i);
-		orcBombFuse = 40 + LOTRBlockOrcBomb.getBombStrengthLevel(i) * 20;
-	}
-
 	public void setFuseFromExplosion() {
 		orcBombFuse = worldObj.rand.nextInt(orcBombFuse / 4) + orcBombFuse / 8;
-	}
-
-	public void setFuseFromHiredUnit() {
-		LOTRBlockOrcBomb.getBombStrengthLevel(getBombStrengthLevel());
 	}
 
 	@Override

@@ -1,19 +1,20 @@
 package lotr.client.render.entity;
 
-import java.util.*;
-
-import org.lwjgl.opengl.GL11;
-
-import lotr.client.model.*;
+import lotr.client.model.LOTRModelEnt;
+import lotr.client.model.LOTRModelTroll;
 import lotr.common.entity.item.LOTREntityBossTrophy;
 import lotr.common.item.LOTRItemBossTrophy;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 public class LOTRRenderBossTrophy extends Render {
-	public static Map<LOTRItemBossTrophy.TrophyType, ResourceLocation> trophyTextures = new HashMap<>();
+	public static Map<LOTRItemBossTrophy.TrophyType, ResourceLocation> trophyTextures = new EnumMap<>(LOTRItemBossTrophy.TrophyType.class);
 	public static LOTRModelTroll trollModel = new LOTRModelTroll();
 	public static LOTRModelEnt entModel = new LOTRModelEnt();
 
@@ -31,7 +32,7 @@ public class LOTRRenderBossTrophy extends Render {
 		GL11.glRotatef(rotation, 0.0f, 1.0f, 0.0f);
 		bindEntityTexture(entity);
 		if (type == LOTRItemBossTrophy.TrophyType.MOUNTAIN_TROLL_CHIEFTAIN) {
-			ModelRenderer head = LOTRRenderBossTrophy.trollModel.head;
+			ModelRenderer head = trollModel.head;
 			head.setRotationPoint(0.0f, -6.0f, 6.0f);
 			GL11.glTranslatef(0.0f, -0.05f, 0.1f);
 			GL11.glPushMatrix();
@@ -48,10 +49,10 @@ public class LOTRRenderBossTrophy extends Render {
 			GL11.glPopMatrix();
 		}
 		if (type == LOTRItemBossTrophy.TrophyType.MALLORN_ENT) {
-			ModelRenderer trunk = LOTRRenderBossTrophy.entModel.trunk;
-			LOTRRenderBossTrophy.entModel.rightArm.showModel = false;
-			LOTRRenderBossTrophy.entModel.leftArm.showModel = false;
-			LOTRRenderBossTrophy.entModel.trophyBottomPanel.showModel = true;
+			ModelRenderer trunk = entModel.trunk;
+			entModel.rightArm.showModel = false;
+			entModel.leftArm.showModel = false;
+			entModel.trophyBottomPanel.showModel = true;
 			float scale = 0.6f;
 			GL11.glTranslatef(0.0f, 34.0f * modelscale * scale, 0.0f);
 			if (trophy.isTrophyHanging()) {

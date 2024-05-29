@@ -1,7 +1,10 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
-import net.minecraft.entity.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -10,7 +13,7 @@ import net.minecraft.world.World;
 public class LOTREntityBreeBlacksmith extends LOTREntityBreeMan implements LOTRTradeable.Smith {
 	public LOTREntityBreeBlacksmith(World world) {
 		super(world);
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 	}
 
 	@Override

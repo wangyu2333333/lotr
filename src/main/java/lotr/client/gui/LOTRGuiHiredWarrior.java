@@ -1,15 +1,21 @@
 package lotr.client.gui;
 
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import lotr.common.LOTRSquadrons;
+import lotr.common.entity.npc.LOTREntityNPC;
+import lotr.common.entity.npc.LOTRHiredNPCInfo;
+import lotr.common.network.LOTRPacketHandler;
+import lotr.common.network.LOTRPacketNPCSquadron;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.StatCollector;
+import net.minecraft.util.StringUtils;
 import org.lwjgl.opengl.GL11;
 
-import lotr.common.LOTRSquadrons;
-import lotr.common.entity.npc.*;
-import lotr.common.network.*;
-import net.minecraft.client.gui.*;
-import net.minecraft.util.*;
-
 public class LOTRGuiHiredWarrior extends LOTRGuiHiredNPC {
-	public static String[] pageTitles = { "overview", "options" };
+	public static String[] pageTitles = {"overview", "options"};
 	public static int XP_COLOR = 16733440;
 	public GuiButton buttonLeft;
 	public GuiButton buttonRight;
@@ -19,7 +25,7 @@ public class LOTRGuiHiredWarrior extends LOTRGuiHiredNPC {
 	public LOTRGuiSlider sliderGuardRange;
 	public GuiTextField squadronNameField;
 	public boolean updatePage;
-	public boolean sendSquadronUpdate = false;
+	public boolean sendSquadronUpdate;
 
 	public LOTRGuiHiredWarrior(LOTREntityNPC npc) {
 		super(npc);
@@ -46,7 +52,7 @@ public class LOTRGuiHiredWarrior extends LOTRGuiHiredNPC {
 				buttonList.clear();
 				updatePage = true;
 			} else {
-				this.sendActionPacket(button.id);
+				sendActionPacket(button.id);
 			}
 		}
 	}
@@ -146,7 +152,7 @@ public class LOTRGuiHiredWarrior extends LOTRGuiHiredNPC {
 		super.onGuiClosed();
 		if (sendSquadronUpdate) {
 			String squadron = theNPC.hiredNPCInfo.getSquadron();
-			LOTRPacketNPCSquadron packet = new LOTRPacketNPCSquadron(theNPC, squadron);
+			IMessage packet = new LOTRPacketNPCSquadron(theNPC, squadron);
 			LOTRPacketHandler.networkWrapper.sendToServer(packet);
 		}
 	}
@@ -166,7 +172,7 @@ public class LOTRGuiHiredWarrior extends LOTRGuiHiredNPC {
 			if (sliderGuardRange.dragging) {
 				int i = sliderGuardRange.getSliderValue();
 				theNPC.hiredNPCInfo.setGuardRange(i);
-				this.sendActionPacket(sliderGuardRange.id, i);
+				sendActionPacket(sliderGuardRange.id, i);
 			}
 			squadronNameField.updateCursorCounter();
 		}

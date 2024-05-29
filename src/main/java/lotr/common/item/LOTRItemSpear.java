@@ -1,13 +1,19 @@
 package lotr.common.item;
 
 import lotr.common.dispenser.LOTRDispenseSpear;
-import lotr.common.enchant.*;
+import lotr.common.enchant.LOTREnchantment;
+import lotr.common.enchant.LOTREnchantmentHelper;
 import lotr.common.entity.projectile.LOTREntitySpear;
 import net.minecraft.block.BlockDispenser;
-import net.minecraft.enchantment.*;
-import net.minecraft.entity.*;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.*;
+import net.minecraft.item.EnumAction;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public class LOTRItemSpear extends LOTRItemSword {
@@ -30,14 +36,9 @@ public class LOTRItemSpear extends LOTRItemSword {
 		return 20;
 	}
 
-	@Override
-	public int getMaxItemUseDuration(ItemStack itemstack) {
-		return 72000;
-	}
-
 	public float getRangedDamageMultiplier(ItemStack itemstack, Entity shooter, Entity hit) {
 		float damage = getLOTRWeaponDamage();
-		damage = shooter instanceof EntityLivingBase && hit instanceof EntityLivingBase ? (damage += EnchantmentHelper.getEnchantmentModifierLiving((EntityLivingBase) shooter, (EntityLivingBase) hit)) : (damage += EnchantmentHelper.func_152377_a(itemstack, EnumCreatureAttribute.UNDEFINED));
+		damage = shooter instanceof EntityLivingBase && hit instanceof EntityLivingBase ? damage + EnchantmentHelper.getEnchantmentModifierLiving((EntityLivingBase) shooter, (EntityLivingBase) hit) : damage + EnchantmentHelper.func_152377_a(itemstack, EnumCreatureAttribute.UNDEFINED);
 		return damage * 0.7f;
 	}
 
@@ -47,7 +48,7 @@ public class LOTRItemSpear extends LOTRItemSword {
 			return;
 		}
 		int useTick = getMaxItemUseDuration(itemstack) - i;
-		float charge = (float) useTick / (float) getMaxDrawTime();
+		float charge = (float) useTick / getMaxDrawTime();
 		if (charge < 0.1f) {
 			return;
 		}

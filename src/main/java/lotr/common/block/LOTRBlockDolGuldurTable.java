@@ -1,8 +1,7 @@
 package lotr.common.block;
 
-import java.util.Random;
-
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.LOTRMod;
 import lotr.common.fac.LOTRFaction;
 import net.minecraft.block.Block;
@@ -11,8 +10,10 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
+import java.util.Random;
+
 public class LOTRBlockDolGuldurTable extends LOTRBlockCraftingTable {
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon[] tableIcons;
 
 	public LOTRBlockDolGuldurTable() {
@@ -20,7 +21,7 @@ public class LOTRBlockDolGuldurTable extends LOTRBlockCraftingTable {
 		setStepSound(Block.soundTypeStone);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
 		if (i == 1) {
@@ -32,7 +33,7 @@ public class LOTRBlockDolGuldurTable extends LOTRBlockCraftingTable {
 		return tableIcons[0];
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void randomDisplayTick(World world, int i, int j, int k, Random random) {
 		if (random.nextInt(20) == 0) {
@@ -48,7 +49,7 @@ public class LOTRBlockDolGuldurTable extends LOTRBlockCraftingTable {
 		}
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
 		tableIcons = new IIcon[2];

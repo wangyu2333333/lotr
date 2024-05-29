@@ -1,13 +1,17 @@
 package lotr.common.network;
 
-import java.util.*;
-
-import cpw.mods.fml.common.network.simpleimpl.*;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import lotr.common.LOTRMod;
 import lotr.common.fac.LOTRFaction;
 import lotr.common.world.map.LOTRConquestZone;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class LOTRPacketConquestGrid implements IMessage {
 	public LOTRFaction conqFac;
@@ -28,9 +32,9 @@ public class LOTRPacketConquestGrid implements IMessage {
 		byte facID = data.readByte();
 		conqFac = LOTRFaction.forID(facID);
 		allZones = new ArrayList<>();
-		short gridX = 0;
-		short gridZ = 0;
-		float str = 0.0f;
+		short gridX;
+		short gridZ;
+		float str;
 		while ((gridX = data.readShort()) != -15000) {
 			gridZ = data.readShort();
 			long time = data.readLong();

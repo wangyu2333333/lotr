@@ -1,13 +1,13 @@
 package lotr.common.world.feature;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import lotr.common.world.structure2.LOTRWorldGenStructureBase2;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenerator;
+
+import java.util.Random;
 
 public class LOTRWorldGenVolcanoCrater extends WorldGenerator {
 	public int minWidth = 5;
@@ -44,15 +44,13 @@ public class LOTRWorldGenVolcanoCrater extends WorldGenerator {
 		}
 		int spheres = 1;
 		for (int l = 0; l < spheres; ++l) {
-			int posX = i;
-			int posZ = k;
-			int posY = world.getTopSolidOrLiquidBlock(posX, posZ);
+			int posY = world.getTopSolidOrLiquidBlock(i, k);
 			int sphereWidth = MathHelper.getRandomIntegerInRange(random, minWidth, maxWidth);
-			for (int i1 = posX - sphereWidth; i1 <= posX + sphereWidth; ++i1) {
-				for (int k1 = posZ - sphereWidth; k1 <= posZ + sphereWidth; ++k1) {
+			for (int i1 = i - sphereWidth; i1 <= i + sphereWidth; ++i1) {
+				for (int k1 = k - sphereWidth; k1 <= k + sphereWidth; ++k1) {
 					int j1;
-					int i2 = i1 - posX;
-					int k2 = k1 - posZ;
+					int i2 = i1 - i;
+					int k2 = k1 - k;
 					int xzDistSq = i2 * i2 + k2 * k2;
 					if (xzDistSq >= sphereWidth * sphereWidth && (xzDistSq >= (sphereWidth + 1) * (sphereWidth + 1) || random.nextInt(3) != 0)) {
 						continue;

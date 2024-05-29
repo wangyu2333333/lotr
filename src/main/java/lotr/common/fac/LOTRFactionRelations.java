@@ -1,22 +1,27 @@
 package lotr.common.fac;
 
-import java.io.File;
-import java.util.*;
-
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import lotr.common.LOTRLevelData;
-import lotr.common.network.*;
+import lotr.common.network.LOTRPacketFactionRelations;
+import lotr.common.network.LOTRPacketHandler;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.StatCollector;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class LOTRFactionRelations {
 	public static Map<FactionPair, Relation> defaultMap = new HashMap<>();
 	public static Map<FactionPair, Relation> overrideMap = new HashMap<>();
 	public static boolean needsLoad = true;
-	public static boolean needsSave = false;
+	public static boolean needsSave;
 
 	public static Relation getFromDefaultMap(FactionPair key) {
 		if (defaultMap.containsKey(key)) {
@@ -39,7 +44,7 @@ public class LOTRFactionRelations {
 		if (overrideMap.containsKey(key)) {
 			return overrideMap.get(key);
 		}
-		return LOTRFactionRelations.getFromDefaultMap(key);
+		return getFromDefaultMap(key);
 	}
 
 	public static File getRelationsFile() {
@@ -48,7 +53,7 @@ public class LOTRFactionRelations {
 
 	public static void load() {
 		try {
-			NBTTagCompound facData = LOTRLevelData.loadNBTFromFile(LOTRFactionRelations.getRelationsFile());
+			NBTTagCompound facData = LOTRLevelData.loadNBTFromFile(getRelationsFile());
 			overrideMap.clear();
 			NBTTagList relationTags = facData.getTagList("Overrides", 10);
 			for (int i = 0; i < relationTags.tagCount(); ++i) {
@@ -61,7 +66,7 @@ public class LOTRFactionRelations {
 				overrideMap.put(pair, rel);
 			}
 			needsLoad = false;
-			LOTRFactionRelations.save();
+			save();
 		} catch (Exception e) {
 			FMLLog.severe("Error loading LOTR faction relations");
 			e.printStackTrace();
@@ -77,22 +82,22 @@ public class LOTRFactionRelations {
 	}
 
 	public static void overrideRelations(LOTRFaction f1, LOTRFaction f2, Relation relation) {
-		LOTRFactionRelations.setRelations(f1, f2, relation, false);
+		setRelations(f1, f2, relation, false);
 	}
 
 	public static void resetAllRelations() {
 		boolean wasEmpty = overrideMap.isEmpty();
 		overrideMap.clear();
 		if (!wasEmpty) {
-			LOTRFactionRelations.markDirty();
+			markDirty();
 			LOTRPacketFactionRelations pkt = LOTRPacketFactionRelations.reset();
-			LOTRFactionRelations.sendPacketToAll(pkt);
+			sendPacketToAll(pkt);
 		}
 	}
 
 	public static void save() {
 		try {
-			File datFile = LOTRFactionRelations.getRelationsFile();
+			File datFile = getRelationsFile();
 			if (!datFile.exists()) {
 				LOTRLevelData.saveNBTToFile(datFile, new NBTTagCompound());
 			}
@@ -131,7 +136,7 @@ public class LOTRFactionRelations {
 	}
 
 	public static void setDefaultRelations(LOTRFaction f1, LOTRFaction f2, Relation relation) {
-		LOTRFactionRelations.setRelations(f1, f2, relation, true);
+		setRelations(f1, f2, relation, true);
 	}
 
 	public static void setRelations(LOTRFaction f1, LOTRFaction f2, Relation relation, boolean isDefault) {
@@ -152,15 +157,55 @@ public class LOTRFactionRelations {
 				defaultMap.put(key, relation);
 			}
 		} else {
-			Relation defaultRelation = LOTRFactionRelations.getFromDefaultMap(key);
+			Relation defaultRelation = getFromDefaultMap(key);
 			if (relation == defaultRelation) {
 				overrideMap.remove(key);
 			} else {
 				overrideMap.put(key, relation);
 			}
-			LOTRFactionRelations.markDirty();
+			markDirty();
 			LOTRPacketFactionRelations pkt = LOTRPacketFactionRelations.oneEntry(key, relation);
-			LOTRFactionRelations.sendPacketToAll(pkt);
+			sendPacketToAll(pkt);
+		}
+	}
+
+	public enum Relation {
+		ALLY, FRIEND, NEUTRAL, ENEMY, MORTAL_ENEMY;
+
+		public static Relation forID(int id) {
+			for (Relation rel : values()) {
+				if (rel.ordinal() != id) {
+					continue;
+				}
+				return rel;
+			}
+			return null;
+		}
+
+		public static Relation forName(String name) {
+			for (Relation rel : values()) {
+				if (!rel.codeName().equals(name)) {
+					continue;
+				}
+				return rel;
+			}
+			return null;
+		}
+
+		public static List<String> listRelationNames() {
+			List<String> names = new ArrayList<>();
+			for (Relation rel : values()) {
+				names.add(rel.codeName());
+			}
+			return names;
+		}
+
+		public String codeName() {
+			return name();
+		}
+
+		public String getDisplayName() {
+			return StatCollector.translateToLocal("lotr.faction.rel." + codeName());
 		}
 	}
 
@@ -173,6 +218,15 @@ public class LOTRFactionRelations {
 			fac2 = f2;
 		}
 
+		public static FactionPair readFromNBT(NBTTagCompound nbt) {
+			LOTRFaction f1 = LOTRFaction.forName(nbt.getString("FacPair1"));
+			LOTRFaction f2 = LOTRFaction.forName(nbt.getString("FacPair2"));
+			if (f1 != null && f2 != null) {
+				return new FactionPair(f1, f2);
+			}
+			return null;
+		}
+
 		@Override
 		public boolean equals(Object obj) {
 			if (obj == this) {
@@ -180,9 +234,7 @@ public class LOTRFactionRelations {
 			}
 			if (obj instanceof FactionPair) {
 				FactionPair pair = (FactionPair) obj;
-				if (fac1 == pair.fac1 && fac2 == pair.fac2 || fac1 == pair.fac2 && fac2 == pair.fac1) {
-					return true;
-				}
+				return fac1 == pair.fac1 && fac2 == pair.fac2 || fac1 == pair.fac2 && fac2 == pair.fac1;
 			}
 			return false;
 		}
@@ -207,55 +259,6 @@ public class LOTRFactionRelations {
 		public void writeToNBT(NBTTagCompound nbt) {
 			nbt.setString("FacPair1", fac1.codeName());
 			nbt.setString("FacPair2", fac2.codeName());
-		}
-
-		public static FactionPair readFromNBT(NBTTagCompound nbt) {
-			LOTRFaction f1 = LOTRFaction.forName(nbt.getString("FacPair1"));
-			LOTRFaction f2 = LOTRFaction.forName(nbt.getString("FacPair2"));
-			if (f1 != null && f2 != null) {
-				return new FactionPair(f1, f2);
-			}
-			return null;
-		}
-	}
-
-	public enum Relation {
-		ALLY, FRIEND, NEUTRAL, ENEMY, MORTAL_ENEMY;
-
-		public String codeName() {
-			return name();
-		}
-
-		public String getDisplayName() {
-			return StatCollector.translateToLocal("lotr.faction.rel." + codeName());
-		}
-
-		public static Relation forID(int id) {
-			for (Relation rel : Relation.values()) {
-				if (rel.ordinal() != id) {
-					continue;
-				}
-				return rel;
-			}
-			return null;
-		}
-
-		public static Relation forName(String name) {
-			for (Relation rel : Relation.values()) {
-				if (!rel.codeName().equals(name)) {
-					continue;
-				}
-				return rel;
-			}
-			return null;
-		}
-
-		public static List<String> listRelationNames() {
-			ArrayList<String> names = new ArrayList<>();
-			for (Relation rel : Relation.values()) {
-				names.add(rel.codeName());
-			}
-			return names;
 		}
 	}
 

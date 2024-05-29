@@ -1,16 +1,21 @@
 package lotr.common.world.biome;
 
-import java.util.*;
-
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRMod;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
-import lotr.common.world.feature.*;
+import lotr.common.world.feature.LOTRTreeType;
+import lotr.common.world.feature.LOTRWorldGenBoulder;
 import lotr.common.world.map.LOTRWaypoint;
 import lotr.common.world.spawning.LOTREventSpawner;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.*;
+import net.minecraft.world.gen.feature.WorldGenFlowers;
+import net.minecraft.world.gen.feature.WorldGenerator;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Random;
 
 public class LOTRBiomeGenMeneltarma extends LOTRBiomeGenOcean {
 	public WorldGenerator boulderGen = new LOTRWorldGenBoulder(Blocks.stone, 0, 1, 4);
@@ -38,7 +43,7 @@ public class LOTRBiomeGenMeneltarma extends LOTRBiomeGenOcean {
 		decorator.addTree(LOTRTreeType.BIRCH_LARGE, 400);
 		decorator.addTree(LOTRTreeType.BEECH, 200);
 		decorator.addTree(LOTRTreeType.BEECH_LARGE, 400);
-		ArrayList flowerDupes = new ArrayList();
+		Collection flowerDupes = new ArrayList();
 		for (int l = 0; l < 10; ++l) {
 			flowers.clear();
 			registerPlainsFlowers();

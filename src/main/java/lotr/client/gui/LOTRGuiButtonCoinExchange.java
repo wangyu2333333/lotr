@@ -1,9 +1,8 @@
 package lotr.client.gui;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import org.lwjgl.opengl.GL11;
 
 public class LOTRGuiButtonCoinExchange extends GuiButton {
 	public LOTRGuiButtonCoinExchange(int i, int j, int k) {
@@ -18,7 +17,7 @@ public class LOTRGuiButtonCoinExchange extends GuiButton {
 			field_146123_n = i >= xPosition && j >= yPosition && i < xPosition + width && j < yPosition + height;
 			int k = getHoverState(field_146123_n);
 			int u = 176 + id * width;
-			int v = 0 + k * height;
+			int v = k * height;
 			drawTexturedModalRect(xPosition, yPosition, u, v, width, height);
 			mouseDragged(mc, i, j);
 		}

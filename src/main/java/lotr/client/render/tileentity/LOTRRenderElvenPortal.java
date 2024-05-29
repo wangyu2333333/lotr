@@ -1,15 +1,17 @@
 package lotr.client.render.tileentity;
 
-import java.nio.FloatBuffer;
-import java.util.Random;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.tileentity.*;
+import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.renderer.GLAllocation;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
+
+import java.nio.FloatBuffer;
+import java.util.Random;
 
 public class LOTRRenderElvenPortal extends TileEntitySpecialRenderer {
 	public FloatBuffer floatBuffer = GLAllocation.createDirectFloatBuffer(16);
@@ -56,7 +58,7 @@ public class LOTRRenderElvenPortal extends TileEntitySpecialRenderer {
 			float f9 = f8 + ActiveRenderInfo.objectY;
 			float f10 = f8 + f5 + ActiveRenderInfo.objectY;
 			float f11 = f9 / f10;
-			GL11.glTranslatef(f1, f11 += (float) (d1 + f4), f3);
+			GL11.glTranslatef(f1, f11 + (float) (d1 + f4), f3);
 			GL11.glTexGeni(8192, 9472, 9217);
 			GL11.glTexGeni(8193, 9472, 9217);
 			GL11.glTexGeni(8194, 9472, 9217);

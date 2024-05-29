@@ -1,9 +1,12 @@
 package lotr.common.network;
 
-import cpw.mods.fml.common.network.simpleimpl.*;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import lotr.common.LOTRMod;
-import lotr.common.entity.npc.*;
+import lotr.common.entity.npc.LOTREntityNPC;
+import lotr.common.entity.npc.LOTRHiredNPCInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
@@ -61,32 +64,32 @@ public class LOTRPacketHiredUnitCommand implements IMessage {
 								entityplayer.openGui(LOTRMod.instance, 46, world, hiredNPC.getEntityId(), 0, 0);
 							} else if (page == 1) {
 								switch (action) {
-								case 0:
-									hiredNPC.hiredNPCInfo.teleportAutomatically = !hiredNPC.hiredNPCInfo.teleportAutomatically;
-									break;
-								case 1:
-									hiredNPC.hiredNPCInfo.setGuardMode(!hiredNPC.hiredNPCInfo.isGuardMode());
-									break;
-								case 2:
-									hiredNPC.hiredNPCInfo.setGuardRange(value);
-									break;
-								default:
-									break;
+									case 0:
+										hiredNPC.hiredNPCInfo.teleportAutomatically = !hiredNPC.hiredNPCInfo.teleportAutomatically;
+										break;
+									case 1:
+										hiredNPC.hiredNPCInfo.setGuardMode(!hiredNPC.hiredNPCInfo.isGuardMode());
+										break;
+									case 2:
+										hiredNPC.hiredNPCInfo.setGuardRange(value);
+										break;
+									default:
+										break;
 								}
 							}
 						} else if (task == LOTRHiredNPCInfo.Task.FARMER) {
 							switch (action) {
-							case 0:
-								hiredNPC.hiredNPCInfo.setGuardMode(!hiredNPC.hiredNPCInfo.isGuardMode());
-								break;
-							case 1:
-								hiredNPC.hiredNPCInfo.setGuardRange(value);
-								break;
-							case 2:
-								entityplayer.openGui(LOTRMod.instance, 22, world, hiredNPC.getEntityId(), 0, 0);
-								break;
-							default:
-								break;
+								case 0:
+									hiredNPC.hiredNPCInfo.setGuardMode(!hiredNPC.hiredNPCInfo.isGuardMode());
+									break;
+								case 1:
+									hiredNPC.hiredNPCInfo.setGuardRange(value);
+									break;
+								case 2:
+									entityplayer.openGui(LOTRMod.instance, 22, world, hiredNPC.getEntityId(), 0, 0);
+									break;
+								default:
+									break;
 							}
 						}
 						hiredNPC.hiredNPCInfo.sendClientPacket(false);

@@ -1,16 +1,24 @@
 package lotr.common.entity.item;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.LOTRMod;
 import lotr.common.entity.LOTREntities;
-import lotr.common.entity.npc.*;
+import lotr.common.entity.npc.LOTREntityNPC;
+import lotr.common.entity.npc.LOTRTradeable;
+import lotr.common.entity.npc.LOTRTraderNPCInfo;
 import net.minecraft.block.Block;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 public class LOTREntityTraderRespawn extends Entity {
@@ -90,11 +98,15 @@ public class LOTREntityTraderRespawn extends Entity {
 
 	public float getBobbingOffset(float tick) {
 		float f = bobbingTime - prevBobbingTime;
-		return MathHelper.sin((prevBobbingTime + (f *= tick)) / 5.0f) * 0.25f;
+		return MathHelper.sin((prevBobbingTime + f * tick) / 5.0f) * 0.25f;
 	}
 
 	public String getClientTraderString() {
 		return dataWatcher.getWatchableObjectString(18);
+	}
+
+	public void setClientTraderString(String s) {
+		dataWatcher.updateObject(18, s);
 	}
 
 	@Override
@@ -110,6 +122,10 @@ public class LOTREntityTraderRespawn extends Entity {
 		return dataWatcher.getWatchableObjectInt(16);
 	}
 
+	public void setScale(int i) {
+		dataWatcher.updateObject(16, i);
+	}
+
 	public float getScaleFloat(float tick) {
 		float scale = getScale();
 		if (scale < MAX_SCALE) {
@@ -119,7 +135,7 @@ public class LOTREntityTraderRespawn extends Entity {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public void handleHealthUpdate(byte b) {
 		if (b == 16) {
 			for (int l = 0; l < 16; ++l) {
@@ -153,7 +169,7 @@ public class LOTREntityTraderRespawn extends Entity {
 		prevPosY = posY;
 		prevPosZ = posZ;
 		prevSpawnerSpin = spawnerSpin;
-		spawnerSpin = isSpawnImminent() ? (spawnerSpin += 24.0f) : (spawnerSpin += 6.0f);
+		spawnerSpin = isSpawnImminent() ? spawnerSpin + 24.0f : spawnerSpin + 6.0f;
 		prevSpawnerSpin = MathHelper.wrapAngleTo180_float(prevSpawnerSpin);
 		spawnerSpin = MathHelper.wrapAngleTo180_float(spawnerSpin);
 		if (getScale() < MAX_SCALE) {
@@ -227,21 +243,13 @@ public class LOTREntityTraderRespawn extends Entity {
 		traderHomeY = nbt.getInteger("TraderHomeY");
 		traderHomeZ = nbt.getInteger("TraderHomeZ");
 		traderHomeRadius = nbt.getFloat("TraderHomeRadius");
-		shouldTraderRespawn = nbt.hasKey("TraderShouldRespawn") ? nbt.getBoolean("TraderShouldRespawn") : true;
+		shouldTraderRespawn = !nbt.hasKey("TraderShouldRespawn") || nbt.getBoolean("TraderShouldRespawn");
 		if (nbt.hasKey("TraderLocationName")) {
 			traderLocationName = nbt.getString("TraderLocationName");
 		}
 		if (nbt.hasKey("TraderData")) {
 			traderData = nbt.getCompoundTag("TraderData");
 		}
-	}
-
-	public void setClientTraderString(String s) {
-		dataWatcher.updateObject(18, s);
-	}
-
-	public void setScale(int i) {
-		dataWatcher.updateObject(16, i);
 	}
 
 	public void setSpawnImminent() {

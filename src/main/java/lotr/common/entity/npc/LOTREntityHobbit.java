@@ -1,12 +1,17 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
 import lotr.common.entity.ai.*;
 import lotr.common.fac.LOTRFaction;
-import lotr.common.quest.*;
+import lotr.common.quest.LOTRMiniQuest;
+import lotr.common.quest.LOTRMiniQuestFactory;
 import lotr.common.world.biome.LOTRBiomeGenShire;
 import lotr.common.world.structure.LOTRChestContents;
-import net.minecraft.entity.*;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.potion.Potion;
@@ -180,7 +185,7 @@ public class LOTREntityHobbit extends LOTREntityMan {
 
 	@Override
 	public void onArtificalSpawn() {
-		if (this.getClass() == familyInfo.marriageEntityClass && rand.nextInt(10) == 0) {
+		if (getClass() == familyInfo.marriageEntityClass && rand.nextInt(10) == 0) {
 			familyInfo.setChild();
 		}
 	}

@@ -1,11 +1,11 @@
 package lotr.common.block;
 
-import java.util.Random;
-
 import lotr.common.world.feature.LOTRTreeType;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenAbstractTree;
+
+import java.util.Random;
 
 public class LOTRBlockSapling4 extends LOTRBlockSaplingBase {
 	public LOTRBlockSapling4() {
@@ -23,7 +23,7 @@ public class LOTRBlockSapling4 extends LOTRBlockSaplingBase {
 		int xOffset = 0;
 		int zOffset = 0;
 		if (meta == 0) {
-			int[] partyTree = LOTRBlockSaplingBase.findPartyTree(world, i, j, k, this, meta);
+			int[] partyTree = LOTRBlockSaplingBase.findPartyTree(world, i, j, k, this, 0);
 			if (partyTree != null) {
 				treeGen = LOTRTreeType.CHESTNUT_PARTY.create(true, random);
 				trunkPos = 1;

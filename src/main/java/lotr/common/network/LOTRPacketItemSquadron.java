@@ -1,8 +1,9 @@
 package lotr.common.network;
 
 import com.google.common.base.Charsets;
-
-import cpw.mods.fml.common.network.simpleimpl.*;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import lotr.common.LOTRSquadrons;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -45,11 +46,11 @@ public class LOTRPacketItemSquadron implements IMessage {
 			ItemStack itemstack = entityplayer.getCurrentEquippedItem();
 			if (itemstack != null && itemstack.getItem() instanceof LOTRSquadrons.SquadronItem) {
 				String squadron = packet.squadron;
-				if (!StringUtils.isNullOrEmpty(squadron)) {
+				if (StringUtils.isNullOrEmpty(squadron)) {
+					LOTRSquadrons.setSquadron(itemstack, "");
+				} else {
 					squadron = LOTRSquadrons.checkAcceptableLength(squadron);
 					LOTRSquadrons.setSquadron(itemstack, squadron);
-				} else {
-					LOTRSquadrons.setSquadron(itemstack, "");
 				}
 			}
 			return null;

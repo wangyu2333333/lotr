@@ -1,13 +1,14 @@
 package lotr.common.block;
 
-import java.util.ArrayList;
-
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.LOTRMod;
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.*;
-import net.minecraft.item.*;
-import net.minecraft.world.*;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public class LOTRBlockRope extends LOTRBlockLadder {
@@ -29,16 +30,16 @@ public class LOTRBlockRope extends LOTRBlockLadder {
 			return true;
 		}
 		switch (meta) {
-		case 2:
-			return world.isSideSolid(i, j, k + 1, ForgeDirection.NORTH);
-		case 3:
-			return world.isSideSolid(i, j, k - 1, ForgeDirection.SOUTH);
-		case 4:
-			return world.isSideSolid(i + 1, j, k, ForgeDirection.WEST);
-		case 5:
-			return world.isSideSolid(i - 1, j, k, ForgeDirection.EAST);
-		default:
-			break;
+			case 2:
+				return world.isSideSolid(i, j, k + 1, ForgeDirection.NORTH);
+			case 3:
+				return world.isSideSolid(i, j, k - 1, ForgeDirection.SOUTH);
+			case 4:
+				return world.isSideSolid(i + 1, j, k, ForgeDirection.WEST);
+			case 5:
+				return world.isSideSolid(i - 1, j, k, ForgeDirection.EAST);
+			default:
+				break;
 		}
 		return false;
 	}
@@ -48,7 +49,7 @@ public class LOTRBlockRope extends LOTRBlockLadder {
 		return world.getBlock(i, j + 1, k) == this || super.canPlaceBlockAt(world, i, j, k);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public String getItemIconName() {
 		return getTextureName();
@@ -67,7 +68,8 @@ public class LOTRBlockRope extends LOTRBlockLadder {
 		if (itemstack != null && itemstack.getItem() == Item.getItemFromBlock(this)) {
 			int j1;
 			Block block;
-			for (j1 = j; j1 >= 0 && j1 < world.getHeight() && (block = world.getBlock(i, j1, k)) == this; j1 += lookDir) {
+			//noinspection StatementWithEmptyBody
+			for (j1 = j; j1 >= 0 && j1 < world.getHeight() && world.getBlock(i, j1, k) == this; j1 += lookDir) {
 			}
 			if (j1 >= 0 && j1 < world.getHeight()) {
 				int thisMeta;
@@ -94,7 +96,7 @@ public class LOTRBlockRope extends LOTRBlockLadder {
 						break;
 					}
 					if (!entityplayer.capabilities.isCreativeMode) {
-						ArrayList<ItemStack> drops = block.getDrops(world, i, j1, k, meta, 0);
+						Iterable<ItemStack> drops = block.getDrops(world, i, j1, k, meta, 0);
 						for (ItemStack drop : drops) {
 							if (entityplayer.inventory.addItemStackToInventory(drop)) {
 								invAdded = true;
@@ -107,7 +109,7 @@ public class LOTRBlockRope extends LOTRBlockLadder {
 					world.playSoundEffect(i + 0.5f, j1 + 0.5f, k + 0.5f, stepSound.getBreakSound(), (stepSound.getVolume() + 1.0f) / 2.0f, stepSound.getPitch() * 0.8f);
 				}
 				if (invAdded) {
-					((EntityPlayerMP) entityplayer).openContainer.detectAndSendChanges();
+					entityplayer.openContainer.detectAndSendChanges();
 				}
 			}
 			return true;
@@ -131,7 +133,7 @@ public class LOTRBlockRope extends LOTRBlockLadder {
 		}
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public boolean shouldSideBeRendered(IBlockAccess world, int i, int j, int k, int side) {
 		if (side == 0 || side == 1) {

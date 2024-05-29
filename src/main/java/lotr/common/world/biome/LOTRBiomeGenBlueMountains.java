@@ -1,19 +1,28 @@
 package lotr.common.world.biome;
 
-import java.util.Random;
-
-import lotr.common.*;
-import lotr.common.entity.npc.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRMod;
+import lotr.common.entity.npc.LOTREntityDaleMerchant;
+import lotr.common.entity.npc.LOTREntityIronHillsMerchant;
+import lotr.common.entity.npc.LOTREntityRivendellTrader;
+import lotr.common.entity.npc.LOTREntityScrapTrader;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
 import lotr.common.world.feature.LOTRTreeType;
-import lotr.common.world.map.*;
-import lotr.common.world.spawning.*;
+import lotr.common.world.map.LOTRRoadType;
+import lotr.common.world.map.LOTRWaypoint;
+import lotr.common.world.spawning.LOTRBiomeSpawnList;
+import lotr.common.world.spawning.LOTREventSpawner;
+import lotr.common.world.spawning.LOTRInvasions;
+import lotr.common.world.spawning.LOTRSpawnList;
 import lotr.common.world.structure.LOTRWorldGenBlueMountainsStronghold;
-import lotr.common.world.structure2.*;
+import lotr.common.world.structure2.LOTRWorldGenBlueMountainsHouse;
+import lotr.common.world.structure2.LOTRWorldGenBlueMountainsSmithy;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenMinable;
+
+import java.util.Random;
 
 public class LOTRBiomeGenBlueMountains extends LOTRBiome {
 	public LOTRBiomeGenBlueMountains(int i, boolean major) {
@@ -32,11 +41,11 @@ public class LOTRBiomeGenBlueMountains extends LOTRBiome {
 		npcSpawnList.newFactionList(0, 2.0f).add(arrspawnListContainer3);
 		variantChance = 0.2f;
 		addBiomeVariantSet(LOTRBiomeVariant.SET_MOUNTAINS);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_BEECH, 0.2f);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_BIRCH, 0.2f);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LARCH, 0.2f);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_PINE, 0.2f);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_ASPEN, 0.2f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_BEECH, 0.2f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_BIRCH, 0.2f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LARCH, 0.2f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_PINE, 0.2f);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_ASPEN, 0.2f);
 		decorator.biomeGemFactor = 1.0f;
 		decorator.addSoil(new WorldGenMinable(LOTRMod.rock, 3, 60, Blocks.stone), 6.0f, 0, 96);
 		decorator.addOre(new WorldGenMinable(Blocks.coal_ore, 8), 10.0f, 0, 128);

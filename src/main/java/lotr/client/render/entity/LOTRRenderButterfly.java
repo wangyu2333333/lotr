@@ -1,18 +1,19 @@
 package lotr.client.render.entity;
 
-import java.util.*;
-
-import org.lwjgl.opengl.GL11;
-
 import lotr.client.model.LOTRModelButterfly;
 import lotr.common.entity.animal.LOTREntityButterfly;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderLiving;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
+
+import java.util.EnumMap;
+import java.util.Map;
 
 public class LOTRRenderButterfly extends RenderLiving {
-	public static Map<LOTREntityButterfly.ButterflyType, LOTRRandomSkins> textures = new HashMap<>();
+	public static Map<LOTREntityButterfly.ButterflyType, LOTRRandomSkins> textures = new EnumMap<>(LOTREntityButterfly.ButterflyType.class);
 
 	public LOTRRenderButterfly() {
 		super(new LOTRModelButterfly(), 0.2f);

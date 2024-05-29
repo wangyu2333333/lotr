@@ -1,12 +1,17 @@
 package lotr.common.entity.ai;
 
-import java.util.*;
-
 import lotr.common.LOTRMod;
-import lotr.common.entity.npc.*;
-import net.minecraft.entity.*;
+import lotr.common.entity.npc.LOTRBannerBearer;
+import lotr.common.entity.npc.LOTREntityNPC;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class LOTREntityAIFollowHiringPlayer extends EntityAIBase {
 	public LOTREntityNPC theNPC;
@@ -60,7 +65,7 @@ public class LOTREntityAIFollowHiringPlayer extends EntityAIBase {
 			return false;
 		}
 		if (isBannerBearer) {
-			ArrayList<EntityLiving> alliesToFollow = new ArrayList<>();
+			Collection<EntityLiving> alliesToFollow = new ArrayList<>();
 			List nearbyEntities = theNPC.worldObj.getEntitiesWithinAABB(EntityLiving.class, theNPC.boundingBox.expand(16.0, 16.0, 16.0));
 			for (Object nearbyEntitie : nearbyEntities) {
 				EntityLiving entity = (EntityLiving) nearbyEntitie;

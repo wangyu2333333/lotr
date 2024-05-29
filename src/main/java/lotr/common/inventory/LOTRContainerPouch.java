@@ -1,10 +1,10 @@
 package lotr.common.inventory;
 
-import org.apache.commons.lang3.StringUtils;
-
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.*;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import org.apache.commons.lang3.StringUtils;
 
 public class LOTRContainerPouch extends Container {
 	public int thePouchSlot;
@@ -35,6 +35,14 @@ public class LOTRContainerPouch extends Container {
 		}
 	}
 
+	public static boolean isPouchSlot(Container container, int slotNo, EntityPlayer entityplayer, int pouchSlotNo) {
+		if (slotNo >= 0 && slotNo < container.inventorySlots.size()) {
+			Slot slot = (Slot) container.inventorySlots.get(slotNo);
+			return slot.inventory == entityplayer.inventory && slot.getSlotIndex() == pouchSlotNo;
+		}
+		return false;
+	}
+
 	@Override
 	public boolean canInteractWith(EntityPlayer entityplayer) {
 		return ItemStack.areItemStacksEqual(thePouchItem, pouchInventory.getPouchItem());
@@ -55,7 +63,7 @@ public class LOTRContainerPouch extends Container {
 
 	@Override
 	public ItemStack slotClick(int slotNo, int subActionNo, int actionNo, EntityPlayer entityplayer) {
-		if (LOTRContainerPouch.isPouchSlot(this, slotNo, entityplayer, thePouchSlot) || actionNo == 2 && subActionNo == thePouchSlot) {
+		if (isPouchSlot(this, slotNo, entityplayer, thePouchSlot) || actionNo == 2 && subActionNo == thePouchSlot) {
 			return null;
 		}
 		return super.slotClick(slotNo, subActionNo, actionNo, entityplayer);
@@ -87,15 +95,5 @@ public class LOTRContainerPouch extends Container {
 			slot.onPickupFromSlot(entityplayer, itemstack1);
 		}
 		return itemstack;
-	}
-
-	public static boolean isPouchSlot(Container container, int slotNo, EntityPlayer entityplayer, int pouchSlotNo) {
-		if (slotNo >= 0 && slotNo < container.inventorySlots.size()) {
-			Slot slot = (Slot) container.inventorySlots.get(slotNo);
-			if (slot.inventory == entityplayer.inventory && slot.getSlotIndex() == pouchSlotNo) {
-				return true;
-			}
-		}
-		return false;
 	}
 }

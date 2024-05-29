@@ -1,10 +1,10 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import net.minecraft.block.Block;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenMumakSkeleton extends LOTRWorldGenStructureBase2 {
 	public Block boneBlock;
@@ -16,7 +16,7 @@ public class LOTRWorldGenMumakSkeleton extends LOTRWorldGenStructureBase2 {
 
 	@Override
 	public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
-		this.setOriginAndRotation(world, i, j, k, rotation, 0);
+		setOriginAndRotation(world, i, j, k, rotation, 0);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			for (int i1 = -3; i1 <= 3; ++i1) {

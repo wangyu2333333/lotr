@@ -1,24 +1,26 @@
 package lotr.common.world.structure2;
 
-import java.util.*;
-
 import lotr.common.LOTRMod;
-import lotr.common.entity.npc.*;
+import lotr.common.entity.npc.LOTREntityEasterlingFarmer;
+import lotr.common.entity.npc.LOTREntityEasterlingFarmhand;
 import lotr.common.world.feature.LOTRTreeType;
 import net.minecraft.entity.passive.*;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenAbstractTree;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 public abstract class LOTRWorldGenEasterlingVillageFarm extends LOTRWorldGenEasterlingStructure {
-	public LOTRWorldGenEasterlingVillageFarm(boolean flag) {
+	protected LOTRWorldGenEasterlingVillageFarm(boolean flag) {
 		super(flag);
 	}
 
 	@Override
 	public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
 		int j1;
-		this.setOriginAndRotation(world, i, j, k, rotation, 6);
+		setOriginAndRotation(world, i, j, k, rotation, 6);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			int minHeight = 0;
@@ -98,6 +100,23 @@ public abstract class LOTRWorldGenEasterlingVillageFarm extends LOTRWorldGenEast
 			super(flag);
 		}
 
+		public static EntityAnimal getRandomAnimal(World world, Random random) {
+			int animal = random.nextInt(4);
+			switch (animal) {
+				case 0:
+					return new EntityCow(world);
+				case 1:
+					return new EntityPig(world);
+				case 2:
+					return new EntitySheep(world);
+				case 3:
+					return new EntityChicken(world);
+				default:
+					break;
+			}
+			return null;
+		}
+
 		@Override
 		public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
 			int i1;
@@ -129,30 +148,13 @@ public abstract class LOTRWorldGenEasterlingVillageFarm extends LOTRWorldGenEast
 			}
 			int animals = 4 + random.nextInt(5);
 			for (int l = 0; l < animals; ++l) {
-				EntityAnimal animal = Animals.getRandomAnimal(world, random);
+				EntityAnimal animal = getRandomAnimal(world, random);
 				int i12 = 3 * (random.nextBoolean() ? 1 : -1);
 				int k1 = 3 * (random.nextBoolean() ? 1 : -1);
 				spawnNPCAndSetHome(animal, world, i12, 1, k1, 0);
 				animal.detachHome();
 			}
 			return true;
-		}
-
-		public static EntityAnimal getRandomAnimal(World world, Random random) {
-			int animal = random.nextInt(4);
-			switch (animal) {
-			case 0:
-				return new EntityCow(world);
-			case 1:
-				return new EntityPig(world);
-			case 2:
-				return new EntitySheep(world);
-			case 3:
-				return new EntityChicken(world);
-			default:
-				break;
-			}
-			return null;
 		}
 	}
 
@@ -210,6 +212,20 @@ public abstract class LOTRWorldGenEasterlingVillageFarm extends LOTRWorldGenEast
 			super(flag);
 		}
 
+		public static LOTRTreeType getRandomTree(Random random) {
+			ArrayList<LOTRTreeType> treeList = new ArrayList<>();
+			treeList.add(LOTRTreeType.BEECH);
+			treeList.add(LOTRTreeType.BEECH_LARGE);
+			treeList.add(LOTRTreeType.MAPLE);
+			treeList.add(LOTRTreeType.MAPLE_LARGE);
+			treeList.add(LOTRTreeType.CYPRESS);
+			treeList.add(LOTRTreeType.ALMOND);
+			treeList.add(LOTRTreeType.OLIVE);
+			treeList.add(LOTRTreeType.DATE_PALM);
+			treeList.add(LOTRTreeType.POMEGRANATE);
+			return treeList.get(random.nextInt(treeList.size()));
+		}
+
 		@Override
 		public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
 			int i1;
@@ -228,7 +244,7 @@ public abstract class LOTRWorldGenEasterlingVillageFarm extends LOTRWorldGenEast
 				}
 			}
 			for (int l = 0; l < 16; ++l) {
-				LOTRTreeType tree = Tree.getRandomTree(random);
+				LOTRTreeType tree = getRandomTree(random);
 				WorldGenAbstractTree treeGen = tree.create(notifyChanges, random);
 				if (treeGen == null) {
 					continue;
@@ -250,20 +266,6 @@ public abstract class LOTRWorldGenEasterlingVillageFarm extends LOTRWorldGenEast
 				}
 			}
 			return true;
-		}
-
-		public static LOTRTreeType getRandomTree(Random random) {
-			ArrayList<LOTRTreeType> treeList = new ArrayList<>();
-			treeList.add(LOTRTreeType.BEECH);
-			treeList.add(LOTRTreeType.BEECH_LARGE);
-			treeList.add(LOTRTreeType.MAPLE);
-			treeList.add(LOTRTreeType.MAPLE_LARGE);
-			treeList.add(LOTRTreeType.CYPRESS);
-			treeList.add(LOTRTreeType.ALMOND);
-			treeList.add(LOTRTreeType.OLIVE);
-			treeList.add(LOTRTreeType.DATE_PALM);
-			treeList.add(LOTRTreeType.POMEGRANATE);
-			return treeList.get(random.nextInt(treeList.size()));
 		}
 	}
 

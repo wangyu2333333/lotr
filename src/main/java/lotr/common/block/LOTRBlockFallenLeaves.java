@@ -1,22 +1,30 @@
 package lotr.common.block;
 
-import java.util.*;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRCreativeTabs;
+import lotr.common.LOTRMod;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
-import net.minecraft.item.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.IIcon;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 import net.minecraftforge.common.util.ForgeDirection;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Random;
+
 public class LOTRBlockFallenLeaves extends Block implements IShearable {
-	public static List<LOTRBlockFallenLeaves> allFallenLeaves = new ArrayList<>();
+	public static Collection<LOTRBlockFallenLeaves> allFallenLeaves = new ArrayList<>();
 	public Block[] leafBlocks;
 
 	public LOTRBlockFallenLeaves() {
@@ -27,6 +35,24 @@ public class LOTRBlockFallenLeaves extends Block implements IShearable {
 		setStepSound(Block.soundTypeGrass);
 		useNeighborBrightness = true;
 		setBlockBounds(0.0f, 0.0f, 0.0f, 1.0f, 0.125f, 1.0f);
+	}
+
+	public static void assignLeaves(Block fallenLeaves, Block... leaves) {
+		((LOTRBlockFallenLeaves) fallenLeaves).leafBlocks = leaves;
+	}
+
+	public static Object[] fallenBlockMetaFromLeafBlockMeta(Block block, int meta) {
+		meta &= 3;
+		for (LOTRBlockFallenLeaves fallenLeaves : allFallenLeaves) {
+			for (int i = 0; i < fallenLeaves.leafBlocks.length; ++i) {
+				Block leafBlock = fallenLeaves.leafBlocks[i];
+				if (leafBlock != block) {
+					continue;
+				}
+				return new Object[]{fallenLeaves, i * 4 + meta};
+			}
+		}
+		return null;
 	}
 
 	@Override
@@ -52,7 +78,7 @@ public class LOTRBlockFallenLeaves extends Block implements IShearable {
 		return canBlockStay(world, i, j, k);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public int colorMultiplier(IBlockAccess world, int i, int j, int k) {
 		int meta = world.getBlockMetadata(i, j, k);
@@ -65,7 +91,7 @@ public class LOTRBlockFallenLeaves extends Block implements IShearable {
 		return i;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
 		Object[] obj = leafBlockMetaFromFallenMeta(j);
@@ -81,7 +107,7 @@ public class LOTRBlockFallenLeaves extends Block implements IShearable {
 		return leafBlocks;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public int getRenderColor(int i) {
 		Object[] obj = leafBlockMetaFromFallenMeta(i);
@@ -93,12 +119,12 @@ public class LOTRBlockFallenLeaves extends Block implements IShearable {
 		return LOTRMod.proxy.getFallenLeavesRenderID();
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void getSubBlocks(Item item, CreativeTabs tab, List list) {
 		for (int i = 0; i < leafBlocks.length; ++i) {
 			Block leaf = leafBlocks[i];
-			ArrayList<ItemStack> leafTypes = new ArrayList<>();
+			List<ItemStack> leafTypes = new ArrayList<>();
 			leaf.getSubBlocks(Item.getItemFromBlock(leaf), leaf.getCreativeTabToDisplayOn(), leafTypes);
 			for (ItemStack leafItem : leafTypes) {
 				int meta = leafItem.getItemDamage();
@@ -120,13 +146,13 @@ public class LOTRBlockFallenLeaves extends Block implements IShearable {
 	public Object[] leafBlockMetaFromFallenMeta(int meta) {
 		Block leaf = leafBlocks[meta / 4];
 		int leafMeta = meta & 3;
-		return new Object[] { leaf, leafMeta };
+		return new Object[]{leaf, leafMeta};
 	}
 
 	@Override
 	public void onNeighborBlockChange(World world, int i, int j, int k, Block block) {
 		if (!canBlockStay(world, i, j, k)) {
-			this.dropBlockAsItem(world, i, j, k, world.getBlockMetadata(i, j, k), 0);
+			dropBlockAsItem(world, i, j, k, world.getBlockMetadata(i, j, k), 0);
 			world.setBlockToAir(i, j, k);
 		}
 	}
@@ -138,7 +164,7 @@ public class LOTRBlockFallenLeaves extends Block implements IShearable {
 		return drops;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
 	}
@@ -146,23 +172,5 @@ public class LOTRBlockFallenLeaves extends Block implements IShearable {
 	@Override
 	public boolean renderAsNormalBlock() {
 		return false;
-	}
-
-	public static void assignLeaves(Block fallenLeaves, Block... leaves) {
-		((LOTRBlockFallenLeaves) fallenLeaves).leafBlocks = leaves;
-	}
-
-	public static Object[] fallenBlockMetaFromLeafBlockMeta(Block block, int meta) {
-		meta &= 3;
-		for (LOTRBlockFallenLeaves fallenLeaves : allFallenLeaves) {
-			for (int i = 0; i < fallenLeaves.leafBlocks.length; ++i) {
-				Block leafBlock = fallenLeaves.leafBlocks[i];
-				if (leafBlock != block) {
-					continue;
-				}
-				return new Object[] { fallenLeaves, i * 4 + meta };
-			}
-		}
-		return null;
 	}
 }

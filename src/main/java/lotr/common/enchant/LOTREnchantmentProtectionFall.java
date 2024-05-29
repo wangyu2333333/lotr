@@ -1,7 +1,9 @@
 package lotr.common.enchant;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.StatCollector;
 
 public class LOTREnchantmentProtectionFall extends LOTREnchantmentProtectionSpecial {
 	public LOTREnchantmentProtectionFall(String s, int level) {
@@ -10,7 +12,7 @@ public class LOTREnchantmentProtectionFall extends LOTREnchantmentProtectionSpec
 
 	@Override
 	public int calcIntProtection() {
-		float f = (float) protectLevel * (float) (protectLevel + 1) / 2.0f;
+		float f = (float) protectLevel * (protectLevel + 1) / 2.0f;
 		return 3 + MathHelper.floor_float(f);
 	}
 

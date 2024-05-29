@@ -1,22 +1,24 @@
 package lotr.common.block;
 
-import java.util.List;
-
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.LOTRCreativeTabs;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
+import java.util.List;
+
 public abstract class LOTRBlockBrickBase extends Block {
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon[] brickIcons;
 	public String[] brickNames;
 
-	public LOTRBlockBrickBase() {
+	protected LOTRBlockBrickBase() {
 		super(Material.rock);
 		setCreativeTab(LOTRCreativeTabs.tabBlock);
 		setHardness(1.5f);
@@ -29,7 +31,7 @@ public abstract class LOTRBlockBrickBase extends Block {
 		return i;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
 		if (j >= brickNames.length) {
@@ -38,7 +40,7 @@ public abstract class LOTRBlockBrickBase extends Block {
 		return brickIcons[j];
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void getSubBlocks(Item item, CreativeTabs tab, List list) {
 		for (int i = 0; i < brickNames.length; ++i) {
@@ -46,7 +48,7 @@ public abstract class LOTRBlockBrickBase extends Block {
 		}
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
 		brickIcons = new IIcon[brickNames.length];

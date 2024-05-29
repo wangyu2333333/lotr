@@ -1,13 +1,19 @@
 package lotr.common.network;
 
-import java.util.UUID;
-
-import cpw.mods.fml.common.network.simpleimpl.*;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import lotr.common.*;
-import lotr.common.world.map.*;
+import lotr.common.LOTRConfig;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRPlayerData;
+import lotr.common.world.map.LOTRAbstractWaypoint;
+import lotr.common.world.map.LOTRCustomWaypoint;
+import lotr.common.world.map.LOTRWaypoint;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.util.ChatComponentTranslation;
+
+import java.util.UUID;
 
 public class LOTRPacketFastTravel implements IMessage {
 	public boolean isCustom;
@@ -51,20 +57,18 @@ public class LOTRPacketFastTravel implements IMessage {
 		@Override
 		public IMessage onMessage(LOTRPacketFastTravel packet, MessageContext context) {
 			EntityPlayerMP entityplayer = context.getServerHandler().playerEntity;
-			if (!LOTRConfig.enableFastTravel) {
-				entityplayer.addChatMessage(new ChatComponentTranslation("chat.lotr.ftDisabled"));
-			} else {
+			if (LOTRConfig.enableFastTravel) {
 				LOTRPlayerData playerData = LOTRLevelData.getData(entityplayer);
 				boolean isCustom = packet.isCustom;
 				int waypointID = packet.wpID;
 				LOTRAbstractWaypoint waypoint = null;
-				if (!isCustom) {
+				if (isCustom) {
+					UUID sharingPlayer = packet.sharingPlayer;
+					waypoint = sharingPlayer != null ? playerData.getSharedCustomWaypointByID(sharingPlayer, waypointID) : playerData.getCustomWaypointByID(waypointID);
+				} else {
 					if (waypointID >= 0 && waypointID < LOTRWaypoint.values().length) {
 						waypoint = LOTRWaypoint.values()[waypointID];
 					}
-				} else {
-					UUID sharingPlayer = packet.sharingPlayer;
-					waypoint = sharingPlayer != null ? playerData.getSharedCustomWaypointByID(sharingPlayer, waypointID) : playerData.getCustomWaypointByID(waypointID);
 				}
 				if (waypoint != null && waypoint.hasPlayerUnlocked(entityplayer)) {
 					if (playerData.getTimeSinceFT() < playerData.getWaypointFTTime(waypoint, entityplayer)) {
@@ -83,6 +87,8 @@ public class LOTRPacketFastTravel implements IMessage {
 						}
 					}
 				}
+			} else {
+				entityplayer.addChatMessage(new ChatComponentTranslation("chat.lotr.ftDisabled"));
 			}
 			return null;
 		}

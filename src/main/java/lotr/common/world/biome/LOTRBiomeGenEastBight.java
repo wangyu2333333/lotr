@@ -1,18 +1,24 @@
 package lotr.common.world.biome;
 
-import java.util.Random;
-
 import lotr.common.LOTRAchievement;
 import lotr.common.entity.animal.LOTREntityHorse;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
 import lotr.common.world.feature.LOTRTreeType;
 import lotr.common.world.map.LOTRWaypoint;
-import lotr.common.world.spawning.*;
-import lotr.common.world.structure2.*;
+import lotr.common.world.spawning.LOTRBiomeSpawnList;
+import lotr.common.world.spawning.LOTREventSpawner;
+import lotr.common.world.spawning.LOTRInvasions;
+import lotr.common.world.spawning.LOTRSpawnList;
+import lotr.common.world.structure2.LOTRWorldGenBurntHouse;
+import lotr.common.world.structure2.LOTRWorldGenRuinedHouse;
+import lotr.common.world.structure2.LOTRWorldGenSmallStoneRuin;
+import lotr.common.world.structure2.LOTRWorldGenStoneRuin;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
+
+import java.util.Random;
 
 public class LOTRBiomeGenEastBight extends LOTRBiome {
 	public LOTRBiomeGenEastBight(int i, boolean major) {
@@ -56,9 +62,9 @@ public class LOTRBiomeGenEastBight extends LOTRBiome {
 		arrspawnListContainer7[2] = LOTRBiomeSpawnList.entry(LOTRSpawnList.EASTERLINGS, 2).setConquestThreshold(100.0f);
 		arrspawnListContainer7[3] = LOTRBiomeSpawnList.entry(LOTRSpawnList.EASTERLINGS, 2).setConquestThreshold(200.0f);
 		npcSpawnList.newFactionList(0).add(arrspawnListContainer7);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
-		this.addBiomeVariant(LOTRBiomeVariant.STEPPE);
-		this.addBiomeVariant(LOTRBiomeVariant.STEPPE_BARREN);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
+		addBiomeVariant(LOTRBiomeVariant.STEPPE);
+		addBiomeVariant(LOTRBiomeVariant.STEPPE_BARREN);
 		decorator.logsPerChunk = 2;
 		decorator.flowersPerChunk = 2;
 		decorator.doubleFlowersPerChunk = 0;

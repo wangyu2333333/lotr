@@ -1,22 +1,32 @@
 package lotr.common.inventory;
 
-import java.util.*;
-
-import org.apache.commons.lang3.StringUtils;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
-import lotr.common.enchant.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRConfig;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
+import lotr.common.enchant.LOTREnchantment;
+import lotr.common.enchant.LOTREnchantmentCombining;
+import lotr.common.enchant.LOTREnchantmentHelper;
 import lotr.common.entity.npc.*;
 import lotr.common.item.*;
 import lotr.common.recipe.LOTRRecipePoisonWeapon;
-import net.minecraft.enchantment.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.init.*;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.*;
 import net.minecraft.item.*;
-import net.minecraft.util.*;
+import net.minecraft.util.ChatAllowedCharacters;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.*;
 
 public class LOTRContainerAnvil extends Container {
 	public static int maxReforgeTime = 40;
@@ -49,7 +59,7 @@ public class LOTRContainerAnvil extends Container {
 			@Override
 			public void markDirty() {
 				super.markDirty();
-				LOTRContainerAnvil.this.onCraftMatrixChanged(this);
+				onCraftMatrixChanged(this);
 			}
 		};
 		addSlotToContainer(new Slot(invInput, 0, 27, 58));
@@ -81,6 +91,46 @@ public class LOTRContainerAnvil extends Container {
 		theTrader = (LOTRTradeable) npc;
 	}
 
+	public static String applyFormattingCodes(String name, Iterable<EnumChatFormatting> colors) {
+		StringBuilder nameBuilder = new StringBuilder(name);
+		for (EnumChatFormatting color : colors) {
+			nameBuilder.insert(0, color);
+		}
+		name = nameBuilder.toString();
+		return name;
+	}
+
+	public static boolean costsToRename(ItemStack itemstack) {
+		Item item = itemstack.getItem();
+		if (item instanceof ItemSword || item instanceof ItemTool || item instanceof ItemArmor && ((ItemArmor) item).damageReduceAmount > 0) {
+			return true;
+		}
+		return item instanceof ItemBow || item instanceof LOTRItemThrowingAxe || item instanceof LOTRItemBlowgun;
+	}
+
+	public static List<EnumChatFormatting> getAppliedFormattingCodes(String name) {
+		List<EnumChatFormatting> colors = new ArrayList<>();
+		for (EnumChatFormatting color : EnumChatFormatting.values()) {
+			String formatCode = color.toString();
+			if (!name.startsWith(formatCode)) {
+				continue;
+			}
+			colors.add(color);
+		}
+		return colors;
+	}
+
+	public static String stripFormattingCodes(String name) {
+		for (EnumChatFormatting color : EnumChatFormatting.values()) {
+			String formatCode = color.toString();
+			if (!name.startsWith(formatCode)) {
+				continue;
+			}
+			name = name.substring(formatCode.length());
+		}
+		return name;
+	}
+
 	public boolean applyMischief(ItemStack itemstack) {
 		boolean changed = false;
 		Random rand = theWorld.rand;
@@ -100,7 +150,7 @@ public class LOTRContainerAnvil extends Container {
 		return changed;
 	}
 
-	public boolean canEngraveNewOwner(ItemStack itemstack, EntityPlayer entityplayer) {
+	public boolean canEngraveNewOwner(ItemStack itemstack, ICommandSender entityplayer) {
 		String currentOwner = LOTRItemOwnership.getCurrentOwner(itemstack);
 		if (currentOwner == null) {
 			return true;
@@ -146,10 +196,10 @@ public class LOTRContainerAnvil extends Container {
 		ItemStack inputItem = invInput.getStackInSlot(0);
 		ItemStack resultItem = invOutput.getStackInSlot(0);
 		if (resultItem != null) {
-			return LOTRContainerAnvil.getAppliedFormattingCodes(resultItem.getDisplayName());
+			return getAppliedFormattingCodes(resultItem.getDisplayName());
 		}
 		if (inputItem != null) {
-			return LOTRContainerAnvil.getAppliedFormattingCodes(inputItem.getDisplayName());
+			return getAppliedFormattingCodes(inputItem.getDisplayName());
 		}
 		return new ArrayList<>();
 	}
@@ -163,7 +213,7 @@ public class LOTRContainerAnvil extends Container {
 				if (!isRepairMaterial(inputItem, tradeItem)) {
 					continue;
 				}
-				materialPrice = (float) trade.getCost() / (float) trade.createTradeItem().stackSize;
+				materialPrice = (float) trade.getCost() / trade.createTradeItem().stackSize;
 				break;
 			}
 		}
@@ -174,7 +224,7 @@ public class LOTRContainerAnvil extends Container {
 				if (!isRepairMaterial(inputItem, tradeItem)) {
 					continue;
 				}
-				materialPrice = (float) trade.getCost() / (float) trade.createTradeItem().stackSize;
+				materialPrice = (float) trade.getCost() / trade.createTradeItem().stackSize;
 				break;
 			}
 		}
@@ -291,7 +341,7 @@ public class LOTRContainerAnvil extends Container {
 			takeMaterialOrCoinAmount(cost);
 			playAnvilSound();
 			lastReforgeTime = curTime;
-			((EntityPlayerMP) thePlayer).sendProgressBarUpdate(this, 2, 0);
+			((ICrafting) thePlayer).sendProgressBarUpdate(this, 2, 0);
 			if (!isTrader) {
 				LOTRLevelData.getData(thePlayer).addAchievement(LOTRAchievement.reforge);
 			}
@@ -367,9 +417,9 @@ public class LOTRContainerAnvil extends Container {
 	}
 
 	public void updateItemName(String name) {
-		List<EnumChatFormatting> colors = LOTRContainerAnvil.getAppliedFormattingCodes(name);
-		name = LOTRContainerAnvil.stripFormattingCodes(name);
-		repairedItemName = name = ChatAllowedCharacters.filerAllowedCharacters(name);
+		List<EnumChatFormatting> colors = getAppliedFormattingCodes(name);
+		name = stripFormattingCodes(name);
+		repairedItemName = ChatAllowedCharacters.filerAllowedCharacters(name);
 		ItemStack itemstack = invOutput.getStackInSlot(0);
 		if (itemstack != null) {
 			if (StringUtils.isBlank(repairedItemName)) {
@@ -378,14 +428,14 @@ public class LOTRContainerAnvil extends Container {
 				itemstack.setStackDisplayName(repairedItemName);
 			}
 			if (!colors.isEmpty()) {
-				itemstack.setStackDisplayName(LOTRContainerAnvil.applyFormattingCodes(itemstack.getDisplayName(), colors));
+				itemstack.setStackDisplayName(applyFormattingCodes(itemstack.getDisplayName(), colors));
 			}
 		}
 		updateRepairOutput();
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public void updateProgressBar(int i, int j) {
 		if (i == 0) {
 			materialCost = j;
@@ -407,7 +457,7 @@ public class LOTRContainerAnvil extends Container {
 		reforgeCost = 0;
 		engraveOwnerCost = 0;
 		isSmithScrollCombine = false;
-		int baseAnvilCost = 0;
+		int baseAnvilCost;
 		int repairCost = 0;
 		int combineCost = 0;
 		int renameCost = 0;
@@ -429,9 +479,9 @@ public class LOTRContainerAnvil extends Container {
 			String previousDisplayName = inputCopy.getDisplayName();
 			String defaultItemName = inputCopy.getItem().getItemStackDisplayName(inputCopy);
 			String formattedNameToApply = repairedItemName;
-			ArrayList<EnumChatFormatting> colorsToApply = new ArrayList<>(LOTRContainerAnvil.getAppliedFormattingCodes(inputCopy.getDisplayName()));
+			Collection<EnumChatFormatting> colorsToApply = new ArrayList<>(getAppliedFormattingCodes(inputCopy.getDisplayName()));
 			boolean alteringNameColor = false;
-			if (LOTRContainerAnvil.costsToRename(inputItem) && combinerItem != null) {
+			if (costsToRename(inputItem) && combinerItem != null) {
 				if (combinerItem.getItem() instanceof AnvilNameColorProvider) {
 					boolean isDifferentColor;
 					AnvilNameColorProvider nameColorProvider = (AnvilNameColorProvider) combinerItem.getItem();
@@ -461,25 +511,25 @@ public class LOTRContainerAnvil extends Container {
 				if (StringUtils.isBlank(formattedNameToApply)) {
 					formattedNameToApply = defaultItemName;
 				}
-				formattedNameToApply = LOTRContainerAnvil.applyFormattingCodes(formattedNameToApply, colorsToApply);
+				formattedNameToApply = applyFormattingCodes(formattedNameToApply, colorsToApply);
 			}
 			boolean nameChange = false;
 			if (formattedNameToApply != null && !formattedNameToApply.equals(previousDisplayName)) {
 				if (StringUtils.isBlank(formattedNameToApply) || formattedNameToApply.equals(defaultItemName)) {
 					if (inputCopy.hasDisplayName()) {
 						inputCopy.func_135074_t();
-						if (!LOTRContainerAnvil.stripFormattingCodes(previousDisplayName).equals(LOTRContainerAnvil.stripFormattingCodes(formattedNameToApply))) {
+						if (!stripFormattingCodes(previousDisplayName).equals(stripFormattingCodes(formattedNameToApply))) {
 							nameChange = true;
 						}
 					}
 				} else {
 					inputCopy.setStackDisplayName(formattedNameToApply);
-					if (!LOTRContainerAnvil.stripFormattingCodes(previousDisplayName).equals(LOTRContainerAnvil.stripFormattingCodes(formattedNameToApply))) {
+					if (!stripFormattingCodes(previousDisplayName).equals(stripFormattingCodes(formattedNameToApply))) {
 						nameChange = true;
 					}
 				}
 			}
-			if (nameChange && LOTRContainerAnvil.costsToRename(inputItem)) {
+			if (nameChange && costsToRename(inputItem)) {
 				++renameCost;
 			}
 			if (isTrader && (scrollCombine = LOTREnchantmentCombining.getCombinationResult(inputItem, combinerItem)) != null) {
@@ -536,8 +586,7 @@ public class LOTRContainerAnvil extends Container {
 						if (outputEnchants.containsKey(combinerEnchID)) {
 							inputEnchLevel = (Integer) outputEnchants.get(combinerEnchID);
 						}
-						int combinedEnchLevel = inputEnchLevel == (combinerEnchLevel = (Integer) combinerEnchants.get(combinerEnchID)) ? ++combinerEnchLevel : Math.max(combinerEnchLevel, inputEnchLevel);
-						combinerEnchLevel = combinedEnchLevel;
+						combinerEnchLevel = inputEnchLevel == (combinerEnchLevel = (Integer) combinerEnchants.get(combinerEnchID)) ? ++combinerEnchLevel : Math.max(combinerEnchLevel, inputEnchLevel);
 						int levelsAdded = combinerEnchLevel - inputEnchLevel;
 						boolean canApply = combinerEnch.canApply(inputItem);
 						if (thePlayer.capabilities.isCreativeMode || inputItem.getItem() == Items.enchanted_book) {
@@ -560,20 +609,20 @@ public class LOTRContainerAnvil extends Container {
 						int costPerLevel = 0;
 						int enchWeight = combinerEnch.getWeight();
 						switch (enchWeight) {
-						case 1:
-							costPerLevel = 8;
-							break;
-						case 2:
-							costPerLevel = 4;
-							break;
-						case 5:
-							costPerLevel = 2;
-							break;
-						case 10:
-							costPerLevel = 1;
-							break;
-						default:
-							break;
+							case 1:
+								costPerLevel = 8;
+								break;
+							case 2:
+								costPerLevel = 4;
+								break;
+							case 5:
+								costPerLevel = 2;
+								break;
+							case 10:
+								costPerLevel = 1;
+								break;
+							default:
+								break;
 						}
 						combineCost += costPerLevel * levelsAdded;
 					}
@@ -582,7 +631,7 @@ public class LOTRContainerAnvil extends Container {
 				}
 				EnchantmentHelper.setEnchantments(outputEnchants, inputCopy);
 				int maxMods = 3;
-				ArrayList<LOTREnchantment> outputMods = new ArrayList<>(inputModifiers);
+				Collection<LOTREnchantment> outputMods = new ArrayList<>(inputModifiers);
 				List<LOTREnchantment> combinerMods = LOTREnchantmentHelper.getEnchantList(combinerItem);
 				if (combinerItemEnchant != null) {
 					Item item;
@@ -635,20 +684,20 @@ public class LOTRContainerAnvil extends Container {
 				int costPerLevel = 0;
 				int enchWeight = ench.getWeight();
 				switch (enchWeight) {
-				case 1:
-					costPerLevel = 8;
-					break;
-				case 2:
-					costPerLevel = 4;
-					break;
-				case 5:
-					costPerLevel = 2;
-					break;
-				case 10:
-					costPerLevel = 1;
-					break;
-				default:
-					break;
+					case 1:
+						costPerLevel = 8;
+						break;
+					case 2:
+						costPerLevel = 4;
+						break;
+					case 5:
+						costPerLevel = 2;
+						break;
+					case 10:
+						costPerLevel = 1;
+						break;
+					default:
+						break;
 				}
 				baseAnvilCost += numEnchants + enchLevel * costPerLevel;
 			}
@@ -662,7 +711,7 @@ public class LOTRContainerAnvil extends Container {
 				baseAnvilCost += Math.max(1, (int) mod.getValueModifier());
 			}
 			if (inputCopy.isItemStackDamageable()) {
-				boolean canRepair = false;
+				boolean canRepair;
 				int availableMaterials = 0;
 				if (isTrader) {
 					canRepair = getTraderMaterialPrice(inputItem) > 0.0f;
@@ -699,21 +748,19 @@ public class LOTRContainerAnvil extends Container {
 				materialCost = 0;
 			}
 			materialCost += renameCost;
-			if (inputCopy != null) {
-				int nextAnvilCost = LOTREnchantmentHelper.getAnvilCost(inputItem);
-				if (combinerItem != null) {
-					int combinerAnvilCost = LOTREnchantmentHelper.getAnvilCost(combinerItem);
-					nextAnvilCost = Math.max(nextAnvilCost, combinerAnvilCost);
-				}
-				if (combining) {
-					nextAnvilCost += 2;
-				} else if (repairing) {
-					++nextAnvilCost;
-				}
-				nextAnvilCost = Math.max(nextAnvilCost, 0);
-				if (nextAnvilCost > 0) {
-					LOTREnchantmentHelper.setAnvilCost(inputCopy, nextAnvilCost);
-				}
+			int nextAnvilCost = LOTREnchantmentHelper.getAnvilCost(inputItem);
+			if (combinerItem != null) {
+				int combinerAnvilCost = LOTREnchantmentHelper.getAnvilCost(combinerItem);
+				nextAnvilCost = Math.max(nextAnvilCost, combinerAnvilCost);
+			}
+			if (combining) {
+				nextAnvilCost += 2;
+			} else if (repairing) {
+				++nextAnvilCost;
+			}
+			nextAnvilCost = Math.max(nextAnvilCost, 0);
+			if (nextAnvilCost > 0) {
+				LOTREnchantmentHelper.setAnvilCost(inputCopy, nextAnvilCost);
 			}
 			if (LOTREnchantmentHelper.isReforgeable(inputItem)) {
 				ItemStack reforgeCopy;
@@ -776,44 +823,6 @@ public class LOTRContainerAnvil extends Container {
 			}
 			detectAndSendChanges();
 		}
-	}
-
-	public static String applyFormattingCodes(String name, List<EnumChatFormatting> colors) {
-		for (EnumChatFormatting color : colors) {
-			name = color + name;
-		}
-		return name;
-	}
-
-	public static boolean costsToRename(ItemStack itemstack) {
-		Item item = itemstack.getItem();
-		if (item instanceof ItemSword || item instanceof ItemTool || item instanceof ItemArmor && ((ItemArmor) item).damageReduceAmount > 0) {
-			return true;
-		}
-		return item instanceof ItemBow || item instanceof LOTRItemCrossbow || item instanceof LOTRItemThrowingAxe || item instanceof LOTRItemBlowgun;
-	}
-
-	public static List<EnumChatFormatting> getAppliedFormattingCodes(String name) {
-		ArrayList<EnumChatFormatting> colors = new ArrayList<>();
-		for (EnumChatFormatting color : EnumChatFormatting.values()) {
-			String formatCode = color.toString();
-			if (!name.startsWith(formatCode)) {
-				continue;
-			}
-			colors.add(color);
-		}
-		return colors;
-	}
-
-	public static String stripFormattingCodes(String name) {
-		for (EnumChatFormatting color : EnumChatFormatting.values()) {
-			String formatCode = color.toString();
-			if (!name.startsWith(formatCode)) {
-				continue;
-			}
-			name = name.substring(formatCode.length());
-		}
-		return name;
 	}
 
 }

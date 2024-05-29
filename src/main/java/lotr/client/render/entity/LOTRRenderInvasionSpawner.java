@@ -1,7 +1,5 @@
 package lotr.client.render.entity;
 
-import org.lwjgl.opengl.GL11;
-
 import lotr.common.entity.LOTREntityInvasionSpawner;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.texture.TextureMap;
@@ -9,6 +7,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
+import org.lwjgl.opengl.GL11;
 
 public class LOTRRenderInvasionSpawner extends Render {
 	@Override
@@ -34,6 +33,7 @@ public class LOTRRenderInvasionSpawner extends Render {
 
 	public float interpolateRotation(float prevRotation, float newRotation, float tick) {
 		float interval;
+		//noinspection StatementWithEmptyBody
 		for (interval = newRotation - prevRotation; interval < -180.0f; interval += 360.0f) {
 		}
 		while (interval >= 180.0f) {

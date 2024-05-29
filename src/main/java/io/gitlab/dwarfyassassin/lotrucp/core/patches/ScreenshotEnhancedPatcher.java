@@ -1,22 +1,15 @@
 package io.gitlab.dwarfyassassin.lotrucp.core.patches;
 
-import org.objectweb.asm.tree.*;
-
 import io.gitlab.dwarfyassassin.lotrucp.core.UCPCoreMod;
-import io.gitlab.dwarfyassassin.lotrucp.core.patches.base.*;
+import io.gitlab.dwarfyassassin.lotrucp.core.patches.base.ModPatcher;
 import io.gitlab.dwarfyassassin.lotrucp.core.utils.ASMUtils;
 import net.minecraftforge.classloading.FMLForgePlugin;
+import org.objectweb.asm.tree.*;
 
 public class ScreenshotEnhancedPatcher extends ModPatcher {
 	public ScreenshotEnhancedPatcher() {
 		super("Screenshots Enhanced", "screenshots");
-		classes.put("lotr.client.render.entity.LOTRRenderScrapTrader", new Patcher.ConsumerImplBecauseNoLambdas<ClassNode>() {
-
-			@Override
-			public void accept(ClassNode node) {
-				ScreenshotEnhancedPatcher.this.patchScrapTraderRender(node);
-			}
-		});
+		classes.put("lotr.client.render.entity.LOTRRenderScrapTrader", this::patchScrapTraderRender);
 	}
 
 	public void patchScrapTraderRender(ClassNode classNode) {

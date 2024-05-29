@@ -1,14 +1,15 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public abstract class LOTREntityRohanMarketTrader extends LOTREntityRohanMan implements LOTRTradeable {
-	public LOTREntityRohanMarketTrader(World world) {
+	protected LOTREntityRohanMarketTrader(World world) {
 		super(world);
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 	}
 
 	@Override
@@ -27,15 +28,6 @@ public abstract class LOTREntityRohanMarketTrader extends LOTREntityRohanMan imp
 			return "rohan/marketTrader/friendly";
 		}
 		return "rohan/marketTrader/hostile";
-	}
-
-	@Override
-	public void onAttackModeChange(LOTREntityNPC.AttackMode mode, boolean mounted) {
-		if (mode == LOTREntityNPC.AttackMode.IDLE) {
-			setCurrentItemOrArmor(0, npcItemsInv.getIdleItem());
-		} else {
-			setCurrentItemOrArmor(0, npcItemsInv.getMeleeWeapon());
-		}
 	}
 
 	@Override

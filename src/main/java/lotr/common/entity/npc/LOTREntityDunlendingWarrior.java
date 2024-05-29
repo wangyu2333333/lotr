@@ -1,6 +1,7 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRMod;
+import lotr.common.LOTRShields;
 import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.ai.EntityAIBase;
@@ -29,29 +30,29 @@ public class LOTREntityDunlendingWarrior extends LOTREntityDunlending {
 		data = super.onSpawnWithEgg(data);
 		int i = rand.nextInt(7);
 		switch (i) {
-		case 0:
-			npcItemsInv.setMeleeWeapon(new ItemStack(Items.iron_sword));
-			break;
-		case 1:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.swordBronze));
-			break;
-		case 2:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.daggerIron));
-			break;
-		case 3:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.daggerBronze));
-			break;
-		case 4:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.battleaxeIron));
-			break;
-		case 5:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.battleaxeBronze));
-			break;
-		case 6:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.pikeIron));
-			break;
-		default:
-			break;
+			case 0:
+				npcItemsInv.setMeleeWeapon(new ItemStack(Items.iron_sword));
+				break;
+			case 1:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.swordBronze));
+				break;
+			case 2:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.daggerIron));
+				break;
+			case 3:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.daggerBronze));
+				break;
+			case 4:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.battleaxeIron));
+				break;
+			case 5:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.battleaxeBronze));
+				break;
+			case 6:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.pikeIron));
+				break;
+			default:
+				break;
 		}
 		if (rand.nextInt(5) == 0) {
 			npcItemsInv.setSpearBackup(npcItemsInv.getMeleeWeapon());

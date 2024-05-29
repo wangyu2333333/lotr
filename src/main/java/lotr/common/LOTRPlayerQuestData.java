@@ -6,7 +6,7 @@ import net.minecraft.world.WorldServer;
 
 public class LOTRPlayerQuestData {
 	public LOTRPlayerData playerData;
-	public boolean givenFirstPouches = false;
+	public boolean givenFirstPouches;
 
 	public LOTRPlayerQuestData(LOTRPlayerData pd) {
 		playerData = pd;
@@ -14,6 +14,11 @@ public class LOTRPlayerQuestData {
 
 	public boolean getGivenFirstPouches() {
 		return givenFirstPouches;
+	}
+
+	public void setGivenFirstPouches(boolean flag) {
+		givenFirstPouches = flag;
+		markDirty();
 	}
 
 	public void load(NBTTagCompound questData) {
@@ -24,15 +29,11 @@ public class LOTRPlayerQuestData {
 		playerData.markDirty();
 	}
 
+	@SuppressWarnings("all")
 	public void onUpdate(EntityPlayerMP entityplayer, WorldServer world) {
 	}
 
 	public void save(NBTTagCompound questData) {
 		questData.setBoolean("Pouches", givenFirstPouches);
-	}
-
-	public void setGivenFirstPouches(boolean flag) {
-		givenFirstPouches = flag;
-		markDirty();
 	}
 }

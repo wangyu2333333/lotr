@@ -1,16 +1,21 @@
 package lotr.common.entity.ai;
 
-import java.util.List;
-
-import lotr.common.*;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
 import lotr.common.entity.npc.LOTREntityOrc;
 import lotr.common.fac.LOTRFaction;
 import net.minecraft.command.IEntitySelector;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.ai.EntityAIBase;
+import net.minecraft.entity.ai.RandomPositionGenerator;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.pathfinding.*;
+import net.minecraft.pathfinding.PathEntity;
+import net.minecraft.pathfinding.PathNavigate;
 import net.minecraft.util.Vec3;
+
+import java.util.List;
 
 public class LOTREntityAIOrcAvoidGoodPlayer extends EntityAIBase {
 	public LOTREntityOrc theOrc;
@@ -28,6 +33,7 @@ public class LOTREntityAIOrcAvoidGoodPlayer extends EntityAIBase {
 		setMutexBits(1);
 	}
 
+	@SuppressWarnings("Convert2Lambda")
 	public boolean anyNearbyOrcsAttacked() {
 		List nearbyAllies = theOrc.worldObj.selectEntitiesWithinAABB(EntityLiving.class, theOrc.boundingBox.expand(distanceFromEntity, distanceFromEntity / 2.0, distanceFromEntity), new IEntitySelector() {
 
@@ -41,7 +47,7 @@ public class LOTREntityAIOrcAvoidGoodPlayer extends EntityAIBase {
 		});
 		for (Object obj : nearbyAllies) {
 			EntityLiving ally = (EntityLiving) obj;
-			if (!(ally instanceof LOTREntityOrc ? ((LOTREntityOrc) ally).currentRevengeTarget instanceof EntityPlayer : ally.getAttackTarget() instanceof EntityPlayer)) {
+			if (ally instanceof LOTREntityOrc ? !(((LOTREntityOrc) ally).currentRevengeTarget instanceof EntityPlayer) : !(ally.getAttackTarget() instanceof EntityPlayer)) {
 				continue;
 			}
 			return true;
@@ -59,6 +65,7 @@ public class LOTREntityAIOrcAvoidGoodPlayer extends EntityAIBase {
 		closestEnemyPlayer = null;
 	}
 
+	@SuppressWarnings("Convert2Lambda")
 	@Override
 	public boolean shouldExecute() {
 		if (!theOrc.isWeakOrc || theOrc.hiredNPCInfo.isActive || theOrc.getFaction() == LOTRFaction.MORDOR) {
@@ -88,7 +95,7 @@ public class LOTREntityAIOrcAvoidGoodPlayer extends EntityAIBase {
 			return false;
 		}
 		entityPathEntity = entityPathNavigate.getPathToXYZ(fleePath.xCoord, fleePath.yCoord, fleePath.zCoord);
-		return entityPathEntity == null ? false : entityPathEntity.isDestinationSame(fleePath);
+		return entityPathEntity != null && entityPathEntity.isDestinationSame(fleePath);
 	}
 
 	@Override

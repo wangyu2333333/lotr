@@ -1,8 +1,9 @@
 package lotr.common.util;
 
-import java.util.*;
-
 import net.minecraft.util.MathHelper;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 public class LOTRMazeGenerator {
 	public int xSize;
@@ -39,7 +40,8 @@ public class LOTRMazeGenerator {
 			int randPosIndex = MathHelper.getRandomIntegerInRange(random, (int) (maxIndex * (1.0f - branchingness)), maxIndex);
 			MazePos pos = positions.get(randPosIndex);
 			ArrayList<Dir> validDirs = new ArrayList<>();
-			block1: for (Dir dir : Dir.values()) {
+			block1:
+			for (Dir dir : Dir.values()) {
 				for (int l = 1; l <= 2; ++l) {
 					int x = pos.xPos + dir.xDir * l;
 					int z = pos.zPos + dir.zDir * l;
@@ -50,7 +52,7 @@ public class LOTRMazeGenerator {
 				validDirs.add(dir);
 			}
 			if (!validDirs.isEmpty()) {
-				Dir dir = lastDir != null && validDirs.contains(lastDir) && random.nextFloat() >= windyness ? lastDir : (Dir) validDirs.get(random.nextInt(validDirs.size()));
+				Dir dir = lastDir != null && validDirs.contains(lastDir) && random.nextFloat() >= windyness ? lastDir : validDirs.get(random.nextInt(validDirs.size()));
 				int x = pos.xPos;
 				int z = pos.zPos;
 				if (getFlag(x, z, (short) 4)) {
@@ -72,7 +74,7 @@ public class LOTRMazeGenerator {
 	}
 
 	public int[] getEnd() {
-		return new int[] { endX, endZ };
+		return new int[]{endX, endZ};
 	}
 
 	public boolean getFlag(int x, int z, short flag) {
@@ -97,7 +99,7 @@ public class LOTRMazeGenerator {
 			for (int x = 0; x < xSize; ++x) {
 				for (int z = 0; z < zSize; ++z) {
 					boolean outer;
-					outer = x == 0 + wx || x == xSize - 1 - wx || z == 0 + wz || z == zSize - 1 - wz;
+					outer = x == wx || x == xSize - 1 - wx || z == wz || z == zSize - 1 - wz;
 					if (!outer || !isPath(x, z)) {
 						continue;
 					}
@@ -122,12 +124,10 @@ public class LOTRMazeGenerator {
 	public void setFlag(int x, int z, short flag, boolean val) {
 		if (val) {
 			short[] arrs = mazeFlags[x];
-			int n = z;
-			arrs[n] = (short) (arrs[n] | flag);
+			arrs[z] = (short) (arrs[z] | flag);
 		} else {
 			short[] arrs = mazeFlags[x];
-			int n = z;
-			arrs[n] = (short) (arrs[n] & ~flag);
+			arrs[z] = (short) (arrs[z] & ~flag);
 		}
 	}
 

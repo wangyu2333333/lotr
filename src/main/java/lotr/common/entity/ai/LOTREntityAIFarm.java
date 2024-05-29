@@ -1,25 +1,44 @@
 package lotr.common.entity.ai;
 
-import java.util.*;
-
 import com.mojang.authlib.GameProfile;
-
-import lotr.common.*;
-import lotr.common.block.*;
-import lotr.common.entity.npc.*;
-import net.minecraft.block.*;
+import lotr.common.LOTRMod;
+import lotr.common.LOTRReflection;
+import lotr.common.block.LOTRBlockCorn;
+import lotr.common.block.LOTRBlockGrapevine;
+import lotr.common.entity.npc.LOTREntityNPC;
+import lotr.common.entity.npc.LOTRFarmhand;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockCrops;
+import net.minecraft.block.BlockStem;
+import net.minecraft.block.IGrowable;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.item.EntityItemFrame;
-import net.minecraft.init.*;
-import net.minecraft.item.*;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemDye;
+import net.minecraft.item.ItemStack;
 import net.minecraft.pathfinding.PathEntity;
-import net.minecraft.tileentity.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityChest;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraftforge.common.*;
-import net.minecraftforge.common.util.*;
+import net.minecraftforge.common.EnumPlantType;
+import net.minecraftforge.common.IPlantable;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.common.util.FakePlayerFactory;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Random;
 
 public class LOTREntityAIFarm extends EntityAIBase {
 	public static int DEPOSIT_THRESHOLD = 16;
@@ -38,7 +57,7 @@ public class LOTREntityAIFarm extends EntityAIBase {
 
 	public float farmingEfficiency;
 
-	public Action action = null;
+	public Action action;
 
 	public ChunkCoordinates actionTarget;
 
@@ -79,9 +98,7 @@ public class LOTREntityAIFarm extends EntityAIBase {
 				return true;
 			}
 			ItemStack bonemeal = getInventoryBonemeal();
-			if (bonemeal == null || bonemeal != null && bonemeal.stackSize <= 16) {
-				return true;
-			}
+			return bonemeal == null || bonemeal.stackSize <= 16;
 		}
 		return false;
 	}
@@ -159,18 +176,18 @@ public class LOTREntityAIFarm extends EntityAIBase {
 			int k = 0;
 			boolean suitable = false;
 			if (isChestAction) {
-				if (!chests.isEmpty()) {
+				if (chests.isEmpty()) {
+					suitable = false;
+				} else {
 					TileEntityChest chest = chests.get(rand.nextInt(chests.size()));
 					i = chest.xCoord;
 					j = chest.yCoord;
 					k = chest.zCoord;
 					if (targetAction == Action.DEPOSITING) {
 						suitable = isSuitableForDepositing(i, j, k);
-					} else if (targetAction == Action.COLLECTING) {
+					} else {
 						suitable = isSuitableForCollecting(i, j, k);
 					}
-				} else {
-					suitable = false;
 				}
 			} else {
 				i = MathHelper.floor_double(theEntity.posX) + MathHelper.getRandomIntegerInRange(rand, -8, 8);
@@ -200,7 +217,6 @@ public class LOTREntityAIFarm extends EntityAIBase {
 
 	public List<TileEntityChest> gatherNearbyChests() {
 		int x = MathHelper.floor_double(theEntity.posX);
-		MathHelper.floor_double(theEntity.boundingBox.minY);
 		int z = MathHelper.floor_double(theEntity.posZ);
 		int searchRange = (int) theEntity.func_110174_bM();
 		int chunkX = x >> 4;
@@ -399,7 +415,7 @@ public class LOTREntityAIFarm extends EntityAIBase {
 
 	public boolean isSolidOpenWalkTarget(int i, int j, int k) {
 		Block below = theWorld.getBlock(i, j - 1, k);
-		if (below.isOpaqueCube() || below.canSustainPlant((IBlockAccess) theWorld, i, j - 1, k, ForgeDirection.UP, (IPlantable) Blocks.wheat)) {
+		if (below.isOpaqueCube() || below.canSustainPlant(theWorld, i, j - 1, k, ForgeDirection.UP, (IPlantable) Blocks.wheat)) {
 			List bounds = new ArrayList();
 			AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(i, j, k, i + 1, j + 2, k + 1);
 			for (int j1 = j; j1 <= j + 1; j1++) {
@@ -438,7 +454,7 @@ public class LOTREntityAIFarm extends EntityAIBase {
 		harvestingSolidBlock = false;
 		TileEntityChest chest = getSuitableChest(i, j, k);
 		if (chest != null) {
-			int[] invSlots = { 0, 3 };
+			int[] invSlots = {0, 3};
 			for (int l : invSlots) {
 				ItemStack collectMatch = theEntity.hiredNPCInfo.getHiredInventory().getStackInSlot(l);
 				if (collectMatch == null && l == 3) {
@@ -521,7 +537,7 @@ public class LOTREntityAIFarm extends EntityAIBase {
 		harvestingSolidBlock = false;
 		Block block = theWorld.getBlock(i, j, k);
 		boolean isGrassDirt = block.canSustainPlant(theWorld, i, j, k, ForgeDirection.UP, Blocks.tallgrass);
-		boolean isFarmland = block.canSustainPlant((IBlockAccess) theWorld, i, j, k, ForgeDirection.UP, (IPlantable) Blocks.wheat);
+		boolean isFarmland = block.canSustainPlant(theWorld, i, j, k, ForgeDirection.UP, (IPlantable) Blocks.wheat);
 		if (isGrassDirt && !isFarmland && (isReplaceable(i, j + 1, k) || theWorld.getBlock(i, j + 1, k) == LOTRMod.grapevine)) {
 			Block below = theWorld.getBlock(i, j - 1, k);
 			if (below == Blocks.sand) {
@@ -530,7 +546,8 @@ public class LOTREntityAIFarm extends EntityAIBase {
 			boolean waterNearby = false;
 			int range = 4;
 			int i1;
-			label24: for (i1 = i - range; i1 <= i + range; i1++) {
+			label24:
+			for (i1 = i - range; i1 <= i + range; i1++) {
 				for (int k1 = k - range; k1 <= k + range; k1++) {
 					if (theWorld.getBlock(i1, j, k1).getMaterial() == Material.water) {
 						waterNearby = true;
@@ -558,7 +575,7 @@ public class LOTREntityAIFarm extends EntityAIBase {
 	@Override
 	public void resetTask() {
 		action = null;
-		setAppropriateHomeRange(action);
+		setAppropriateHomeRange(null);
 		actionTarget = null;
 		pathTarget = null;
 		pathingTick = 0;
@@ -570,7 +587,7 @@ public class LOTREntityAIFarm extends EntityAIBase {
 		if (theEntity.hiredNPCInfo.isActive) {
 			int hRange = theEntity.hiredNPCInfo.getGuardRange();
 			ChunkCoordinates home = theEntity.getHomePosition();
-			if (targetAction != null && (targetAction == Action.DEPOSITING || targetAction == Action.COLLECTING) && hRange < 24) {
+			if ((targetAction == Action.DEPOSITING || targetAction == Action.COLLECTING) && hRange < 24) {
 				hRange = 24;
 			}
 			theEntity.setHomeArea(home.posX, home.posY, home.posZ, hRange);
@@ -586,7 +603,7 @@ public class LOTREntityAIFarm extends EntityAIBase {
 		if (theEntity.hiredNPCInfo.isActive && !theEntity.hiredNPCInfo.isGuardMode()) {
 			return false;
 		}
-		setAppropriateHomeRange((Action) null);
+		setAppropriateHomeRange(null);
 		if (theEntity.hasHome() && !theEntity.isWithinHomeDistanceCurrentPosition()) {
 			return false;
 		}
@@ -657,7 +674,7 @@ public class LOTREntityAIFarm extends EntityAIBase {
 
 	@Override
 	public void updateTask() {
-		boolean canDoAction = false;
+		boolean canDoAction;
 		double distSq = theEntity.getDistanceSq(pathTarget.posX + 0.5D, pathTarget.posY, pathTarget.posZ + 0.5D);
 		if (action == Action.HOEING || action == Action.PLANTING) {
 			int i = MathHelper.floor_double(theEntity.posX);
@@ -715,7 +732,7 @@ public class LOTREntityAIFarm extends EntityAIBase {
 			if (canHarvest) {
 				theEntity.swingItem();
 				Block block = theWorld.getBlock(actionTarget.posX, actionTarget.posY, actionTarget.posZ);
-				ArrayList drops = new ArrayList();
+				Collection drops = new ArrayList();
 				if (block instanceof LOTRBlockCorn) {
 					int x = actionTarget.posX;
 					int z = actionTarget.posZ;
@@ -782,7 +799,7 @@ public class LOTREntityAIFarm extends EntityAIBase {
 				theEntity.swingItem();
 				TileEntity te = theWorld.getTileEntity(actionTarget.posX, actionTarget.posY, actionTarget.posZ);
 				if (te instanceof TileEntityChest) {
-					TileEntityChest chest = (TileEntityChest) te;
+					IInventory chest = (IInventory) te;
 					for (int l = 1; l <= 2; l++) {
 						ItemStack itemstack = theEntity.hiredNPCInfo.getHiredInventory().getStackInSlot(l);
 						if (itemstack != null) {
@@ -828,8 +845,8 @@ public class LOTREntityAIFarm extends EntityAIBase {
 				theEntity.swingItem();
 				TileEntity te = theWorld.getTileEntity(actionTarget.posX, actionTarget.posY, actionTarget.posZ);
 				if (te instanceof TileEntityChest) {
-					TileEntityChest chest = (TileEntityChest) te;
-					int[] invSlots = { 0, 3 };
+					IInventory chest = (IInventory) te;
+					int[] invSlots = {0, 3};
 					for (int l : invSlots) {
 						ItemStack itemstack = theEntity.hiredNPCInfo.getHiredInventory().getStackInSlot(l);
 						if (itemstack == null && l == 3) {
@@ -865,7 +882,7 @@ public class LOTREntityAIFarm extends EntityAIBase {
 	}
 
 	public enum Action {
-		HOEING, PLANTING, HARVESTING, DEPOSITING, BONEMEALING, COLLECTING;
+		HOEING, PLANTING, HARVESTING, DEPOSITING, BONEMEALING, COLLECTING
 	}
 
 	public static class TargetPair {

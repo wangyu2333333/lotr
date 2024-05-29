@@ -3,7 +3,8 @@ package lotr.common.entity.npc;
 import lotr.common.*;
 import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
 import lotr.common.world.spawning.LOTRInvasions;
-import net.minecraft.entity.*;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -12,7 +13,7 @@ import net.minecraft.world.World;
 public class LOTREntityLebenninCaptain extends LOTREntityGondorSoldier implements LOTRUnitTradeable {
 	public LOTREntityLebenninCaptain(World world) {
 		super(world);
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 		npcCape = LOTRCapes.GONDOR;
 		npcShield = LOTRShields.ALIGNMENT_LEBENNIN;
 	}

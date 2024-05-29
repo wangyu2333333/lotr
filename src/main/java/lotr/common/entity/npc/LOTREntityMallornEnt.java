@@ -1,22 +1,37 @@
 package lotr.common.entity.npc;
 
-import java.util.List;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
-import lotr.common.entity.ai.*;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRMod;
+import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
+import lotr.common.entity.ai.LOTREntityAIBossJumpAttack;
+import lotr.common.entity.ai.LOTREntityAIRangedAttack;
 import lotr.common.entity.projectile.LOTREntityMallornLeafBomb;
 import lotr.common.item.LOTRItemBossTrophy;
-import lotr.common.network.*;
-import net.minecraft.block.*;
-import net.minecraft.entity.*;
+import lotr.common.network.LOTRPacketHandler;
+import lotr.common.network.LOTRPacketMallornEntHeal;
+import lotr.common.network.LOTRPacketMallornEntSummon;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockFire;
+import net.minecraft.block.BlockLeavesBase;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
-import net.minecraft.entity.player.*;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.server.management.PlayerManager;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+
+import java.util.List;
 
 public class LOTREntityMallornEnt extends LOTREntityEnt implements LOTRBoss {
 	public static float BOSS_SCALE = 1.5f;
@@ -138,6 +153,10 @@ public class LOTREntityMallornEnt extends LOTREntityEnt implements LOTRBoss {
 		return dataWatcher.getWatchableObjectShort(22);
 	}
 
+	public void setEntSpawnTick(int i) {
+		dataWatcher.updateObject(22, (short) i);
+	}
+
 	@Override
 	public int getExperiencePoints(EntityPlayer entityplayer) {
 		return 100;
@@ -175,7 +194,7 @@ public class LOTREntityMallornEnt extends LOTREntityEnt implements LOTRBoss {
 		return null;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void handleHealthUpdate(byte b) {
 		int i;
@@ -274,12 +293,7 @@ public class LOTREntityMallornEnt extends LOTREntityEnt implements LOTRBoss {
 		double d1;
 		super.onLivingUpdate();
 		if (getEntSpawnTick() < SPAWN_TIME) {
-			if (!worldObj.isRemote) {
-				setEntSpawnTick(getEntSpawnTick() + 1);
-				if (getEntSpawnTick() == SPAWN_TIME) {
-					bossInfo.doJumpAttack(1.5);
-				}
-			} else {
+			if (worldObj.isRemote) {
 				for (int l = 0; l < 16; ++l) {
 					double d = posX + rand.nextGaussian() * width * 0.5;
 					d1 = posY + rand.nextDouble() * height + getSpawningOffset(0.0f);
@@ -288,17 +302,22 @@ public class LOTREntityMallornEnt extends LOTREntityEnt implements LOTRBoss {
 				}
 				int leaves = 8;
 				for (int l = 0; l < leaves; ++l) {
-					int leafR = (int) ((float) l / (float) leaves);
+					int leafR = (int) ((float) l / leaves);
 					float argBase = (float) getEntSpawnTick() + leafR;
 					double r = 3.5;
 					double up = 0.5;
-					for (float extra : new float[] { 0.0f, 3.1415927f }) {
+					for (float extra : new float[]{0.0f, 3.1415927f}) {
 						float arg = argBase + extra;
 						double x = posX + r * MathHelper.cos(arg);
 						double z = posZ + r * MathHelper.sin(arg);
 						double y = posY + leafR * up;
 						LOTRMod.proxy.spawnParticle("leafGold_40", x, y, z, 0.0, up, 0.0);
 					}
+				}
+			} else {
+				setEntSpawnTick(getEntSpawnTick() + 1);
+				if (getEntSpawnTick() == SPAWN_TIME) {
+					bossInfo.doJumpAttack(1.5);
 				}
 			}
 		}
@@ -310,7 +329,8 @@ public class LOTREntityMallornEnt extends LOTREntityEnt implements LOTRBoss {
 			}
 		}
 		if (!worldObj.isRemote && getHealth() < getMaxHealth()) {
-			block3: for (LeafHealInfo healing : leafHealings) {
+			block3:
+			for (LeafHealInfo healing : leafHealings) {
 				if (healing.active) {
 					continue;
 				}
@@ -370,7 +390,7 @@ public class LOTREntityMallornEnt extends LOTREntityEnt implements LOTRBoss {
 				double d3 = posX - d;
 				double d4 = posY + height * 0.9 - d12;
 				double d5 = posZ - d22;
-				LOTRMod.proxy.spawnParticle("mEntHeal_" + Block.getIdFromBlock(block) + "_" + meta, d, d12, d22, d3 /= 25.0, d4 /= 25.0, d5 /= 25.0);
+				LOTRMod.proxy.spawnParticle("mEntHeal_" + Block.getIdFromBlock(block) + "_" + meta, d, d12, d22, d3 / 25.0, d4 / 25.0, d5 / 25.0);
 				continue;
 			}
 			if (worldObj.isRemote) {
@@ -444,12 +464,12 @@ public class LOTREntityMallornEnt extends LOTREntityEnt implements LOTRBoss {
 			if (getDistanceSqToEntity(entityplayer) > range * range) {
 				continue;
 			}
-			this.sendSpeechBank(entityplayer, "ent/mallornEnt/" + speechBank);
+			sendSpeechBank(entityplayer, "ent/mallornEnt/" + speechBank);
 		}
 	}
 
 	public void sendEntSummon(LOTREntityTree tree) {
-		LOTRPacketMallornEntSummon packet = new LOTRPacketMallornEntSummon(getEntityId(), tree.getEntityId());
+		IMessage packet = new LOTRPacketMallornEntSummon(getEntityId(), tree.getEntityId());
 		LOTRPacketHandler.networkWrapper.sendToAllAround(packet, LOTRPacketHandler.nearEntity(tree, 64.0));
 	}
 
@@ -465,10 +485,6 @@ public class LOTREntityMallornEnt extends LOTREntityEnt implements LOTRBoss {
 			}
 			healing.sendData(entityplayer);
 		}
-	}
-
-	public void setEntSpawnTick(int i) {
-		dataWatcher.updateObject(22, (short) i);
 	}
 
 	public void setHasWeaponShield(boolean flag) {
@@ -487,7 +503,7 @@ public class LOTREntityMallornEnt extends LOTREntityEnt implements LOTRBoss {
 		int leafMeta = LOTREntityTree.LEAF_META[type];
 		int particles = 60;
 		for (l = 0; l < particles; ++l) {
-			float t = (float) l / (float) particles;
+			float t = (float) l / particles;
 			LOTRMod.proxy.spawnParticle("mEntSummon_" + getEntityId() + "_" + tree.getEntityId() + "_" + t + "_" + Block.getIdFromBlock(leafBlock) + "_" + leafMeta, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
 		}
 		for (l = 0; l < 120; ++l) {
@@ -506,7 +522,7 @@ public class LOTREntityMallornEnt extends LOTREntityEnt implements LOTRBoss {
 		f *= 0.5f;
 		List nearbyTrees = worldObj.getEntitiesWithinAABB(LOTREntityTree.class, boundingBox.expand(24.0, 8.0, 24.0));
 		int maxNearbyTrees = 6;
-		float nearbyModifier = (float) (maxNearbyTrees - nearbyTrees.size()) / (float) maxNearbyTrees;
+		float nearbyModifier = (float) (maxNearbyTrees - nearbyTrees.size()) / maxNearbyTrees;
 		f *= nearbyModifier;
 		if (rand.nextFloat() < f) {
 			LOTREntityTree tree = rand.nextInt(3) == 0 ? new LOTREntityHuorn(worldObj) : new LOTREntityEnt(worldObj);
@@ -580,7 +596,7 @@ public class LOTREntityMallornEnt extends LOTREntityEnt implements LOTRBoss {
 		public void sendData(EntityPlayerMP entityplayer) {
 			NBTTagCompound nbt = new NBTTagCompound();
 			writeToNBT(nbt);
-			LOTRPacketMallornEntHeal packet = new LOTRPacketMallornEntHeal(theEnt.getEntityId(), nbt);
+			IMessage packet = new LOTRPacketMallornEntHeal(theEnt.getEntityId(), nbt);
 			LOTRPacketHandler.networkWrapper.sendTo(packet, entityplayer);
 		}
 

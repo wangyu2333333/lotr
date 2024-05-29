@@ -1,9 +1,8 @@
 package lotr.common.world.biome;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
-import lotr.common.entity.animal.*;
+import lotr.common.entity.animal.LOTREntityBird;
+import lotr.common.entity.animal.LOTREntityButterfly;
 import lotr.common.world.LOTRWorldChunkManager;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
 import lotr.common.world.feature.LOTRTreeType;
@@ -12,7 +11,10 @@ import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraft.world.gen.NoiseGeneratorPerlin;
-import net.minecraft.world.gen.feature.*;
+import net.minecraft.world.gen.feature.WorldGenDoublePlant;
+import net.minecraft.world.gen.feature.WorldGenerator;
+
+import java.util.Random;
 
 public class LOTRBiomeGenKanuka extends LOTRBiomeGenFarHarad {
 	public static NoiseGeneratorPerlin noisePaths1 = new NoiseGeneratorPerlin(new Random(22L), 1);
@@ -23,9 +25,9 @@ public class LOTRBiomeGenKanuka extends LOTRBiomeGenFarHarad {
 		spawnableLOTRAmbientList.clear();
 		spawnableLOTRAmbientList.add(new BiomeGenBase.SpawnListEntry(LOTREntityBird.class, 10, 4, 4));
 		spawnableLOTRAmbientList.add(new BiomeGenBase.SpawnListEntry(LOTREntityButterfly.class, 10, 4, 4));
-		this.addBiomeVariant(LOTRBiomeVariant.FLOWERS);
-		this.addBiomeVariant(LOTRBiomeVariant.HILLS);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
+		addBiomeVariant(LOTRBiomeVariant.FLOWERS);
+		addBiomeVariant(LOTRBiomeVariant.HILLS);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
 		enablePodzol = false;
 		decorator.treesPerChunk = 0;
 		decorator.setTreeCluster(8, 3);

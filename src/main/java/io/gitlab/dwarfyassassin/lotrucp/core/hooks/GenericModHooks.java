@@ -1,16 +1,21 @@
 package io.gitlab.dwarfyassassin.lotrucp.core.hooks;
 
-import java.util.*;
-
-import cpw.mods.fml.common.registry.*;
+import cpw.mods.fml.common.registry.GameData;
+import cpw.mods.fml.common.registry.RegistryDelegate;
 import cpw.mods.fml.relauncher.ReflectionHelper;
 import net.minecraft.block.Block;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
+
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 public class GenericModHooks {
 	public static void removeBlockFromOreDictionary(Block block) {
-		GenericModHooks.removeItemFromOreDictionary(Item.getItemFromBlock(block));
+		removeItemFromOreDictionary(Item.getItemFromBlock(block));
 	}
 
 	public static void removeItemFromOreDictionary(Item item) {
@@ -19,13 +24,13 @@ public class GenericModHooks {
 		}
 		ItemStack stack = new ItemStack(item, 1, 32767);
 		int[] oreIDs = OreDictionary.getOreIDs(stack);
-		List oreIdToStacks = (List) ReflectionHelper.getPrivateValue(OreDictionary.class, null, "idToStack");
+		List oreIdToStacks = ReflectionHelper.getPrivateValue(OreDictionary.class, null, "idToStack");
 		for (int oreID : oreIDs) {
-			ArrayList<ItemStack> oreStacks = (ArrayList) oreIdToStacks.get(oreID);
+			Collection<ItemStack> oreStacks = (Collection<ItemStack>) oreIdToStacks.get(oreID);
 			if (oreStacks == null) {
 				continue;
 			}
-			HashSet<ItemStack> toRemove = new HashSet<>();
+			Collection<ItemStack> toRemove = new HashSet<>();
 			for (ItemStack oreStack : oreStacks) {
 				if (oreStack.getItem() != stack.getItem()) {
 					continue;
@@ -39,7 +44,7 @@ public class GenericModHooks {
 			return;
 		}
 		int stackId = GameData.getItemRegistry().getId(registryName);
-		Map stackIdToOreId = (Map) ReflectionHelper.getPrivateValue(OreDictionary.class, null, "stackToId");
+		Map stackIdToOreId = ReflectionHelper.getPrivateValue(OreDictionary.class, null, "stackToId");
 		stackIdToOreId.remove(stackId);
 	}
 

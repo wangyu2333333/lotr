@@ -1,9 +1,10 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
-import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
-import net.minecraft.entity.*;
-import net.minecraft.entity.ai.EntityAIBase;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -12,7 +13,7 @@ import net.minecraft.world.World;
 public class LOTREntityRohanBlacksmith extends LOTREntityRohanMan implements LOTRTradeable.Smith {
 	public LOTREntityRohanBlacksmith(World world) {
 		super(world);
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 	}
 
 	@Override
@@ -24,11 +25,6 @@ public class LOTREntityRohanBlacksmith extends LOTREntityRohanMan implements LOT
 	@Override
 	public boolean canTradeWith(EntityPlayer entityplayer) {
 		return LOTRLevelData.getData(entityplayer).getAlignment(getFaction()) >= 50.0f && isFriendly(entityplayer);
-	}
-
-	@Override
-	public EntityAIBase createRohanAttackAI() {
-		return new LOTREntityAIAttackOnCollide(this, 1.4, false);
 	}
 
 	@Override

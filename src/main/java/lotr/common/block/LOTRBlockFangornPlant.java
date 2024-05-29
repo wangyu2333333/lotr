@@ -1,17 +1,19 @@
 package lotr.common.block;
 
-import java.util.List;
-
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
+import java.util.List;
+
 public class LOTRBlockFangornPlant extends LOTRBlockFlower {
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon[] plantIcons;
-	public String[] plantNames = { "green", "brown", "gold", "yellow", "red", "silver" };
+	public String[] plantNames = {"green", "brown", "gold", "yellow", "red", "silver"};
 
 	public LOTRBlockFangornPlant() {
 		setFlowerBounds(0.2f, 0.0f, 0.2f, 0.8f, 0.8f, 0.8f);
@@ -22,7 +24,7 @@ public class LOTRBlockFangornPlant extends LOTRBlockFlower {
 		return i;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
 		if (j >= plantNames.length) {
@@ -31,7 +33,7 @@ public class LOTRBlockFangornPlant extends LOTRBlockFlower {
 		return plantIcons[j];
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void getSubBlocks(Item item, CreativeTabs tab, List list) {
 		for (int j = 0; j < plantNames.length; ++j) {
@@ -39,7 +41,7 @@ public class LOTRBlockFangornPlant extends LOTRBlockFlower {
 		}
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
 		plantIcons = new IIcon[plantNames.length];

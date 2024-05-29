@@ -1,14 +1,18 @@
 package lotr.common.world.biome;
 
 import lotr.common.LOTRAchievement;
-import lotr.common.entity.animal.*;
-import lotr.common.world.map.*;
-import lotr.common.world.spawning.*;
+import lotr.common.entity.animal.LOTREntityButterfly;
+import lotr.common.entity.animal.LOTREntityDeer;
+import lotr.common.entity.animal.LOTREntityElk;
+import lotr.common.world.map.LOTRRoadType;
+import lotr.common.world.map.LOTRWaypoint;
+import lotr.common.world.spawning.LOTRBiomeSpawnList;
+import lotr.common.world.spawning.LOTRSpawnList;
 import lotr.common.world.structure.LOTRWorldGenRuinedWoodElfTower;
 import net.minecraft.world.biome.BiomeGenBase;
 
 public abstract class LOTRBiomeGenMirkwood extends LOTRBiome {
-	public LOTRBiomeGenMirkwood(int i, boolean major) {
+	protected LOTRBiomeGenMirkwood(int i, boolean major) {
 		super(i, major);
 		spawnableCreatureList.add(new BiomeGenBase.SpawnListEntry(LOTREntityElk.class, 30, 4, 6));
 		spawnableCreatureList.add(new BiomeGenBase.SpawnListEntry(LOTREntityDeer.class, 30, 4, 6));

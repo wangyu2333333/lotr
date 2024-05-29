@@ -1,11 +1,11 @@
 package lotr.client.model;
 
-import org.lwjgl.opengl.GL11;
-
 import lotr.client.render.entity.LOTRGlowingEyes;
-import lotr.common.entity.npc.*;
+import lotr.common.entity.npc.LOTREntityElf;
+import lotr.common.entity.npc.LOTREntityNPC;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
+import org.lwjgl.opengl.GL11;
 
 public class LOTRModelElf extends LOTRModelBiped implements LOTRGlowingEyes.Model {
 	public ModelRenderer earRight = new ModelRenderer(this, 0, 0);
@@ -86,9 +86,9 @@ public class LOTRModelElf extends LOTRModelBiped implements LOTRGlowingEyes.Mode
 		LOTREntityElf elf;
 		super.setRotationAngles(f, f1, f2, f3, f4, f5, entity);
 		if (entity instanceof LOTREntityElf && (elf = (LOTREntityElf) entity).isJazz() && elf.isSolo()) {
-			bipedRightArm.rotateAngleY = (float) Math.toRadians(-45.0);
+			bipedRightArm.rotateAngleY = -0.7853981633974483f;
 			bipedLeftArm.rotateAngleY = -bipedRightArm.rotateAngleY;
-			bipedLeftArm.rotateAngleX = bipedRightArm.rotateAngleX = (float) Math.toRadians(-50.0);
+			bipedLeftArm.rotateAngleX = bipedRightArm.rotateAngleX = -0.8726646259971648f;
 		}
 	}
 }

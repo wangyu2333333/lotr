@@ -1,15 +1,17 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
-import lotr.common.*;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
 import lotr.common.entity.LOTREntityNPCRespawner;
-import lotr.common.entity.npc.*;
+import lotr.common.entity.npc.LOTREntityDaleLevyman;
+import lotr.common.entity.npc.LOTREntityDaleSoldier;
 import lotr.common.item.LOTRItemBanner;
 import lotr.common.world.structure.LOTRChestContents;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenDaleWatchtower extends LOTRWorldGenDaleStructure {
 	public LOTRWorldGenDaleWatchtower(boolean flag) {
@@ -25,7 +27,7 @@ public class LOTRWorldGenDaleWatchtower extends LOTRWorldGenDaleStructure {
 		int j12;
 		int k2;
 		int i2;
-		this.setOriginAndRotation(world, i, j, k, rotation, 3);
+		setOriginAndRotation(world, i, j, k, rotation, 3);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			for (i12 = -3; i12 <= 3; ++i12) {
@@ -125,10 +127,10 @@ public class LOTRWorldGenDaleWatchtower extends LOTRWorldGenDaleStructure {
 		setBlockAndMetadata(world, -2, 1, 1, LOTRMod.daleTable, 0);
 		setAir(world, -2, 2, 1);
 		setBlockAndMetadata(world, 2, 1, -1, plankBlock, plankMeta);
-		this.placeBarrel(world, random, 2, 2, -1, 5, LOTRFoods.DALE_DRINK);
-		this.placeChest(world, random, 2, 1, 1, 5, LOTRChestContents.DALE_WATCHTOWER);
+		placeBarrel(world, random, 2, 2, -1, 5, LOTRFoods.DALE_DRINK);
+		placeChest(world, random, 2, 1, 1, 5, LOTRChestContents.DALE_WATCHTOWER);
 		setAir(world, 2, 2, 1);
-		int[] j13 = { -1, 1 };
+		int[] j13 = {-1, 1};
 		k1 = j13.length;
 		for (j1 = 0; j1 < k1; ++j1) {
 			int i13 = j13[j1];

@@ -1,6 +1,7 @@
 package lotr.client.fx;
 
-import lotr.common.fac.*;
+import lotr.common.fac.LOTRAlignmentBonusMap;
+import lotr.common.fac.LOTRFaction;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -48,11 +49,6 @@ public class LOTREntityAlignmentBonus extends Entity {
 		particleMaxAge = 80;
 		int extra = (int) (Math.min(1.0f, highestBonus / 50.0f) * 220.0f);
 		particleMaxAge += extra;
-	}
-
-	@Override
-	public boolean canBePushed() {
-		return false;
 	}
 
 	@Override

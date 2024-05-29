@@ -1,17 +1,17 @@
 package lotr.client.render.tileentity;
 
-import java.util.Random;
-
-import org.lwjgl.opengl.GL11;
-
 import lotr.common.entity.LOTRPlateFallingInfo;
 import lotr.common.tileentity.LOTRTileEntityPlate;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
+import org.lwjgl.opengl.GL11;
+
+import java.util.Random;
 
 public class LOTRRenderPlateFood extends TileEntitySpecialRenderer {
 	public Random rand = new Random();
@@ -21,8 +21,7 @@ public class LOTRRenderPlateFood extends TileEntitySpecialRenderer {
 		LOTRTileEntityPlate plate = (LOTRTileEntityPlate) tileentity;
 		ItemStack plateItem = plate.getFoodItem();
 		LOTRPlateFallingInfo fallInfo = plate.plateFallInfo;
-		if (fallInfo == null) {
-		} else {
+		if (fallInfo != null) {
 			fallInfo.getPlateOffsetY(f);
 		}
 		if (plateItem != null) {
@@ -48,7 +47,7 @@ public class LOTRRenderPlateFood extends TileEntitySpecialRenderer {
 				offset = Math.max(offset, lowerOffset);
 				GL11.glTranslatef(0.0F, offset, 0.0F);
 				lowerOffset = offset + 0.03125F;
-				rand.setSeed(plate.xCoord * 3129871 ^ plate.zCoord * 116129781L ^ plate.yCoord + l * 5930563L);
+				rand.setSeed(plate.xCoord * 3129871L ^ plate.zCoord * 116129781L ^ plate.yCoord + l * 5930563L);
 				float rotation = rand.nextFloat() * 360.0F;
 				GL11.glRotatef(rotation, 0.0F, 1.0F, 0.0F);
 				GL11.glRotatef(90.0F, 1.0F, 0.0F, 0.0F);

@@ -1,14 +1,14 @@
 package lotr.common.world.spawning;
 
-import java.util.*;
-
 import cpw.mods.fml.common.FMLLog;
 import lotr.common.world.biome.LOTRBiome;
 
+import java.util.*;
+
 public class LOTRBiomeInvasionSpawns {
 	public LOTRBiome theBiome;
-	public Map<LOTREventSpawner.EventChance, List<LOTRInvasions>> invasionsByChance = new HashMap<>();
-	public List<LOTRInvasions> registeredInvasions = new ArrayList<>();
+	public Map<LOTREventSpawner.EventChance, List<LOTRInvasions>> invasionsByChance = new EnumMap<>(LOTREventSpawner.EventChance.class);
+	public Collection<LOTRInvasions> registeredInvasions = new ArrayList<>();
 
 	public LOTRBiomeInvasionSpawns(LOTRBiome biome) {
 		theBiome = biome;

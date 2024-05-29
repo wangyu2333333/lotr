@@ -1,18 +1,23 @@
 package lotr.client.render.entity;
 
-import java.awt.Color;
-
-import org.lwjgl.opengl.GL11;
-
 import lotr.client.LOTRTextures;
 import lotr.client.model.LOTRModelElf;
 import lotr.common.LOTRMod;
 import lotr.common.entity.npc.*;
 import lotr.common.item.LOTRItemRing;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.texture.*;
-import net.minecraft.entity.*;
-import net.minecraft.util.*;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
+
+import java.awt.*;
 
 public class LOTRRenderElf extends LOTRRenderBiped {
 	public static LOTRRandomSkins galadhrimSkinsMale;
@@ -27,7 +32,7 @@ public class LOTRRenderElf extends LOTRRenderBiped {
 	public static LOTRRandomSkins jazzSkinsMale;
 	public static LOTRRandomSkins jazzSkinsFemale;
 	public static LOTRRandomSkins jazzOutfits;
-	public LOTRModelElf eyesModel = new LOTRModelElf(0.05f, 64, 64);
+	public LOTRGlowingEyes.Model eyesModel = new LOTRModelElf(0.05f, 64, 64);
 	public LOTRModelElf outfitModel = new LOTRModelElf(0.6f, 64, 64);
 
 	public LOTRRenderElf() {
@@ -99,7 +104,7 @@ public class LOTRRenderElf extends LOTRRenderBiped {
 		if (elf.isJazz() && elf.isSolo()) {
 			float hue = (elf.ticksExisted + f) / 20.0f;
 			float sat = 0.5f;
-			Color color = Color.getHSBColor(hue %= 360.0f, sat, 1.0f);
+			Color color = Color.getHSBColor(hue % 360.0f, sat, 1.0f);
 			float r = color.getRed() / 255.0f;
 			float g = color.getGreen() / 255.0f;
 			float b = color.getBlue() / 255.0f;
@@ -141,7 +146,7 @@ public class LOTRRenderElf extends LOTRRenderBiped {
 	public void renderModel(EntityLivingBase entity, float f, float f1, float f2, float f3, float f4, float f5) {
 		super.renderModel(entity, f, f1, f2, f3, f4, f5);
 		if (entity instanceof LOTREntityTormentedElf) {
-			ResourceLocation eyes = LOTRTextures.getEyesTexture(this.getEntityTexture(entity), new int[][] { { 9, 12 }, { 13, 12 } }, 2, 1);
+			ResourceLocation eyes = LOTRTextures.getEyesTexture(getEntityTexture(entity), new int[][]{{9, 12}, {13, 12}}, 2, 1);
 			LOTRGlowingEyes.renderGlowingEyes(entity, eyes, eyesModel, f, f1, f2, f3, f4, f5);
 		}
 	}

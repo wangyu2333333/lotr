@@ -1,25 +1,34 @@
 package lotr.common;
 
-import java.io.*;
-import java.util.*;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.google.common.base.Optional;
 import com.mojang.authlib.GameProfile;
-
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import lotr.common.fellowship.*;
+import lotr.common.fellowship.LOTRFellowship;
+import lotr.common.fellowship.LOTRFellowshipData;
 import lotr.common.network.*;
-import lotr.common.world.spawning.*;
-import net.minecraft.entity.player.*;
-import net.minecraft.nbt.*;
+import lotr.common.world.spawning.LOTREventSpawner;
+import lotr.common.world.spawning.LOTRTravellingTraderSpawner;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PreYggdrasilConverter;
 import net.minecraft.util.StatCollector;
-import net.minecraft.world.*;
+import net.minecraft.world.EnumDifficulty;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.DimensionManager;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.*;
 
 public class LOTRLevelData {
 	public static int madePortal;
@@ -35,7 +44,7 @@ public class LOTRLevelData {
 	public static int waypointCooldownMin;
 	public static boolean gollumSpawned;
 	public static boolean enableAlignmentZones;
-	public static float conquestRate;
+	public static float conquestRate = 1.0f;
 	public static boolean clientside_thisServer_feastMode;
 	public static boolean clientside_thisServer_fellowshipCreation;
 	public static int clientside_thisServer_fellowshipMaxSize;
@@ -44,23 +53,13 @@ public class LOTRLevelData {
 	public static boolean clientside_thisServer_strictFactionTitleRequirements;
 	public static int clientside_thisServer_customWaypointMinY;
 	public static boolean commemorateEmpressShamiir;
-	public static boolean clientside_thisServer_commemorateEmpressShamiir;
+	public static boolean clientside_thisServer_commemorateEmpressShamiir = true;
 	public static EnumDifficulty difficulty;
 	public static boolean difficultyLock;
-	public static Map<UUID, LOTRPlayerData> playerDataMap;
-	public static Map<UUID, Optional<LOTRTitle.PlayerTitle>> playerTitleOfflineCacheMap;
-	public static boolean needsLoad;
+	public static Map<UUID, LOTRPlayerData> playerDataMap = new HashMap<>();
+	public static Map<UUID, Optional<LOTRTitle.PlayerTitle>> playerTitleOfflineCacheMap = new HashMap<>();
+	public static boolean needsLoad = true;
 	public static boolean needsSave;
-
-	static {
-		conquestRate = 1.0f;
-		clientside_thisServer_commemorateEmpressShamiir = true;
-		difficultyLock = false;
-		playerDataMap = new HashMap<>();
-		playerTitleOfflineCacheMap = new HashMap<>();
-		needsLoad = true;
-		needsSave = false;
-	}
 
 	public static boolean anyDataNeedsSave() {
 		if (needsSave || LOTRSpawnDamping.needsSave) {
@@ -84,10 +83,10 @@ public class LOTRLevelData {
 	}
 
 	public static Set<String> getBannedStructurePlayersUsernames() {
-		HashSet<String> players = new HashSet<>();
+		Set<String> players = new HashSet<>();
 		for (UUID uuid : playerDataMap.keySet()) {
 			String username;
-			if (!LOTRLevelData.getData(uuid).getStructuresBanned()) {
+			if (!getData(uuid).getStructuresBanned()) {
 				continue;
 			}
 			GameProfile profile = MinecraftServer.getServer().func_152358_ax().func_152652_a(uuid);
@@ -106,14 +105,19 @@ public class LOTRLevelData {
 		return conquestRate;
 	}
 
+	public static void setConquestRate(float f) {
+		conquestRate = f;
+		markDirty();
+	}
+
 	public static LOTRPlayerData getData(EntityPlayer entityplayer) {
-		return LOTRLevelData.getData(entityplayer.getUniqueID());
+		return getData(entityplayer.getUniqueID());
 	}
 
 	public static LOTRPlayerData getData(UUID player) {
 		LOTRPlayerData pd = playerDataMap.get(player);
 		if (pd == null) {
-			pd = LOTRLevelData.loadData(player);
+			pd = loadData(player);
 			playerTitleOfflineCacheMap.remove(player);
 			if (pd == null) {
 				pd = new LOTRPlayerData(player);
@@ -124,7 +128,7 @@ public class LOTRLevelData {
 	}
 
 	public static String getHMSTime_Seconds(int secs) {
-		return LOTRLevelData.getHMSTime_Ticks(secs * 20);
+		return getHMSTime_Ticks(secs * 20);
 	}
 
 	public static String getHMSTime_Ticks(int ticks) {
@@ -144,17 +148,19 @@ public class LOTRLevelData {
 	}
 
 	public static File getLOTRDat() {
-		return new File(LOTRLevelData.getOrCreateLOTRDir(), "LOTR.dat");
+		return new File(getOrCreateLOTRDir(), "LOTR.dat");
 	}
 
+	@SuppressWarnings("ResultOfMethodCallIgnored")
 	public static File getLOTRPlayerDat(UUID player) {
-		File playerDir = new File(LOTRLevelData.getOrCreateLOTRDir(), "players");
+		File playerDir = new File(getOrCreateLOTRDir(), "players");
 		if (!playerDir.exists()) {
 			playerDir.mkdirs();
 		}
 		return new File(playerDir, player.toString() + ".dat");
 	}
 
+	@SuppressWarnings("ResultOfMethodCallIgnored")
 	public static File getOrCreateLOTRDir() {
 		File file = new File(DimensionManager.getCurrentSaveRootDirectory(), "LOTR");
 		if (!file.exists()) {
@@ -170,7 +176,7 @@ public class LOTRLevelData {
 		if (playerTitleOfflineCacheMap.containsKey(player)) {
 			return playerTitleOfflineCacheMap.get(player).orNull();
 		}
-		LOTRPlayerData pd = LOTRLevelData.loadData(player);
+		LOTRPlayerData pd = loadData(player);
 		LOTRTitle.PlayerTitle playerTitle = pd.getPlayerTitle();
 		playerTitleOfflineCacheMap.put(player, Optional.fromNullable(playerTitle));
 		return playerTitle;
@@ -178,6 +184,11 @@ public class LOTRLevelData {
 
 	public static EnumDifficulty getSavedDifficulty() {
 		return difficulty;
+	}
+
+	public static void setSavedDifficulty(EnumDifficulty d) {
+		difficulty = d;
+		markDirty();
 	}
 
 	public static int getWaypointCooldownMax() {
@@ -196,23 +207,29 @@ public class LOTRLevelData {
 		return difficultyLock;
 	}
 
-	public static boolean isPlayerBannedForStructures(EntityPlayer entityplayer) {
-		return LOTRLevelData.getData(entityplayer).getStructuresBanned();
+	public static void setDifficultyLocked(boolean flag) {
+		difficultyLock = flag;
+		markDirty();
 	}
 
+	public static boolean isPlayerBannedForStructures(EntityPlayer entityplayer) {
+		return getData(entityplayer).getStructuresBanned();
+	}
+
+	@SuppressWarnings("ResultOfMethodCallIgnored")
 	public static void load() {
 		try {
-			NBTTagCompound levelData = LOTRLevelData.loadNBTFromFile(LOTRLevelData.getLOTRDat());
+			NBTTagCompound levelData = loadNBTFromFile(getLOTRDat());
 			File oldLOTRDat = new File(DimensionManager.getCurrentSaveRootDirectory(), "LOTR.dat");
 			if (oldLOTRDat.exists()) {
-				levelData = LOTRLevelData.loadNBTFromFile(oldLOTRDat);
+				levelData = loadNBTFromFile(oldLOTRDat);
 				oldLOTRDat.delete();
 				if (levelData.hasKey("PlayerData")) {
 					NBTTagList playerDataTags = levelData.getTagList("PlayerData", 10);
 					for (int i = 0; i < playerDataTags.tagCount(); ++i) {
 						NBTTagCompound nbt = playerDataTags.getCompoundTagAt(i);
 						UUID player = UUID.fromString(nbt.getString("PlayerUUID"));
-						LOTRLevelData.saveNBTToFile(LOTRLevelData.getLOTRPlayerDat(player), nbt);
+						saveNBTToFile(getLOTRPlayerDat(player), nbt);
 					}
 				}
 			}
@@ -228,7 +245,7 @@ public class LOTRLevelData {
 			waypointCooldownMax = levelData.hasKey("FastTravel") ? levelData.getInteger("FastTravel") / 20 : levelData.hasKey("WpCdMax") ? levelData.getInteger("WpCdMax") : 1800;
 			waypointCooldownMin = levelData.hasKey("FastTravelMin") ? levelData.getInteger("FastTravelMin") / 20 : levelData.hasKey("WpCdMin") ? levelData.getInteger("WpCdMin") : 180;
 			gollumSpawned = levelData.getBoolean("GollumSpawned");
-			enableAlignmentZones = levelData.hasKey("AlignmentZones") ? levelData.getBoolean("AlignmentZones") : true;
+			enableAlignmentZones = !levelData.hasKey("AlignmentZones") || levelData.getBoolean("AlignmentZones");
 			conquestRate = levelData.hasKey("ConqRate") ? levelData.getFloat("ConqRate") : 1.0f;
 			commemorateEmpressShamiir = levelData.getBoolean("CommemorateEmpressShamiir");
 			if (levelData.hasKey("SavedDifficulty")) {
@@ -245,12 +262,12 @@ public class LOTRLevelData {
 				trader.readFromNBT(nbt);
 			}
 			LOTRGreyWandererTracker.load(levelData);
-			LOTRLevelData.destroyAllPlayerData();
+			destroyAllPlayerData();
 			LOTRDate.loadDates(levelData);
 			LOTRSpawnDamping.loadAll();
 			needsLoad = false;
 			needsSave = true;
-			LOTRLevelData.save();
+			save();
 		} catch (Exception e) {
 			FMLLog.severe("Error loading LOTR data");
 			e.printStackTrace();
@@ -259,7 +276,7 @@ public class LOTRLevelData {
 
 	public static LOTRPlayerData loadData(UUID player) {
 		try {
-			NBTTagCompound nbt = LOTRLevelData.loadNBTFromFile(LOTRLevelData.getLOTRPlayerDat(player));
+			NBTTagCompound nbt = loadNBTFromFile(getLOTRPlayerDat(player));
 			LOTRPlayerData pd = new LOTRPlayerData(player);
 			pd.load(nbt);
 			return pd;
@@ -285,24 +302,24 @@ public class LOTRLevelData {
 	}
 
 	public static void markMiddleEarthPortalLocation(int i, int j, int k) {
-		LOTRPacketPortalPos packet = new LOTRPacketPortalPos(i, j, k);
+		IMessage packet = new LOTRPacketPortalPos(i, j, k);
 		LOTRPacketHandler.networkWrapper.sendToAll(packet);
-		LOTRLevelData.markDirty();
+		markDirty();
 	}
 
 	public static void markOverworldPortalLocation(int i, int j, int k) {
 		overworldPortalX = i;
 		overworldPortalY = j;
 		overworldPortalZ = k;
-		LOTRLevelData.markDirty();
+		markDirty();
 	}
 
 	public static void save() {
 		try {
 			if (needsSave) {
-				File LOTR_dat = LOTRLevelData.getLOTRDat();
+				File LOTR_dat = getLOTRDat();
 				if (!LOTR_dat.exists()) {
-					LOTRLevelData.saveNBTToFile(LOTR_dat, new NBTTagCompound());
+					saveNBTToFile(LOTR_dat, new NBTTagCompound());
 				}
 				NBTTagCompound levelData = new NBTTagCompound();
 				levelData.setInteger("MadePortal", madePortal);
@@ -333,14 +350,14 @@ public class LOTRLevelData {
 				levelData.setTag("TravellingTraders", travellingTraderData);
 				LOTRGreyWandererTracker.save(levelData);
 				LOTRDate.saveDates(levelData);
-				LOTRLevelData.saveNBTToFile(LOTR_dat, levelData);
+				saveNBTToFile(LOTR_dat, levelData);
 				needsSave = false;
 			}
 			for (Map.Entry<UUID, LOTRPlayerData> e : playerDataMap.entrySet()) {
 				UUID player = e.getKey();
 				LOTRPlayerData pd = e.getValue();
 				if (pd.needsSave()) {
-					LOTRLevelData.saveData(player);
+					saveData(player);
 				}
 			}
 			if (LOTRSpawnDamping.needsSave) {
@@ -357,7 +374,7 @@ public class LOTRLevelData {
 		if (pd != null) {
 			boolean saved = false;
 			if (pd.needsSave()) {
-				LOTRLevelData.saveData(player);
+				saveData(player);
 				saved = true;
 			}
 			playerTitleOfflineCacheMap.put(player, Optional.fromNullable(pd.getPlayerTitle()));
@@ -369,7 +386,7 @@ public class LOTRLevelData {
 	}
 
 	public static void saveAndClearUnusedPlayerData() {
-		ArrayList<UUID> clearing = new ArrayList<>();
+		Collection<UUID> clearing = new ArrayList<>();
 		for (UUID player : playerDataMap.keySet()) {
 			boolean foundPlayer = false;
 			for (WorldServer world : MinecraftServer.getServer().worldServers) {
@@ -384,15 +401,9 @@ public class LOTRLevelData {
 			}
 			clearing.add(player);
 		}
-		clearing.size();
-		playerDataMap.size();
 		for (UUID player : clearing) {
-			boolean saved = LOTRLevelData.saveAndClearData(player);
-			if (!saved) {
-				continue;
-			}
+			boolean saved = saveAndClearData(player);
 		}
-		playerDataMap.size();
 	}
 
 	public static void saveData(UUID player) {
@@ -400,7 +411,7 @@ public class LOTRLevelData {
 			NBTTagCompound nbt = new NBTTagCompound();
 			LOTRPlayerData pd = playerDataMap.get(player);
 			pd.save(nbt);
-			LOTRLevelData.saveNBTToFile(LOTRLevelData.getLOTRPlayerDat(player), nbt);
+			saveNBTToFile(getLOTRPlayerDat(player), nbt);
 		} catch (Exception e) {
 			FMLLog.severe("Error saving LOTR player data for %s", player);
 			e.printStackTrace();
@@ -408,30 +419,30 @@ public class LOTRLevelData {
 	}
 
 	public static void saveNBTToFile(File file, NBTTagCompound nbt) throws FileNotFoundException, IOException {
-		CompressedStreamTools.writeCompressed(nbt, new FileOutputStream(file));
+		CompressedStreamTools.writeCompressed(nbt, Files.newOutputStream(file.toPath()));
 	}
 
 	public static void sendAlignmentToAllPlayersInWorld(EntityPlayer entityplayer, World world) {
 		for (Object element : world.playerEntities) {
 			EntityPlayer worldPlayer = (EntityPlayer) element;
-			LOTRPacketAlignment packet = new LOTRPacketAlignment(entityplayer.getUniqueID());
-			LOTRPacketHandler.networkWrapper.sendTo((IMessage) packet, (EntityPlayerMP) worldPlayer);
+			IMessage packet = new LOTRPacketAlignment(entityplayer.getUniqueID());
+			LOTRPacketHandler.networkWrapper.sendTo(packet, (EntityPlayerMP) worldPlayer);
 		}
 	}
 
 	public static void sendAllAlignmentsInWorldToPlayer(EntityPlayer entityplayer, World world) {
 		for (Object element : world.playerEntities) {
 			EntityPlayer worldPlayer = (EntityPlayer) element;
-			LOTRPacketAlignment packet = new LOTRPacketAlignment(worldPlayer.getUniqueID());
-			LOTRPacketHandler.networkWrapper.sendTo((IMessage) packet, (EntityPlayerMP) entityplayer);
+			IMessage packet = new LOTRPacketAlignment(worldPlayer.getUniqueID());
+			LOTRPacketHandler.networkWrapper.sendTo(packet, (EntityPlayerMP) entityplayer);
 		}
 	}
 
 	public static void sendAllShieldsInWorldToPlayer(EntityPlayer entityplayer, World world) {
 		for (Object element : world.playerEntities) {
 			EntityPlayer worldPlayer = (EntityPlayer) element;
-			LOTRPacketShield packet = new LOTRPacketShield(worldPlayer.getUniqueID());
-			LOTRPacketHandler.networkWrapper.sendTo((IMessage) packet, (EntityPlayerMP) entityplayer);
+			IMessage packet = new LOTRPacketShield(worldPlayer.getUniqueID());
+			LOTRPacketHandler.networkWrapper.sendTo(packet, (EntityPlayerMP) entityplayer);
 		}
 	}
 
@@ -458,7 +469,7 @@ public class LOTRLevelData {
 
 	public static void sendPlayerData(EntityPlayerMP entityplayer) {
 		try {
-			LOTRPlayerData pd = LOTRLevelData.getData(entityplayer);
+			LOTRPlayerData pd = getData(entityplayer);
 			pd.sendPlayerData(entityplayer);
 		} catch (Exception e) {
 			FMLLog.severe("Failed to send player data to player " + entityplayer.getCommandSenderName());
@@ -470,8 +481,8 @@ public class LOTRLevelData {
 		LOTRPacketUpdatePlayerLocations packetLocations = new LOTRPacketUpdatePlayerLocations();
 		boolean isOp = MinecraftServer.getServer().getConfigurationManager().func_152596_g(sendPlayer.getGameProfile());
 		boolean creative = sendPlayer.capabilities.isCreativeMode;
-		LOTRPlayerData playerData = LOTRLevelData.getData(sendPlayer);
-		ArrayList<LOTRFellowship> fellowshipsMapShow = new ArrayList<>();
+		LOTRPlayerData playerData = getData(sendPlayer);
+		Collection<LOTRFellowship> fellowshipsMapShow = new ArrayList<>();
 		for (UUID fsID : playerData.getFellowshipIDs()) {
 			LOTRFellowship fs = LOTRFellowshipData.getActiveFellowship(fsID);
 			if (fs == null || !fs.getShowMapLocations()) {
@@ -485,8 +496,8 @@ public class LOTRLevelData {
 			if (otherPlayer == sendPlayer) {
 				continue;
 			}
-			show = !LOTRLevelData.getData(otherPlayer).getHideMapLocation();
-			if (!isOp && LOTRLevelData.getData(otherPlayer).getAdminHideMap() || LOTRConfig.forceMapLocations == 1) {
+			show = !getData(otherPlayer).getHideMapLocation();
+			if (!isOp && getData(otherPlayer).getAdminHideMap() || LOTRConfig.forceMapLocations == 1) {
 				show = false;
 			} else if (LOTRConfig.forceMapLocations == 2) {
 				show = true;
@@ -508,35 +519,25 @@ public class LOTRLevelData {
 			}
 			packetLocations.addPlayerLocation(otherPlayer.getGameProfile(), otherPlayer.posX, otherPlayer.posZ);
 		}
-		LOTRPacketHandler.networkWrapper.sendTo((IMessage) packetLocations, (EntityPlayerMP) sendPlayer);
+		LOTRPacketHandler.networkWrapper.sendTo(packetLocations, (EntityPlayerMP) sendPlayer);
 	}
 
 	public static void sendShieldToAllPlayersInWorld(EntityPlayer entityplayer, World world) {
 		for (Object element : world.playerEntities) {
 			EntityPlayer worldPlayer = (EntityPlayer) element;
-			LOTRPacketShield packet = new LOTRPacketShield(entityplayer.getUniqueID());
-			LOTRPacketHandler.networkWrapper.sendTo((IMessage) packet, (EntityPlayerMP) worldPlayer);
+			IMessage packet = new LOTRPacketShield(entityplayer.getUniqueID());
+			LOTRPacketHandler.networkWrapper.sendTo(packet, (EntityPlayerMP) worldPlayer);
 		}
-	}
-
-	public static void setConquestRate(float f) {
-		conquestRate = f;
-		LOTRLevelData.markDirty();
-	}
-
-	public static void setDifficultyLocked(boolean flag) {
-		difficultyLock = flag;
-		LOTRLevelData.markDirty();
 	}
 
 	public static void setEnableAlignmentZones(boolean flag) {
 		enableAlignmentZones = flag;
-		LOTRLevelData.markDirty();
+		markDirty();
 		if (!LOTRMod.proxy.isClient()) {
 			List players = MinecraftServer.getServer().getConfigurationManager().playerEntityList;
 			for (Object player : players) {
 				EntityPlayerMP entityplayer = (EntityPlayerMP) player;
-				LOTRPacketEnableAlignmentZones packet = new LOTRPacketEnableAlignmentZones(enableAlignmentZones);
+				IMessage packet = new LOTRPacketEnableAlignmentZones(enableAlignmentZones);
 				LOTRPacketHandler.networkWrapper.sendTo(packet, entityplayer);
 			}
 		}
@@ -544,34 +545,27 @@ public class LOTRLevelData {
 
 	public static void setGollumSpawned(boolean flag) {
 		gollumSpawned = flag;
-		LOTRLevelData.markDirty();
+		markDirty();
 	}
 
 	public static void setMadeMiddleEarthPortal(int i) {
 		madeMiddleEarthPortal = i;
-		LOTRLevelData.markDirty();
+		markDirty();
 	}
 
 	public static void setMadePortal(int i) {
 		madePortal = i;
-		LOTRLevelData.markDirty();
+		markDirty();
 	}
 
 	public static void setPlayerBannedForStructures(String username, boolean flag) {
 		UUID uuid = UUID.fromString(PreYggdrasilConverter.func_152719_a(username));
-		if (uuid != null) {
-			LOTRLevelData.getData(uuid).setStructuresBanned(flag);
-		}
-	}
-
-	public static void setSavedDifficulty(EnumDifficulty d) {
-		difficulty = d;
-		LOTRLevelData.markDirty();
+		getData(uuid).setStructuresBanned(flag);
 	}
 
 	public static void setStructuresBanned(boolean banned) {
 		structuresBanned = banned ? 1 : 0;
-		LOTRLevelData.markDirty();
+		markDirty();
 	}
 
 	public static void setWaypointCooldown(int max, int min) {
@@ -582,12 +576,12 @@ public class LOTRLevelData {
 		}
 		waypointCooldownMax = max;
 		waypointCooldownMin = min;
-		LOTRLevelData.markDirty();
+		markDirty();
 		if (!LOTRMod.proxy.isClient()) {
 			List players = MinecraftServer.getServer().getConfigurationManager().playerEntityList;
 			for (Object player : players) {
 				EntityPlayerMP entityplayer = (EntityPlayerMP) player;
-				LOTRPacketFTCooldown packet = new LOTRPacketFTCooldown(waypointCooldownMax, waypointCooldownMin);
+				IMessage packet = new LOTRPacketFTCooldown(waypointCooldownMax, waypointCooldownMin);
 				LOTRPacketHandler.networkWrapper.sendTo(packet, entityplayer);
 			}
 		}

@@ -1,21 +1,25 @@
 package lotr.common.item;
 
-import java.util.List;
-
 import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRCreativeTabs;
+import lotr.common.LOTRMod;
 import lotr.common.quest.IPickpocketable;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.*;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
+import java.util.List;
+
 public class LOTRItemCoin extends Item {
-	public static int[] values = { 1, 10, 100 };
-	@SideOnly(value = Side.CLIENT)
+	public static int[] values = {1, 10, 100};
+	@SideOnly(Side.CLIENT)
 	public IIcon[] coinIcons;
 
 	public LOTRItemCoin() {
@@ -24,49 +28,14 @@ public class LOTRItemCoin extends Item {
 		setCreativeTab(LOTRCreativeTabs.tabMaterials);
 	}
 
-	@Override
-	@SideOnly(value = Side.CLIENT)
-	public IIcon getIconFromDamage(int i) {
-		if (i >= coinIcons.length) {
-			i = 0;
-		}
-		return coinIcons[i];
-	}
-
-	@Override
-	@SideOnly(value = Side.CLIENT)
-	public void getSubItems(Item item, CreativeTabs tab, List list) {
-		for (int j = 0; j < values.length; ++j) {
-			list.add(new ItemStack(item, 1, j));
-		}
-	}
-
-	@Override
-	public String getUnlocalizedName(ItemStack itemstack) {
-		int i = itemstack.getItemDamage();
-		if (i >= values.length) {
-			i = 0;
-		}
-		return super.getUnlocalizedName() + "." + values[i];
-	}
-
-	@Override
-	@SideOnly(value = Side.CLIENT)
-	public void registerIcons(IIconRegister iconregister) {
-		coinIcons = new IIcon[values.length];
-		for (int i = 0; i < values.length; ++i) {
-			coinIcons[i] = iconregister.registerIcon(getIconString() + "_" + values[i]);
-		}
-	}
-
 	public static int getContainerValue(IInventory inv, boolean allowStolen) {
 		if (inv instanceof InventoryPlayer) {
-			return LOTRItemCoin.getInventoryValue(((InventoryPlayer) inv).player, allowStolen);
+			return getInventoryValue(((InventoryPlayer) inv).player, allowStolen);
 		}
 		int coins = 0;
 		for (int i = 0; i < inv.getSizeInventory(); ++i) {
 			ItemStack itemstack = inv.getStackInSlot(i);
-			coins += LOTRItemCoin.getStackValue(itemstack, allowStolen);
+			coins += getStackValue(itemstack, allowStolen);
 		}
 		return coins;
 	}
@@ -74,9 +43,9 @@ public class LOTRItemCoin extends Item {
 	public static int getInventoryValue(EntityPlayer entityplayer, boolean allowStolen) {
 		int coins = 0;
 		for (ItemStack itemstack : entityplayer.inventory.mainInventory) {
-			coins += LOTRItemCoin.getStackValue(itemstack, allowStolen);
+			coins += getStackValue(itemstack, allowStolen);
 		}
-		return coins += LOTRItemCoin.getStackValue(entityplayer.inventory.getItemStack(), allowStolen);
+		return coins + getStackValue(entityplayer.inventory.getItemStack(), allowStolen);
 	}
 
 	public static int getSingleItemValue(ItemStack itemstack, boolean allowStolen) {
@@ -97,7 +66,7 @@ public class LOTRItemCoin extends Item {
 		if (itemstack == null) {
 			return 0;
 		}
-		return LOTRItemCoin.getSingleItemValue(itemstack, allowStolen) * itemstack.stackSize;
+		return getSingleItemValue(itemstack, allowStolen) * itemstack.stackSize;
 	}
 
 	public static void giveCoins(int coins, EntityPlayer entityplayer) {
@@ -135,12 +104,13 @@ public class LOTRItemCoin extends Item {
 		ItemStack itemstack;
 		int value;
 		InventoryPlayer inv = entityplayer.inventory;
-		int invValue = LOTRItemCoin.getInventoryValue(entityplayer, false);
+		int invValue = getInventoryValue(entityplayer, false);
 		if (invValue < coins) {
 			FMLLog.warning("Attempted to take " + coins + " coins from player " + entityplayer.getCommandSenderName() + " who has only " + invValue);
 		}
 		int initCoins = coins;
-		block0: for (i = values.length - 1; i >= 0; --i) {
+		block0:
+		for (i = values.length - 1; i >= 0; --i) {
 			value = values[i];
 			if (value > initCoins) {
 				continue;
@@ -174,7 +144,8 @@ public class LOTRItemCoin extends Item {
 				}
 				value = values[i];
 				coin = new ItemStack(LOTRMod.silverCoin, 1, i);
-				block4: for (slot = -1; slot < inv.mainInventory.length; ++slot) {
+				block4:
+				for (slot = -1; slot < inv.mainInventory.length; ++slot) {
 					while ((itemstack = slot == -1 ? inv.getItemStack() : inv.mainInventory[slot]) != null && itemstack.isItemEqual(coin)) {
 						if (slot == -1) {
 							is = inv.getItemStack();
@@ -200,7 +171,42 @@ public class LOTRItemCoin extends Item {
 			}
 		}
 		if (coins < 0) {
-			LOTRItemCoin.giveCoins(-coins, entityplayer);
+			giveCoins(-coins, entityplayer);
+		}
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public IIcon getIconFromDamage(int i) {
+		if (i >= coinIcons.length) {
+			i = 0;
+		}
+		return coinIcons[i];
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void getSubItems(Item item, CreativeTabs tab, List list) {
+		for (int j = 0; j < values.length; ++j) {
+			list.add(new ItemStack(item, 1, j));
+		}
+	}
+
+	@Override
+	public String getUnlocalizedName(ItemStack itemstack) {
+		int i = itemstack.getItemDamage();
+		if (i >= values.length) {
+			i = 0;
+		}
+		return getUnlocalizedName() + "." + values[i];
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerIcons(IIconRegister iconregister) {
+		coinIcons = new IIcon[values.length];
+		for (int i = 0; i < values.length; ++i) {
+			coinIcons[i] = iconregister.registerIcon(getIconString() + "_" + values[i]);
 		}
 	}
 }

@@ -1,7 +1,5 @@
 package lotr.common.world.structure;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import lotr.common.entity.animal.LOTREntityHorse;
 import lotr.common.entity.npc.LOTREntityTroll;
@@ -11,12 +9,20 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.passive.EntityOcelot;
 import net.minecraft.init.Blocks;
-import net.minecraft.tileentity.*;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.world.World;
+
+import java.util.Locale;
+import java.util.Random;
 
 public class LOTRWorldGenMarshHut extends LOTRWorldGenStructureBase {
 	public LOTRWorldGenMarshHut() {
 		super(false);
+	}
+
+	public static boolean generatesAt(World world, int i, int k) {
+		return LOTRFixedStructures.generatesAtMapImageCoords(i, k, 1419, 1134);
 	}
 
 	@Override
@@ -120,14 +126,10 @@ public class LOTRWorldGenMarshHut extends LOTRWorldGenStructureBase {
 		tileentity = world.getTileEntity(i, j + 1, k + radius - 1);
 		if (tileentity instanceof TileEntitySign) {
 			TileEntitySign sign = (TileEntitySign) tileentity;
-			sign.signText[0] = troll.familyInfo.getName().toUpperCase();
+			sign.signText[0] = troll.familyInfo.getName().toUpperCase(Locale.ROOT);
 			sign.signText[1] = "IS";
-			sign.signText[2] = troll2.familyInfo.getName().toUpperCase();
+			sign.signText[2] = troll2.familyInfo.getName().toUpperCase(Locale.ROOT);
 		}
 		return true;
-	}
-
-	public static boolean generatesAt(World world, int i, int k) {
-		return LOTRFixedStructures.generatesAtMapImageCoords(i, k, 1419, 1134);
 	}
 }

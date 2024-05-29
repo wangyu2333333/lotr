@@ -1,7 +1,5 @@
 package lotr.common.entity.npc;
 
-import java.util.UUID;
-
 import lotr.common.LOTRMod;
 import lotr.common.entity.LOTRMountFunctions;
 import lotr.common.item.LOTRItemMountArmor;
@@ -12,11 +10,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+import java.util.UUID;
+
 public abstract class LOTREntityNPCRideable extends LOTREntityNPC implements LOTRNPCMount {
 	public UUID tamingPlayer;
 	public int npcTemper;
 
-	public LOTREntityNPCRideable(World world) {
+	protected LOTREntityNPCRideable(World world) {
 		super(world);
 	}
 
@@ -31,7 +31,7 @@ public abstract class LOTREntityNPCRideable extends LOTREntityNPC implements LOT
 
 	@Override
 	public boolean canRenameNPC() {
-		return isNPCTamed() ? true : super.canRenameNPC();
+		return isNPCTamed() || super.canRenameNPC();
 	}
 
 	@Override
@@ -65,6 +65,10 @@ public abstract class LOTREntityNPCRideable extends LOTREntityNPC implements LOT
 		return npcTemper;
 	}
 
+	public void setNPCTemper(int i) {
+		npcTemper = i;
+	}
+
 	@Override
 	public float getStepHeightWhileRiddenByPlayer() {
 		return 1.0f;
@@ -74,10 +78,8 @@ public abstract class LOTREntityNPCRideable extends LOTREntityNPC implements LOT
 		return worldObj.func_152378_a(tamingPlayer);
 	}
 
-	public int increaseNPCTemper(int i) {
-		int temper = MathHelper.clamp_int(getNPCTemper() + i, 0, getMaxNPCTemper());
-		setNPCTemper(temper);
-		return getNPCTemper();
+	public void increaseNPCTemper(int i) {
+		npcTemper = MathHelper.clamp_int(npcTemper + i, 0, getMaxNPCTemper());
 	}
 
 	@Override
@@ -91,6 +93,10 @@ public abstract class LOTREntityNPCRideable extends LOTREntityNPC implements LOT
 
 	public boolean isNPCTamed() {
 		return dataWatcher.getWatchableObjectByte(17) == 1;
+	}
+
+	public void setNPCTamed(boolean flag) {
+		dataWatcher.updateObject(17, (byte) (flag ? 1 : 0));
 	}
 
 	@Override
@@ -119,14 +125,6 @@ public abstract class LOTREntityNPCRideable extends LOTREntityNPC implements LOT
 			tamingPlayer = UUID.fromString(nbt.getString("NPCTamer"));
 		}
 		npcTemper = nbt.getInteger("NPCTemper");
-	}
-
-	public void setNPCTamed(boolean flag) {
-		dataWatcher.updateObject(17, (byte) (flag ? 1 : 0));
-	}
-
-	public void setNPCTemper(int i) {
-		npcTemper = i;
 	}
 
 	@Override

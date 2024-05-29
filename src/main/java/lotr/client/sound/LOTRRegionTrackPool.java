@@ -1,12 +1,12 @@
 package lotr.client.sound;
 
-import java.util.*;
-
 import lotr.common.world.biome.LOTRMusicRegion;
+
+import java.util.*;
 
 public class LOTRRegionTrackPool {
 	public LOTRMusicRegion region;
-	public List<LOTRMusicTrack> trackList = new ArrayList<>();
+	public Collection<LOTRMusicTrack> trackList = new ArrayList<>();
 
 	public LOTRRegionTrackPool(LOTRMusicRegion r, String s) {
 		region = r;

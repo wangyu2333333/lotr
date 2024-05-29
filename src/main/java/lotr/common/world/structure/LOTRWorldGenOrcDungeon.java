@@ -1,20 +1,23 @@
 package lotr.common.world.structure;
 
-import java.util.*;
-
 import lotr.common.LOTRMod;
 import lotr.common.entity.LOTREntities;
-import lotr.common.entity.npc.*;
+import lotr.common.entity.npc.LOTREntityGundabadOrc;
+import lotr.common.entity.npc.LOTREntityOrc;
 import lotr.common.world.LOTRWorldChunkManager;
 import lotr.common.world.biome.LOTRBiome;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
-import lotr.common.world.spawning.*;
+import lotr.common.world.spawning.LOTRBiomeSpawnList;
+import lotr.common.world.spawning.LOTRSpawnEntry;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityList;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 public class LOTRWorldGenOrcDungeon extends LOTRWorldGenStructureBase {
 	public LOTRWorldGenOrcDungeon(boolean flag) {
@@ -33,21 +36,21 @@ public class LOTRWorldGenOrcDungeon extends LOTRWorldGenStructureBase {
 		if (!restrictions && usingPlayer != null) {
 			int rotation = usingPlayerRotation();
 			switch (rotation) {
-			case 0: {
-				k += zSize + 2;
-				break;
-			}
-			case 1: {
-				i -= xSize + 2;
-				break;
-			}
-			case 2: {
-				k -= zSize + 2;
-				break;
-			}
-			case 3: {
-				i += xSize + 2;
-			}
+				case 0: {
+					k += zSize + 2;
+					break;
+				}
+				case 1: {
+					i -= xSize + 2;
+					break;
+				}
+				case 2: {
+					k -= zSize + 2;
+					break;
+				}
+				case 3: {
+					i += xSize + 2;
+				}
 			}
 		}
 		if (restrictions) {
@@ -87,17 +90,15 @@ public class LOTRWorldGenOrcDungeon extends LOTRWorldGenStructureBase {
 					}
 				}
 			}
-			block12: for (int chestAttempts = 0; chestAttempts < 2; ++chestAttempts) {
+			block12:
+			for (int chestAttempts = 0; chestAttempts < 2; ++chestAttempts) {
 				for (int thisChestAttempts = 0; thisChestAttempts < 3; ++thisChestAttempts) {
 					int k12;
 					int i12 = i + random.nextInt(xSize * 2 + 1) - xSize;
 					if (!world.isAirBlock(i12, j, k12 = k + random.nextInt(zSize * 2 + 1) - zSize)) {
 						continue;
 					}
-					boolean flag = false;
-					if (world.getBlock(i12 - 1, j, k12).getMaterial().isSolid()) {
-						flag = true;
-					}
+					boolean flag = world.getBlock(i12 - 1, j, k12).getMaterial().isSolid();
 					if (world.getBlock(i12 + 1, j, k12).getMaterial().isSolid()) {
 						flag = true;
 					}
@@ -115,7 +116,7 @@ public class LOTRWorldGenOrcDungeon extends LOTRWorldGenStructureBase {
 					continue block12;
 				}
 			}
-			Class backupClass = LOTREntityGundabadOrc.class;
+			Class<LOTREntityGundabadOrc> backupClass = LOTREntityGundabadOrc.class;
 			ArrayList<Class> biomeClasses = new ArrayList<>();
 			BiomeGenBase biome = world.getBiomeGenForCoords(i, k);
 			if (biome instanceof LOTRBiome) {
@@ -147,7 +148,8 @@ public class LOTRWorldGenOrcDungeon extends LOTRWorldGenStructureBase {
 				--orcs;
 			}
 			int pillars = random.nextInt(6);
-			block16: for (int l = 0; l < pillars; ++l) {
+			block16:
+			for (int l = 0; l < pillars; ++l) {
 				int j12;
 				int i13 = i + random.nextInt(xSize * 2 + 1) - xSize;
 				int k13 = k + random.nextInt(zSize * 2 + 1) - zSize;

@@ -1,20 +1,20 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public abstract class LOTRWorldGenGondorFortWall extends LOTRWorldGenGondorStructure {
 	public boolean isRight;
 
-	public LOTRWorldGenGondorFortWall(boolean flag) {
+	protected LOTRWorldGenGondorFortWall(boolean flag) {
 		super(flag);
 	}
 
 	@Override
 	public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
-		this.setOriginAndRotation(world, i, j, k, rotation, 0);
+		setOriginAndRotation(world, i, j, k, rotation, 0);
 		setupRandomBlocks(random);
 		int xMin = -8;
 		int xMax = 6;

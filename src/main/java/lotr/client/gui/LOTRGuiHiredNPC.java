@@ -1,13 +1,18 @@
 package lotr.client.gui;
 
-import java.util.ArrayList;
-
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import lotr.common.entity.npc.LOTREntityNPC;
+import lotr.common.entity.npc.LOTRUnitTradeEntry;
+import lotr.common.fac.LOTRAlignmentValues;
+import lotr.common.fac.LOTRFaction;
+import lotr.common.network.LOTRPacketHandler;
+import lotr.common.network.LOTRPacketHiredUnitCommand;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
-import lotr.common.entity.npc.*;
-import lotr.common.fac.*;
-import lotr.common.network.*;
-import net.minecraft.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public abstract class LOTRGuiHiredNPC extends LOTRGuiScreenBase {
 	public static ResourceLocation guiTexture = new ResourceLocation("lotr:gui/npc/hired.png");
@@ -18,7 +23,7 @@ public abstract class LOTRGuiHiredNPC extends LOTRGuiScreenBase {
 	public LOTREntityNPC theNPC;
 	public int page;
 
-	public LOTRGuiHiredNPC(LOTREntityNPC npc) {
+	protected LOTRGuiHiredNPC(LOTREntityNPC npc) {
 		theNPC = npc;
 	}
 
@@ -27,7 +32,7 @@ public abstract class LOTRGuiHiredNPC extends LOTRGuiScreenBase {
 		drawDefaultBackground();
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		mc.getTextureManager().bindTexture(guiTexture);
-		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 		String s = theNPC.getNPCName();
 		fontRendererObj.drawString(s, guiLeft + xSize / 2 - fontRendererObj.getStringWidth(s) / 2, guiTop + 11, 3618615);
 		s = theNPC.getEntityClassName();
@@ -39,12 +44,11 @@ public abstract class LOTRGuiHiredNPC extends LOTRGuiScreenBase {
 			fontRendererObj.drawString(s, x, y, 3618615);
 			y += fontRendererObj.FONT_HEIGHT;
 			x += 4;
-			ArrayList requirementLines = new ArrayList();
 			int maxWidth = xSize - 12 - 4;
 			LOTRFaction fac = theNPC.getHiringFaction();
 			String alignS = LOTRAlignmentValues.formatAlignForDisplay(theNPC.hiredNPCInfo.alignmentRequiredToCommand);
 			String alignReq = StatCollector.translateToLocalFormatted("lotr.hiredNPC.commandReq.align", alignS, fac.factionName());
-			requirementLines.addAll(fontRendererObj.listFormattedStringToWidth(alignReq, maxWidth));
+			Collection requirementLines = new ArrayList(fontRendererObj.listFormattedStringToWidth(alignReq, maxWidth));
 			LOTRUnitTradeEntry.PledgeType pledge = theNPC.hiredNPCInfo.pledgeType;
 			String pledgeReq = pledge.getCommandReqText(fac);
 			if (pledgeReq != null) {
@@ -68,15 +72,15 @@ public abstract class LOTRGuiHiredNPC extends LOTRGuiScreenBase {
 	@Override
 	public void onGuiClosed() {
 		super.onGuiClosed();
-		this.sendActionPacket(-1);
+		sendActionPacket(-1);
 	}
 
 	public void sendActionPacket(int action) {
-		this.sendActionPacket(action, 0);
+		sendActionPacket(action, 0);
 	}
 
 	public void sendActionPacket(int action, int value) {
-		LOTRPacketHiredUnitCommand packet = new LOTRPacketHiredUnitCommand(theNPC.getEntityId(), page, action, value);
+		IMessage packet = new LOTRPacketHiredUnitCommand(theNPC.getEntityId(), page, action, value);
 		LOTRPacketHandler.networkWrapper.sendToServer(packet);
 	}
 

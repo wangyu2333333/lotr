@@ -1,25 +1,32 @@
 package lotr.common.tileentity;
 
-import java.util.*;
-
-import lotr.common.entity.*;
+import lotr.common.entity.LOTREntities;
+import lotr.common.entity.LOTRMobSpawnerCondition;
 import lotr.common.entity.npc.LOTREntityNPC;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.*;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 public class LOTRTileEntityMobSpawner extends TileEntity {
 	public int delay = 20;
 	public String entityClassName = "";
 	public double yaw;
-	public double prevYaw = 0.0;
+	public double prevYaw;
 	public Entity spawnedMob;
 	public int active = 1;
-	public boolean spawnsPersistentNPCs = false;
+	public boolean spawnsPersistentNPCs;
 	public int minSpawnDelay = 200;
 	public int maxSpawnDelay = 800;
 	public int nearbyMobLimit = 6;
@@ -47,6 +54,26 @@ public class LOTRTileEntityMobSpawner extends TileEntity {
 
 	public String getEntityClassName() {
 		return entityClassName;
+	}
+
+	public void setEntityClassName(String s) {
+		Entity entity;
+		entityClassName = s;
+		if (!worldObj.isRemote && (entity = EntityList.createEntityByName(entityClassName, worldObj)) instanceof EntityLiving) {
+			EntityLiving entityliving = (EntityLiving) entity;
+			if (entityliving.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth) != null) {
+				maxHealth = (int) entityliving.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth).getBaseValue();
+			}
+			if (entityliving.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.followRange) != null) {
+				navigatorRange = (int) entityliving.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.followRange).getBaseValue();
+			}
+			if (entityliving.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.movementSpeed) != null) {
+				moveSpeed = (float) entityliving.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.movementSpeed).getBaseValue();
+			}
+			if (entityliving.getAttributeMap().getAttributeInstance(LOTREntityNPC.npcAttackDamage) != null) {
+				attackDamage = (float) entityliving.getAttributeMap().getAttributeInstance(LOTREntityNPC.npcAttackDamage).getBaseValue();
+			}
+		}
 	}
 
 	public Entity getMobEntity(World world) {
@@ -138,26 +165,6 @@ public class LOTRTileEntityMobSpawner extends TileEntity {
 		setEntityClassName(LOTREntities.getStringFromID(i));
 	}
 
-	public void setEntityClassName(String s) {
-		Entity entity;
-		entityClassName = s;
-		if (!worldObj.isRemote && (entity = EntityList.createEntityByName(entityClassName, worldObj)) instanceof EntityLiving) {
-			EntityLiving entityliving = (EntityLiving) entity;
-			if (entityliving.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth) != null) {
-				maxHealth = (int) entityliving.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth).getBaseValue();
-			}
-			if (entityliving.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.followRange) != null) {
-				navigatorRange = (int) entityliving.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.followRange).getBaseValue();
-			}
-			if (entityliving.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.movementSpeed) != null) {
-				moveSpeed = (float) entityliving.getAttributeMap().getAttributeInstance(SharedMonsterAttributes.movementSpeed).getBaseValue();
-			}
-			if (entityliving.getAttributeMap().getAttributeInstance(LOTREntityNPC.npcAttackDamage) != null) {
-				attackDamage = (float) entityliving.getAttributeMap().getAttributeInstance(LOTREntityNPC.npcAttackDamage).getBaseValue();
-			}
-		}
-	}
-
 	public void updateDelay() {
 		delay = maxSpawnDelay <= minSpawnDelay ? minSpawnDelay : minSpawnDelay + worldObj.rand.nextInt(maxSpawnDelay - minSpawnDelay);
 		worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), 1, 0);
@@ -192,7 +199,7 @@ public class LOTRTileEntityMobSpawner extends TileEntity {
 						return;
 					}
 					List nearbyEntitiesList = worldObj.getEntitiesWithinAABB(entity.getClass(), AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord + 1, yCoord + 1, zCoord + 1).expand(nearbyMobCheckRange, nearbyMobCheckRange, nearbyMobCheckRange));
-					ArrayList<Entity> nearbySameEntitiesList = new ArrayList<>();
+					Collection<Entity> nearbySameEntitiesList = new ArrayList<>();
 					for (Object element : nearbyEntitiesList) {
 						Entity nearbyEntity = (Entity) element;
 						if (nearbyEntity.getClass() != entity.getClass()) {
@@ -276,7 +283,7 @@ public class LOTRTileEntityMobSpawner extends TileEntity {
 	@Override
 	public void writeToNBT(NBTTagCompound nbt) {
 		super.writeToNBT(nbt);
-		nbt.setString("EntityID", getEntityClassName());
+		nbt.setString("EntityID", entityClassName);
 		nbt.setShort("Delay", (short) delay);
 		nbt.setShort("MinSpawnDelay", (short) minSpawnDelay);
 		nbt.setShort("MaxSpawnDelay", (short) maxSpawnDelay);

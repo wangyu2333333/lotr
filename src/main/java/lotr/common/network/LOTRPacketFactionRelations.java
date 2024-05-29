@@ -1,11 +1,15 @@
 package lotr.common.network;
 
-import java.util.*;
-
-import cpw.mods.fml.common.network.simpleimpl.*;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import lotr.common.LOTRMod;
-import lotr.common.fac.*;
+import lotr.common.fac.LOTRFaction;
+import lotr.common.fac.LOTRFactionRelations;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LOTRPacketFactionRelations implements IMessage {
 	public Type packetType;
@@ -13,13 +17,34 @@ public class LOTRPacketFactionRelations implements IMessage {
 	public LOTRFactionRelations.FactionPair singleKey;
 	public LOTRFactionRelations.Relation singleRelation;
 
+	public static LOTRPacketFactionRelations fullMap(Map<LOTRFactionRelations.FactionPair, LOTRFactionRelations.Relation> map) {
+		LOTRPacketFactionRelations pkt = new LOTRPacketFactionRelations();
+		pkt.packetType = Type.FULL_MAP;
+		pkt.fullMap = map;
+		return pkt;
+	}
+
+	public static LOTRPacketFactionRelations oneEntry(LOTRFactionRelations.FactionPair pair, LOTRFactionRelations.Relation rel) {
+		LOTRPacketFactionRelations pkt = new LOTRPacketFactionRelations();
+		pkt.packetType = Type.ONE_ENTRY;
+		pkt.singleKey = pair;
+		pkt.singleRelation = rel;
+		return pkt;
+	}
+
+	public static LOTRPacketFactionRelations reset() {
+		LOTRPacketFactionRelations pkt = new LOTRPacketFactionRelations();
+		pkt.packetType = Type.RESET;
+		return pkt;
+	}
+
 	@Override
 	public void fromBytes(ByteBuf data) {
 		byte typeID = data.readByte();
 		packetType = Type.forID(typeID);
 		if (packetType == Type.FULL_MAP) {
 			fullMap = new HashMap<>();
-			byte fac1ID = 0;
+			byte fac1ID;
 			while ((fac1ID = data.readByte()) >= 0) {
 				byte fac2ID = data.readByte();
 				byte relID = data.readByte();
@@ -59,25 +84,18 @@ public class LOTRPacketFactionRelations implements IMessage {
 		}
 	}
 
-	public static LOTRPacketFactionRelations fullMap(Map<LOTRFactionRelations.FactionPair, LOTRFactionRelations.Relation> map) {
-		LOTRPacketFactionRelations pkt = new LOTRPacketFactionRelations();
-		pkt.packetType = Type.FULL_MAP;
-		pkt.fullMap = map;
-		return pkt;
-	}
+	public enum Type {
+		FULL_MAP, RESET, ONE_ENTRY;
 
-	public static LOTRPacketFactionRelations oneEntry(LOTRFactionRelations.FactionPair pair, LOTRFactionRelations.Relation rel) {
-		LOTRPacketFactionRelations pkt = new LOTRPacketFactionRelations();
-		pkt.packetType = Type.ONE_ENTRY;
-		pkt.singleKey = pair;
-		pkt.singleRelation = rel;
-		return pkt;
-	}
-
-	public static LOTRPacketFactionRelations reset() {
-		LOTRPacketFactionRelations pkt = new LOTRPacketFactionRelations();
-		pkt.packetType = Type.RESET;
-		return pkt;
+		public static Type forID(int id) {
+			for (Type t : values()) {
+				if (t.ordinal() != id) {
+					continue;
+				}
+				return t;
+			}
+			return null;
+		}
 	}
 
 	public static class Handler implements IMessageHandler<LOTRPacketFactionRelations, IMessage> {
@@ -99,20 +117,6 @@ public class LOTRPacketFactionRelations implements IMessage {
 					LOTRFactionRelations.Relation rel = packet.singleRelation;
 					LOTRFactionRelations.overrideRelations(key.getLeft(), key.getRight(), rel);
 				}
-			}
-			return null;
-		}
-	}
-
-	public enum Type {
-		FULL_MAP, RESET, ONE_ENTRY;
-
-		public static Type forID(int id) {
-			for (Type t : Type.values()) {
-				if (t.ordinal() != id) {
-					continue;
-				}
-				return t;
 			}
 			return null;
 		}

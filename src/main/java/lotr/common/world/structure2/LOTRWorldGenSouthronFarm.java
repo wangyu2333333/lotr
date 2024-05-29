@@ -1,13 +1,16 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
-import lotr.common.entity.npc.*;
+import lotr.common.entity.npc.LOTREntityHaradSlave;
+import lotr.common.entity.npc.LOTREntityNearHaradrimBase;
+import lotr.common.entity.npc.LOTREntitySouthronFarmer;
 import net.minecraft.block.Block;
-import net.minecraft.init.*;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenSouthronFarm extends LOTRWorldGenSouthronStructure {
 	public Block crop1Block;
@@ -26,7 +29,7 @@ public class LOTRWorldGenSouthronFarm extends LOTRWorldGenSouthronStructure {
 	@Override
 	public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
 		int j1;
-		this.setOriginAndRotation(world, i, j, k, rotation, 6);
+		setOriginAndRotation(world, i, j, k, rotation, 6);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			int minHeight = 0;
@@ -77,8 +80,8 @@ public class LOTRWorldGenSouthronFarm extends LOTRWorldGenSouthronStructure {
 		associateBlockAlias("CROP1", crop1Block);
 		associateBlockAlias("CROP2", crop2Block);
 		generateStrScan(world, random, 0, 0, 0);
-		this.placeSkull(world, random, -4, 4, 0);
-		this.placeSkull(world, random, 4, 4, 0);
+		placeSkull(world, random, -4, 4, 0);
+		placeSkull(world, random, 4, 4, 0);
 		if (random.nextInt(4) == 0) {
 			LOTREntityNearHaradrimBase farmer = createFarmer(world);
 			spawnNPCAndSetHome(farmer, world, 0, 1, 1, 8);
@@ -102,24 +105,24 @@ public class LOTRWorldGenSouthronFarm extends LOTRWorldGenSouthronStructure {
 		} else {
 			randomCrop = random.nextInt(4);
 			switch (randomCrop) {
-			case 0:
-				crop1Block = Blocks.carrots;
-				seed1 = Items.carrot;
-				break;
-			case 1:
-				crop1Block = Blocks.potatoes;
-				seed1 = Items.potato;
-				break;
-			case 2:
-				crop1Block = LOTRMod.lettuceCrop;
-				seed1 = LOTRMod.lettuce;
-				break;
-			case 3:
-				crop1Block = LOTRMod.turnipCrop;
-				seed1 = LOTRMod.turnip;
-				break;
-			default:
-				break;
+				case 0:
+					crop1Block = Blocks.carrots;
+					seed1 = Items.carrot;
+					break;
+				case 1:
+					crop1Block = Blocks.potatoes;
+					seed1 = Items.potato;
+					break;
+				case 2:
+					crop1Block = LOTRMod.lettuceCrop;
+					seed1 = LOTRMod.lettuce;
+					break;
+				case 3:
+					crop1Block = LOTRMod.turnipCrop;
+					seed1 = LOTRMod.turnip;
+					break;
+				default:
+					break;
 			}
 		}
 		if (random.nextBoolean()) {
@@ -128,24 +131,24 @@ public class LOTRWorldGenSouthronFarm extends LOTRWorldGenSouthronStructure {
 		} else {
 			randomCrop = random.nextInt(4);
 			switch (randomCrop) {
-			case 0:
-				crop2Block = Blocks.carrots;
-				seed2 = Items.carrot;
-				break;
-			case 1:
-				crop2Block = Blocks.potatoes;
-				seed2 = Items.potato;
-				break;
-			case 2:
-				crop2Block = LOTRMod.lettuceCrop;
-				seed2 = LOTRMod.lettuce;
-				break;
-			case 3:
-				crop2Block = LOTRMod.turnipCrop;
-				seed2 = LOTRMod.turnip;
-				break;
-			default:
-				break;
+				case 0:
+					crop2Block = Blocks.carrots;
+					seed2 = Items.carrot;
+					break;
+				case 1:
+					crop2Block = Blocks.potatoes;
+					seed2 = Items.potato;
+					break;
+				case 2:
+					crop2Block = LOTRMod.lettuceCrop;
+					seed2 = LOTRMod.lettuce;
+					break;
+				case 3:
+					crop2Block = LOTRMod.turnipCrop;
+					seed2 = LOTRMod.turnip;
+					break;
+				default:
+					break;
 			}
 		}
 	}

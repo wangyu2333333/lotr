@@ -1,6 +1,8 @@
 package lotr.common.network;
 
-import cpw.mods.fml.common.network.simpleimpl.*;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
@@ -19,7 +21,7 @@ public class LOTRPacketIsOpRequest implements IMessage {
 		public IMessage onMessage(LOTRPacketIsOpRequest packet, MessageContext context) {
 			EntityPlayerMP entityplayer = context.getServerHandler().playerEntity;
 			boolean isOp = MinecraftServer.getServer().getConfigurationManager().func_152596_g(entityplayer.getGameProfile());
-			LOTRPacketIsOpResponse packetResponse = new LOTRPacketIsOpResponse(isOp);
+			IMessage packetResponse = new LOTRPacketIsOpResponse(isOp);
 			LOTRPacketHandler.networkWrapper.sendTo(packetResponse, entityplayer);
 			return null;
 		}

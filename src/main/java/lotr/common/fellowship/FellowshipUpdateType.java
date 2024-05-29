@@ -1,19 +1,21 @@
 package lotr.common.fellowship;
 
-import java.util.*;
-
 import com.google.common.collect.ImmutableList;
-
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import lotr.common.*;
-import lotr.common.network.*;
+import lotr.common.LOTRPlayerData;
+import lotr.common.LOTRTitle;
+import lotr.common.network.LOTRPacketFellowship;
+import lotr.common.network.LOTRPacketFellowshipPartialUpdate;
+
+import java.util.List;
+import java.util.UUID;
 
 public interface FellowshipUpdateType {
 	IMessage createUpdatePacket(LOTRPlayerData var1, LOTRFellowship var2);
 
 	List<UUID> getPlayersToCheckSharedWaypointsFrom(LOTRFellowship var1);
 
-	public static class AddMember implements FellowshipUpdateType {
+	class AddMember implements FellowshipUpdateType {
 		public UUID memberID;
 
 		public AddMember(UUID member) {
@@ -31,7 +33,7 @@ public interface FellowshipUpdateType {
 		}
 	}
 
-	public static class ChangeIcon implements FellowshipUpdateType {
+	class ChangeIcon implements FellowshipUpdateType {
 		@Override
 		public IMessage createUpdatePacket(LOTRPlayerData pd, LOTRFellowship fs) {
 			return new LOTRPacketFellowshipPartialUpdate.ChangeIcon(fs);
@@ -43,7 +45,7 @@ public interface FellowshipUpdateType {
 		}
 	}
 
-	public static class Full implements FellowshipUpdateType {
+	class Full implements FellowshipUpdateType {
 		@Override
 		public IMessage createUpdatePacket(LOTRPlayerData pd, LOTRFellowship fs) {
 			return new LOTRPacketFellowship(pd, fs, false);
@@ -55,7 +57,7 @@ public interface FellowshipUpdateType {
 		}
 	}
 
-	public static class RemoveAdmin implements FellowshipUpdateType {
+	class RemoveAdmin implements FellowshipUpdateType {
 		public UUID adminID;
 
 		public RemoveAdmin(UUID admin) {
@@ -73,7 +75,7 @@ public interface FellowshipUpdateType {
 		}
 	}
 
-	public static class RemoveMember implements FellowshipUpdateType {
+	class RemoveMember implements FellowshipUpdateType {
 		public UUID memberID;
 
 		public RemoveMember(UUID member) {
@@ -91,7 +93,7 @@ public interface FellowshipUpdateType {
 		}
 	}
 
-	public static class Rename implements FellowshipUpdateType {
+	class Rename implements FellowshipUpdateType {
 		@Override
 		public IMessage createUpdatePacket(LOTRPlayerData pd, LOTRFellowship fs) {
 			return new LOTRPacketFellowshipPartialUpdate.Rename(fs);
@@ -103,7 +105,7 @@ public interface FellowshipUpdateType {
 		}
 	}
 
-	public static class SetAdmin implements FellowshipUpdateType {
+	class SetAdmin implements FellowshipUpdateType {
 		public UUID adminID;
 
 		public SetAdmin(UUID admin) {
@@ -121,7 +123,7 @@ public interface FellowshipUpdateType {
 		}
 	}
 
-	public static class SetOwner implements FellowshipUpdateType {
+	class SetOwner implements FellowshipUpdateType {
 		public UUID ownerID;
 
 		public SetOwner(UUID owner) {
@@ -139,7 +141,7 @@ public interface FellowshipUpdateType {
 		}
 	}
 
-	public static class ToggleHiredFriendlyFire implements FellowshipUpdateType {
+	class ToggleHiredFriendlyFire implements FellowshipUpdateType {
 		@Override
 		public IMessage createUpdatePacket(LOTRPlayerData pd, LOTRFellowship fs) {
 			return new LOTRPacketFellowshipPartialUpdate.ToggleHiredFriendlyFire(fs);
@@ -151,7 +153,7 @@ public interface FellowshipUpdateType {
 		}
 	}
 
-	public static class TogglePvp implements FellowshipUpdateType {
+	class TogglePvp implements FellowshipUpdateType {
 		@Override
 		public IMessage createUpdatePacket(LOTRPlayerData pd, LOTRFellowship fs) {
 			return new LOTRPacketFellowshipPartialUpdate.TogglePvp(fs);
@@ -163,7 +165,7 @@ public interface FellowshipUpdateType {
 		}
 	}
 
-	public static class ToggleShowMapLocations implements FellowshipUpdateType {
+	class ToggleShowMapLocations implements FellowshipUpdateType {
 		@Override
 		public IMessage createUpdatePacket(LOTRPlayerData pd, LOTRFellowship fs) {
 			return new LOTRPacketFellowshipPartialUpdate.ToggleShowMap(fs);
@@ -175,7 +177,7 @@ public interface FellowshipUpdateType {
 		}
 	}
 
-	public static class UpdatePlayerTitle implements FellowshipUpdateType {
+	class UpdatePlayerTitle implements FellowshipUpdateType {
 		public UUID playerID;
 		public LOTRTitle.PlayerTitle playerTitle;
 

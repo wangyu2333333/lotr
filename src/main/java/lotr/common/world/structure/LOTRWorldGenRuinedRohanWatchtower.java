@@ -1,12 +1,12 @@
 package lotr.common.world.structure;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import lotr.common.world.biome.LOTRBiome;
 import net.minecraft.block.Block;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenRuinedRohanWatchtower extends LOTRWorldGenStructureBase {
 	public Block plankBlock = LOTRMod.planks;
@@ -44,18 +44,18 @@ public class LOTRWorldGenRuinedRohanWatchtower extends LOTRWorldGenStructureBase
 			rotation = usingPlayerRotation();
 		}
 		switch (rotation) {
-		case 0: {
-			return generateFacingSouth(world, random, i, j, k);
-		}
-		case 1: {
-			return generateFacingWest(world, random, i, j, k);
-		}
-		case 2: {
-			return generateFacingNorth(world, random, i, j, k);
-		}
-		case 3: {
-			return generateFacingEast(world, random, i, j, k);
-		}
+			case 0: {
+				return generateFacingSouth(world, random, i, j, k);
+			}
+			case 1: {
+				return generateFacingWest(world, random, i, j, k);
+			}
+			case 2: {
+				return generateFacingNorth(world, random, i, j, k);
+			}
+			case 3: {
+				return generateFacingEast(world, random, i, j, k);
+			}
 		}
 		return true;
 	}

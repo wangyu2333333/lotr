@@ -1,21 +1,23 @@
 package lotr.common.block;
 
-import java.util.Random;
-
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
-import net.minecraft.util.*;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public abstract class LOTRBlockHangingFruit extends Block {
-	@SideOnly(value = Side.CLIENT)
-	public IIcon[] fruitIcons;
-	public String[] fruitSides = { "top", "side", "bottom" };
+import java.util.Random;
 
-	public LOTRBlockHangingFruit() {
+public abstract class LOTRBlockHangingFruit extends Block {
+	@SideOnly(Side.CLIENT)
+	public IIcon[] fruitIcons;
+	public String[] fruitSides = {"top", "side", "bottom"};
+
+	protected LOTRBlockHangingFruit() {
 		super(Material.plants);
 		setTickRandomly(true);
 	}
@@ -34,7 +36,7 @@ public abstract class LOTRBlockHangingFruit extends Block {
 		return super.getCollisionBoundingBoxFromPool(world, i, j, k);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
 		if (i == 0) {
@@ -46,7 +48,7 @@ public abstract class LOTRBlockHangingFruit extends Block {
 		return fruitIcons[1];
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public AxisAlignedBB getSelectedBoundingBoxFromPool(World world, int i, int j, int k) {
 		setBlockBoundsBasedOnState(world, i, j, k);
@@ -61,12 +63,12 @@ public abstract class LOTRBlockHangingFruit extends Block {
 	@Override
 	public void onNeighborBlockChange(World world, int i, int j, int k, Block block) {
 		if (!canBlockStay(world, i, j, k)) {
-			this.dropBlockAsItem(world, i, j, k, world.getBlockMetadata(i, j, k), 0);
+			dropBlockAsItem(world, i, j, k, world.getBlockMetadata(i, j, k), 0);
 			world.setBlockToAir(i, j, k);
 		}
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
 		fruitIcons = new IIcon[3];
@@ -83,7 +85,7 @@ public abstract class LOTRBlockHangingFruit extends Block {
 	@Override
 	public void updateTick(World world, int i, int j, int k, Random random) {
 		if (!canBlockStay(world, i, j, k)) {
-			this.dropBlockAsItem(world, i, j, k, world.getBlockMetadata(i, j, k), 0);
+			dropBlockAsItem(world, i, j, k, world.getBlockMetadata(i, j, k), 0);
 			world.setBlockToAir(i, j, k);
 		}
 	}

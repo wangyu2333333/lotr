@@ -1,7 +1,5 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import lotr.common.LOTRMod;
 import lotr.common.entity.npc.LOTREntityGaladhrimElf;
 import lotr.common.world.feature.LOTRWorldGenMallornExtreme;
@@ -12,9 +10,49 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
+import java.util.Random;
+
 public class LOTRWorldGenElfHouse extends LOTRWorldGenStructureBase2 {
 	public LOTRWorldGenElfHouse(boolean flag) {
 		super(flag);
+	}
+
+	public static ItemStack getRandomChandelier(Random random) {
+		if (random.nextBoolean()) {
+			int i = random.nextInt(3);
+			switch (i) {
+				case 0:
+					return new ItemStack(LOTRMod.chandelier, 1, 13);
+				case 1:
+					return new ItemStack(LOTRMod.chandelier, 1, 14);
+				case 2:
+					return new ItemStack(LOTRMod.chandelier, 1, 15);
+				default:
+					break;
+			}
+		}
+		return new ItemStack(LOTRMod.chandelier, 1, 5);
+	}
+
+	public static ItemStack getRandomPlant(Random random) {
+		return random.nextBoolean() ? new ItemStack(LOTRMod.elanor) : new ItemStack(LOTRMod.niphredil);
+	}
+
+	public static Block getRandomTorch(Random random) {
+		if (random.nextBoolean()) {
+			int i = random.nextInt(3);
+			switch (i) {
+				case 0:
+					return LOTRMod.mallornTorchBlue;
+				case 1:
+					return LOTRMod.mallornTorchGold;
+				case 2:
+					return LOTRMod.mallornTorchGreen;
+				default:
+					break;
+			}
+		}
+		return LOTRMod.mallornTorchSilver;
 	}
 
 	@Override
@@ -26,7 +64,7 @@ public class LOTRWorldGenElfHouse extends LOTRWorldGenStructureBase2 {
 		int k12;
 		int k13;
 		int k14;
-		this.setOriginAndRotation(world, i, j, k, rotation, usingPlayer != null ? 2 : 0);
+		setOriginAndRotation(world, i, j, k, rotation, usingPlayer != null ? 2 : 0);
 		if (usingPlayer != null) {
 			LOTRWorldGenMallornExtreme treeGen = new LOTRWorldGenMallornExtreme(true);
 			int i12 = 0;
@@ -113,14 +151,14 @@ public class LOTRWorldGenElfHouse extends LOTRWorldGenStructureBase2 {
 			setBlockAndMetadata(world, 3, j13, -6, LOTRMod.wood, 1);
 			setBlockAndMetadata(world, 3, j13, 6, LOTRMod.wood, 1);
 		}
-		setBlockAndMetadata(world, -4, 2, -5, LOTRWorldGenElfHouse.getRandomTorch(random), 2);
-		setBlockAndMetadata(world, -5, 2, -4, LOTRWorldGenElfHouse.getRandomTorch(random), 3);
-		setBlockAndMetadata(world, 4, 2, -5, LOTRWorldGenElfHouse.getRandomTorch(random), 1);
-		setBlockAndMetadata(world, 5, 2, -4, LOTRWorldGenElfHouse.getRandomTorch(random), 3);
-		setBlockAndMetadata(world, -4, 2, 5, LOTRWorldGenElfHouse.getRandomTorch(random), 2);
-		setBlockAndMetadata(world, -5, 2, 4, LOTRWorldGenElfHouse.getRandomTorch(random), 4);
-		setBlockAndMetadata(world, 4, 2, 5, LOTRWorldGenElfHouse.getRandomTorch(random), 1);
-		setBlockAndMetadata(world, 5, 2, 4, LOTRWorldGenElfHouse.getRandomTorch(random), 4);
+		setBlockAndMetadata(world, -4, 2, -5, getRandomTorch(random), 2);
+		setBlockAndMetadata(world, -5, 2, -4, getRandomTorch(random), 3);
+		setBlockAndMetadata(world, 4, 2, -5, getRandomTorch(random), 1);
+		setBlockAndMetadata(world, 5, 2, -4, getRandomTorch(random), 3);
+		setBlockAndMetadata(world, -4, 2, 5, getRandomTorch(random), 2);
+		setBlockAndMetadata(world, -5, 2, 4, getRandomTorch(random), 4);
+		setBlockAndMetadata(world, 4, 2, 5, getRandomTorch(random), 1);
+		setBlockAndMetadata(world, 5, 2, 4, getRandomTorch(random), 4);
 		for (i1 = -3; i1 <= 3; ++i1) {
 			setBlockAndMetadata(world, i1, 1, -7, LOTRMod.fence, 1);
 			setBlockAndMetadata(world, i1, 1, 7, LOTRMod.fence, 1);
@@ -261,9 +299,8 @@ public class LOTRWorldGenElfHouse extends LOTRWorldGenStructureBase2 {
 		}
 		for (int bough = 0; bough <= 2; ++bough) {
 			j1 = -3 + bough;
-			int i15 = 0 + bough;
 			k14 = 3 + bough;
-			for (int i2 = -i15; i2 <= i15; ++i2) {
+			for (int i2 = -bough; i2 <= bough; ++i2) {
 				for (int k2 = -k14; k2 <= k14; ++k2) {
 					setBlockAndMetadata(world, i2, j1, k2, LOTRMod.wood, 13);
 					setBlockAndMetadata(world, k2, j1, i2, LOTRMod.wood, 13);
@@ -282,7 +319,7 @@ public class LOTRWorldGenElfHouse extends LOTRWorldGenStructureBase2 {
 		setBlockAndMetadata(world, 2, 2, 0, Blocks.air, 0);
 		setBlockAndMetadata(world, 2, 3, 0, Blocks.air, 0);
 		setBlockAndMetadata(world, 2, 4, 0, LOTRMod.wood, 5);
-		this.placeChest(world, random, 0, 1, 2, LOTRMod.chestMallorn, 0, LOTRChestContents.ELF_HOUSE);
+		placeChest(world, random, 0, 1, 2, LOTRMod.chestMallorn, 0, LOTRChestContents.ELF_HOUSE);
 		setBlockAndMetadata(world, 0, 2, 2, Blocks.air, 0);
 		setBlockAndMetadata(world, 0, 3, 2, Blocks.air, 0);
 		setBlockAndMetadata(world, 0, 4, 2, LOTRMod.wood, 9);
@@ -294,14 +331,14 @@ public class LOTRWorldGenElfHouse extends LOTRWorldGenStructureBase2 {
 		tryPlaceLight(world, 3, -1, -7, random);
 		tryPlaceLight(world, -3, -1, 7, random);
 		tryPlaceLight(world, 3, -1, 7, random);
-		placeFlowerPot(world, -4, 1, -5, LOTRWorldGenElfHouse.getRandomPlant(random));
-		placeFlowerPot(world, -5, 1, -4, LOTRWorldGenElfHouse.getRandomPlant(random));
-		placeFlowerPot(world, -5, 1, 4, LOTRWorldGenElfHouse.getRandomPlant(random));
-		placeFlowerPot(world, -4, 1, 5, LOTRWorldGenElfHouse.getRandomPlant(random));
-		placeFlowerPot(world, 4, 1, -5, LOTRWorldGenElfHouse.getRandomPlant(random));
-		placeFlowerPot(world, 5, 1, -4, LOTRWorldGenElfHouse.getRandomPlant(random));
-		placeFlowerPot(world, 5, 1, 4, LOTRWorldGenElfHouse.getRandomPlant(random));
-		placeFlowerPot(world, 4, 1, 5, LOTRWorldGenElfHouse.getRandomPlant(random));
+		placeFlowerPot(world, -4, 1, -5, getRandomPlant(random));
+		placeFlowerPot(world, -5, 1, -4, getRandomPlant(random));
+		placeFlowerPot(world, -5, 1, 4, getRandomPlant(random));
+		placeFlowerPot(world, -4, 1, 5, getRandomPlant(random));
+		placeFlowerPot(world, 4, 1, -5, getRandomPlant(random));
+		placeFlowerPot(world, 5, 1, -4, getRandomPlant(random));
+		placeFlowerPot(world, 5, 1, 4, getRandomPlant(random));
+		placeFlowerPot(world, 4, 1, 5, getRandomPlant(random));
 		setBlockAndMetadata(world, -2, 1, 5, LOTRMod.elvenBed, 3);
 		setBlockAndMetadata(world, -3, 1, 5, LOTRMod.elvenBed, 11);
 		LOTREntityGaladhrimElf elf = new LOTREntityGaladhrimElf(world);
@@ -328,51 +365,13 @@ public class LOTRWorldGenElfHouse extends LOTRWorldGenStructureBase2 {
 		for (j1 = j; j1 >= j - height; --j1) {
 			if (j1 == j - height) {
 				setBlockAndMetadata(world, i, j1, k, LOTRMod.planks, 1);
-				setBlockAndMetadata(world, i, j1, k - 1, LOTRWorldGenElfHouse.getRandomTorch(random), 4);
-				setBlockAndMetadata(world, i, j1, k + 1, LOTRWorldGenElfHouse.getRandomTorch(random), 3);
-				setBlockAndMetadata(world, i - 1, j1, k, LOTRWorldGenElfHouse.getRandomTorch(random), 1);
-				setBlockAndMetadata(world, i + 1, j1, k, LOTRWorldGenElfHouse.getRandomTorch(random), 2);
+				setBlockAndMetadata(world, i, j1, k - 1, getRandomTorch(random), 4);
+				setBlockAndMetadata(world, i, j1, k + 1, getRandomTorch(random), 3);
+				setBlockAndMetadata(world, i - 1, j1, k, getRandomTorch(random), 1);
+				setBlockAndMetadata(world, i + 1, j1, k, getRandomTorch(random), 2);
 				continue;
 			}
 			setBlockAndMetadata(world, i, j1, k, LOTRMod.fence, 1);
 		}
-	}
-
-	public static ItemStack getRandomChandelier(Random random) {
-		if (random.nextBoolean()) {
-			int i = random.nextInt(3);
-			switch (i) {
-			case 0:
-				return new ItemStack(LOTRMod.chandelier, 1, 13);
-			case 1:
-				return new ItemStack(LOTRMod.chandelier, 1, 14);
-			case 2:
-				return new ItemStack(LOTRMod.chandelier, 1, 15);
-			default:
-				break;
-			}
-		}
-		return new ItemStack(LOTRMod.chandelier, 1, 5);
-	}
-
-	public static ItemStack getRandomPlant(Random random) {
-		return random.nextBoolean() ? new ItemStack(LOTRMod.elanor) : new ItemStack(LOTRMod.niphredil);
-	}
-
-	public static Block getRandomTorch(Random random) {
-		if (random.nextBoolean()) {
-			int i = random.nextInt(3);
-			switch (i) {
-			case 0:
-				return LOTRMod.mallornTorchBlue;
-			case 1:
-				return LOTRMod.mallornTorchGold;
-			case 2:
-				return LOTRMod.mallornTorchGreen;
-			default:
-				break;
-			}
-		}
-		return LOTRMod.mallornTorchSilver;
 	}
 }

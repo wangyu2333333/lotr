@@ -1,21 +1,16 @@
 package io.gitlab.dwarfyassassin.lotrucp.core.patches;
 
-import org.objectweb.asm.tree.*;
-
 import io.gitlab.dwarfyassassin.lotrucp.core.UCPCoreMod;
 import io.gitlab.dwarfyassassin.lotrucp.core.patches.base.Patcher;
 import io.gitlab.dwarfyassassin.lotrucp.core.utils.ASMUtils;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.MethodInsnNode;
+import org.objectweb.asm.tree.MethodNode;
 
 public class FMLPatcher extends Patcher {
 	public FMLPatcher() {
 		super("FML");
-		classes.put("cpw.mods.fml.common.LoadController", new Patcher.ConsumerImplBecauseNoLambdas<ClassNode>() {
-
-			@Override
-			public void accept(ClassNode node) {
-				FMLPatcher.this.patchLoadController(node);
-			}
-		});
+		classes.put("cpw.mods.fml.common.LoadController", this::patchLoadController);
 	}
 
 	public void patchLoadController(ClassNode classNode) {

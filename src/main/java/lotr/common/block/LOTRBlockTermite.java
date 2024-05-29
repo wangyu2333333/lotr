@@ -1,22 +1,26 @@
 package lotr.common.block;
 
-import java.util.*;
-
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.LOTRCreativeTabs;
 import lotr.common.entity.animal.LOTREntityTermite;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import net.minecraft.world.*;
+import net.minecraft.world.Explosion;
+import net.minecraft.world.World;
+
+import java.util.List;
+import java.util.Random;
 
 public class LOTRBlockTermite extends Block {
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon sideIcon;
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon topIcon;
 
 	public LOTRBlockTermite() {
@@ -37,7 +41,7 @@ public class LOTRBlockTermite extends Block {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon getIcon(int i, int j) {
 		if (i == 0 || i == 1) {
 			return topIcon;
@@ -46,7 +50,7 @@ public class LOTRBlockTermite extends Block {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(Item item, CreativeTabs tab, List list) {
 		for (int i = 0; i <= 1; ++i) {
 			list.add(new ItemStack(item, 1, i));
@@ -78,7 +82,7 @@ public class LOTRBlockTermite extends Block {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconregister) {
 		topIcon = iconregister.registerIcon(getTextureName());
 		sideIcon = iconregister.registerIcon(getTextureName() + "_side");

@@ -1,16 +1,18 @@
 package lotr.client.render.entity;
 
-import org.lwjgl.opengl.GL11;
-
 import lotr.client.model.LOTRModelHuman;
 import lotr.common.LOTRMod;
 import lotr.common.entity.item.LOTREntityOrcBomb;
-import lotr.common.entity.npc.*;
+import lotr.common.entity.npc.LOTREntityDunlending;
+import lotr.common.entity.npc.LOTREntityDunlendingBerserker;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraft.entity.*;
-import net.minecraft.item.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 public class LOTRRenderDunlendingBase extends LOTRRenderBiped {
 	public static LOTRRandomSkins dunlendingSkinsMale;
@@ -36,7 +38,7 @@ public class LOTRRenderDunlendingBase extends LOTRRenderBiped {
 			int i = entity.getBrightnessForRender(f1);
 			int j = i % 65536;
 			int k = i / 65536;
-			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j / 1.0f, k / 1.0f);
+			OpenGlHelper.setLightmapTextureCoords(OpenGlHelper.lightmapTexUnit, j, k);
 			GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			LOTRRenderOrcBomb bombRenderer = (LOTRRenderOrcBomb) RenderManager.instance.getEntityClassRenderObject(LOTREntityOrcBomb.class);

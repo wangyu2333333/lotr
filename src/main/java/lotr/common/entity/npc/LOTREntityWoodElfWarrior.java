@@ -1,9 +1,13 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
-import lotr.common.entity.ai.*;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
+import lotr.common.LOTRShields;
+import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
+import lotr.common.entity.ai.LOTREntityAIRangedAttack;
 import lotr.common.entity.animal.LOTREntityElk;
-import net.minecraft.entity.*;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -80,10 +84,10 @@ public class LOTREntityWoodElfWarrior extends LOTREntityWoodElf {
 		setCurrentItemOrArmor(1, new ItemStack(LOTRMod.bootsWoodElven));
 		setCurrentItemOrArmor(2, new ItemStack(LOTRMod.legsWoodElven));
 		setCurrentItemOrArmor(3, new ItemStack(LOTRMod.bodyWoodElven));
-		if (rand.nextInt(10) != 0) {
-			setCurrentItemOrArmor(4, new ItemStack(LOTRMod.helmetWoodElven));
-		} else {
+		if (rand.nextInt(10) == 0) {
 			setCurrentItemOrArmor(4, null);
+		} else {
+			setCurrentItemOrArmor(4, new ItemStack(LOTRMod.helmetWoodElven));
 		}
 		return data;
 	}

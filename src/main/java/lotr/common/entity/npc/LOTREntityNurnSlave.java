@@ -1,10 +1,13 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
 import lotr.common.entity.ai.*;
 import lotr.common.fac.LOTRFaction;
 import lotr.common.world.biome.LOTRBiomeGenNurn;
-import net.minecraft.entity.*;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -14,7 +17,7 @@ import net.minecraft.world.biome.BiomeGenBase;
 import net.minecraftforge.common.IPlantable;
 
 public class LOTREntityNurnSlave extends LOTREntityMan implements LOTRFarmhand {
-	public boolean isFree = false;
+	public boolean isFree;
 
 	public LOTREntityNurnSlave(World world) {
 		super(world);

@@ -1,15 +1,17 @@
 package lotr.client.gui;
 
-import org.lwjgl.opengl.GL11;
-
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import lotr.common.entity.npc.LOTREntityNPC;
 import lotr.common.inventory.LOTRContainerCoinExchange;
-import lotr.common.network.*;
+import lotr.common.network.LOTRPacketCoinExchange;
+import lotr.common.network.LOTRPacketHandler;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
-import net.minecraft.util.*;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
+import org.lwjgl.opengl.GL11;
 
 public class LOTRGuiCoinExchange extends GuiContainer {
 	public static ResourceLocation guiTexture = new ResourceLocation("lotr:gui/coin_exchange.png");
@@ -27,7 +29,7 @@ public class LOTRGuiCoinExchange extends GuiContainer {
 	public void actionPerformed(GuiButton button) {
 		if (button.enabled) {
 			if (button == buttonLeft || button == buttonRight) {
-				LOTRPacketCoinExchange packet = new LOTRPacketCoinExchange(button.id);
+				IMessage packet = new LOTRPacketCoinExchange(button.id);
 				LOTRPacketHandler.networkWrapper.sendToServer(packet);
 			} else {
 				super.actionPerformed(button);
@@ -57,7 +59,7 @@ public class LOTRGuiCoinExchange extends GuiContainer {
 
 	@Override
 	public void drawGuiContainerForegroundLayer(int i, int j) {
-		this.drawCenteredString(StatCollector.translateToLocal("container.lotr.coinExchange"), 89, 11, 4210752);
+		drawCenteredString(StatCollector.translateToLocal("container.lotr.coinExchange"), 89, 11, 4210752);
 		fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), 8, 94, 4210752);
 	}
 

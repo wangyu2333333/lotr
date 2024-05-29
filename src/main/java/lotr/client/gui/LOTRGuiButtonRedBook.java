@@ -1,9 +1,10 @@
 package lotr.client.gui;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiButton;
+import org.lwjgl.opengl.GL11;
 
 public class LOTRGuiButtonRedBook extends GuiButton {
 	public LOTRGuiButtonRedBook(int i, int x, int y, int w, int h, String s) {
@@ -22,7 +23,7 @@ public class LOTRGuiButtonRedBook extends GuiButton {
 			GL11.glEnable(3042);
 			GL11.glBlendFunc(770, 771);
 			Gui.func_146110_a(xPosition, yPosition, 170.0f, 316.0f, width / 2, height, 512.0f, 512.0f);
-			Gui.func_146110_a(xPosition + width / 2, yPosition, 370 - width / 2, 316.0f, width / 2, height, 512.0f, 512.0f);
+			Gui.func_146110_a(xPosition + width / 2, yPosition, 370 - (float) width / 2, 316.0f, width / 2, height, 512.0f, 512.0f);
 			mouseDragged(mc, i, j);
 			int color = 8019267;
 			if (!enabled) {

@@ -1,16 +1,20 @@
 package lotr.common.block;
 
-import java.util.*;
-
-import lotr.common.*;
-import lotr.common.fac.*;
+import lotr.common.LOTRCreativeTabs;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
+import lotr.common.fac.LOTRAlignmentValues;
+import lotr.common.fac.LOTRFaction;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 public class LOTRBlockCraftingTable extends Block {
-	public static List<LOTRBlockCraftingTable> allCraftingTables = new ArrayList<>();
+	public static Collection<LOTRBlockCraftingTable> allCraftingTables = new ArrayList<>();
 	public LOTRFaction tableFaction;
 	public int tableGUIID;
 

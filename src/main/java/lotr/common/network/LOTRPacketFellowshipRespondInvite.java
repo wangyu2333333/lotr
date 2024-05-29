@@ -1,9 +1,13 @@
 package lotr.common.network;
 
-import cpw.mods.fml.common.network.simpleimpl.*;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
-import lotr.common.*;
-import lotr.common.fellowship.*;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRPlayerData;
+import lotr.common.fellowship.LOTRFellowship;
+import lotr.common.fellowship.LOTRFellowshipClient;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 public class LOTRPacketFellowshipRespondInvite extends LOTRPacketFellowshipDo {
@@ -42,7 +46,7 @@ public class LOTRPacketFellowshipRespondInvite extends LOTRPacketFellowshipDo {
 					playerData.rejectFellowshipInvite(fellowship);
 				}
 			} else {
-				LOTRPacketFellowshipAcceptInviteResult resultPacket = new LOTRPacketFellowshipAcceptInviteResult(LOTRPacketFellowshipAcceptInviteResult.AcceptInviteResult.NONEXISTENT);
+				IMessage resultPacket = new LOTRPacketFellowshipAcceptInviteResult(LOTRPacketFellowshipAcceptInviteResult.AcceptInviteResult.NONEXISTENT);
 				LOTRPacketHandler.networkWrapper.sendTo(resultPacket, entityplayer);
 			}
 			return null;

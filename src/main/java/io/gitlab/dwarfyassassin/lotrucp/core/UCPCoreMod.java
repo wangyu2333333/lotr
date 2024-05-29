@@ -1,39 +1,19 @@
 package io.gitlab.dwarfyassassin.lotrucp.core;
 
-import java.util.*;
-
+import io.gitlab.dwarfyassassin.lotrucp.core.patches.base.Patcher;
 import org.apache.logging.log4j.Logger;
 
-import io.gitlab.dwarfyassassin.lotrucp.core.patches.base.Patcher;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class UCPCoreMod {
 	public static Logger log;
-	public static List<Patcher> activePatches;
-	public static List<Patcher> modPatches;
+	public static List<Patcher> activePatches = new ArrayList<>();
+	public static List<Patcher> modPatches = new ArrayList<>();
 
 	static {
-		activePatches = new ArrayList<>();
-		modPatches = new ArrayList<>();
 		System.out.println("LOTR-UCP: Found core mod.");
-	}
-
-	public String getAccessTransformerClass() {
-		return null;
-	}
-
-	public String[] getASMTransformerClass() {
-		return new String[] { UCPClassTransformer.class.getName() };
-	}
-
-	public String getModContainerClass() {
-		return null;
-	}
-
-	public String getSetupClass() {
-		return UCPCoreSetup.class.getName();
-	}
-
-	public void injectData(Map<String, Object> data) {
 	}
 
 	public static void loadModPatches() {
@@ -55,5 +35,25 @@ public class UCPCoreMod {
 		} else if (patcher.getLoadPhase() == Patcher.LoadingPhase.FORGE_MOD_LOADING) {
 			modPatches.add(patcher);
 		}
+	}
+
+	public String getAccessTransformerClass() {
+		return null;
+	}
+
+	public String[] getASMTransformerClass() {
+		return new String[]{UCPClassTransformer.class.getName()};
+	}
+
+	public String getModContainerClass() {
+		return null;
+	}
+
+	public String getSetupClass() {
+		return UCPCoreSetup.class.getName();
+	}
+
+	@SuppressWarnings("all")
+	public void injectData(Map<String, Object> data) {
 	}
 }

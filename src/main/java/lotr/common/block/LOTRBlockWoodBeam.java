@@ -1,24 +1,28 @@
 package lotr.common.block;
 
-import java.util.List;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
-import net.minecraft.block.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRCreativeTabs;
+import lotr.common.LOTRMod;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockRotatedPillar;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
+import java.util.List;
+
 public abstract class LOTRBlockWoodBeam extends BlockRotatedPillar {
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon[] sideIcons;
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon[] topIcons;
 	public String[] woodNames;
 
-	public LOTRBlockWoodBeam() {
+	protected LOTRBlockWoodBeam() {
 		super(Material.wood);
 		setCreativeTab(LOTRCreativeTabs.tabBlock);
 		setHardness(2.0f);
@@ -30,7 +34,7 @@ public abstract class LOTRBlockWoodBeam extends BlockRotatedPillar {
 		return LOTRMod.proxy.getBeamRenderID();
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getSideIcon(int i) {
 		if (i < 0 || i >= woodNames.length) {
@@ -39,7 +43,7 @@ public abstract class LOTRBlockWoodBeam extends BlockRotatedPillar {
 		return sideIcons[i];
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void getSubBlocks(Item item, CreativeTabs tab, List list) {
 		for (int j = 0; j < woodNames.length; ++j) {
@@ -47,7 +51,7 @@ public abstract class LOTRBlockWoodBeam extends BlockRotatedPillar {
 		}
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getTopIcon(int i) {
 		if (i < 0 || i >= woodNames.length) {
@@ -56,7 +60,7 @@ public abstract class LOTRBlockWoodBeam extends BlockRotatedPillar {
 		return topIcons[i];
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
 		sideIcons = new IIcon[woodNames.length];

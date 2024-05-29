@@ -1,15 +1,22 @@
 package lotr.common.world.structure2;
 
-import java.util.*;
-
 import lotr.common.world.feature.LOTRTreeType;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.WorldGenAbstractTree;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 public class LOTRWorldGenGondorTownTrees extends LOTRWorldGenGondorStructure {
 	public LOTRWorldGenGondorTownTrees(boolean flag) {
 		super(flag);
+	}
+
+	public static LOTRTreeType getRandomTree(Random random) {
+		ArrayList<LOTRTreeType> treeList = new ArrayList<>();
+		treeList.add(LOTRTreeType.CYPRESS);
+		return treeList.get(random.nextInt(treeList.size()));
 	}
 
 	@Override
@@ -17,7 +24,7 @@ public class LOTRWorldGenGondorTownTrees extends LOTRWorldGenGondorStructure {
 		int j1;
 		int k1;
 		int i1;
-		this.setOriginAndRotation(world, i, j, k, rotation, 2);
+		setOriginAndRotation(world, i, j, k, rotation, 2);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			for (i1 = -6; i1 <= 6; ++i1) {
@@ -51,19 +58,14 @@ public class LOTRWorldGenGondorTownTrees extends LOTRWorldGenGondorStructure {
 				setBlockAndMetadata(world, i1, 2, k1, Blocks.torch, 5);
 			}
 		}
-		for (int i12 : new int[] { -4, 0, 4 }) {
+		for (int i12 : new int[]{-4, 0, 4}) {
 			WorldGenAbstractTree treeGen;
 			j1 = 1;
 			int k12 = 0;
-			for (int l = 0; l < 16 && ((treeGen = LOTRWorldGenGondorTownTrees.getRandomTree(random).create(notifyChanges, random)) == null || !treeGen.generate(world, random, getX(i12, k12), getY(j1), getZ(i12, k12))); ++l) {
+			//noinspection StatementWithEmptyBody
+			for (int l = 0; l < 16 && ((treeGen = getRandomTree(random).create(notifyChanges, random)) == null || !treeGen.generate(world, random, getX(i12, k12), getY(j1), getZ(i12, k12))); ++l) {
 			}
 		}
 		return true;
-	}
-
-	public static LOTRTreeType getRandomTree(Random random) {
-		ArrayList<LOTRTreeType> treeList = new ArrayList<>();
-		treeList.add(LOTRTreeType.CYPRESS);
-		return treeList.get(random.nextInt(treeList.size()));
 	}
 }

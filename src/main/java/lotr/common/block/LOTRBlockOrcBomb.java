@@ -1,21 +1,26 @@
 package lotr.common.block;
 
-import java.util.List;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRCreativeTabs;
+import lotr.common.LOTRMod;
 import lotr.common.entity.item.LOTREntityOrcBomb;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
-import net.minecraft.world.*;
+import net.minecraft.world.Explosion;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+
+import java.util.List;
 
 public class LOTRBlockOrcBomb extends Block {
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon[] orcBombIcons;
 
 	public LOTRBlockOrcBomb() {
@@ -26,16 +31,24 @@ public class LOTRBlockOrcBomb extends Block {
 		setStepSound(Block.soundTypeMetal);
 	}
 
+	public static int getBombStrengthLevel(int meta) {
+		return meta & 7;
+	}
+
+	public static boolean isFireBomb(int meta) {
+		return (meta & 8) != 0;
+	}
+
 	@Override
 	public boolean canDropFromExplosion(Explosion explosion) {
 		return false;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public int colorMultiplier(IBlockAccess world, int i, int j, int k) {
 		int meta = world.getBlockMetadata(i, j, k);
-		int strength = LOTRBlockOrcBomb.getBombStrengthLevel(meta);
+		int strength = getBombStrengthLevel(meta);
 		if (strength == 1) {
 			return 11974326;
 		}
@@ -50,10 +63,10 @@ public class LOTRBlockOrcBomb extends Block {
 		return i;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
-		boolean isFire = LOTRBlockOrcBomb.isFireBomb(j);
+		boolean isFire = isFireBomb(j);
 		if (i == -1) {
 			return orcBombIcons[2];
 		}
@@ -63,10 +76,10 @@ public class LOTRBlockOrcBomb extends Block {
 		return isFire ? orcBombIcons[3] : orcBombIcons[0];
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public int getRenderColor(int i) {
-		int strength = LOTRBlockOrcBomb.getBombStrengthLevel(i);
+		int strength = getBombStrengthLevel(i);
 		if (strength == 1) {
 			return 11974326;
 		}
@@ -81,7 +94,7 @@ public class LOTRBlockOrcBomb extends Block {
 		return LOTRMod.proxy.getOrcBombRenderID();
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void getSubBlocks(Item item, CreativeTabs tab, List list) {
 		for (int i = 0; i <= 1; ++i) {
@@ -148,7 +161,7 @@ public class LOTRBlockOrcBomb extends Block {
 		}
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
 		orcBombIcons = new IIcon[5];
@@ -162,13 +175,5 @@ public class LOTRBlockOrcBomb extends Block {
 	@Override
 	public boolean renderAsNormalBlock() {
 		return false;
-	}
-
-	public static int getBombStrengthLevel(int meta) {
-		return meta & 7;
-	}
-
-	public static boolean isFireBomb(int meta) {
-		return (meta & 8) != 0;
 	}
 }

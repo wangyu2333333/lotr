@@ -1,8 +1,7 @@
 package lotr.common.block;
 
-import java.util.Random;
-
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.LOTRMod;
 import lotr.common.tileentity.LOTRTileEntityUnsmeltery;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -10,7 +9,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IIcon;
-import net.minecraft.world.*;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRBlockUnsmeltery extends LOTRBlockForgeBase {
 	@Override
@@ -18,13 +20,13 @@ public class LOTRBlockUnsmeltery extends LOTRBlockForgeBase {
 		return new LOTRTileEntityUnsmeltery();
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(IBlockAccess world, int i, int j, int k, int side) {
-		return this.getIcon(side, world.getBlockMetadata(i, j, k));
+		return getIcon(side, world.getBlockMetadata(i, j, k));
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
 		return Blocks.cobblestone.getIcon(i, j);
@@ -61,7 +63,7 @@ public class LOTRBlockUnsmeltery extends LOTRBlockForgeBase {
 		}
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
 	}

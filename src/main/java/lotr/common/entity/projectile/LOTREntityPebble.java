@@ -5,11 +5,13 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 public class LOTREntityPebble extends EntityThrowable {
-	public boolean isSling = false;
+	public boolean isSling;
 
 	public LOTREntityPebble(World world) {
 		super(world);

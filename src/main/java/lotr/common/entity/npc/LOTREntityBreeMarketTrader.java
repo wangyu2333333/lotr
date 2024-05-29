@@ -1,14 +1,15 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public abstract class LOTREntityBreeMarketTrader extends LOTREntityBreeMan implements LOTRTradeable {
-	public LOTREntityBreeMarketTrader(World world) {
+	protected LOTREntityBreeMarketTrader(World world) {
 		super(world);
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 	}
 
 	@Override

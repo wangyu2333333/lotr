@@ -1,18 +1,25 @@
 package lotr.client.gui;
 
-import java.util.List;
-
-import org.lwjgl.opengl.GL11;
-
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import lotr.client.LOTRClientProxy;
-import lotr.common.*;
-import lotr.common.entity.npc.*;
-import lotr.common.fac.*;
-import lotr.common.inventory.*;
-import lotr.common.network.*;
-import net.minecraft.client.gui.*;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
+import lotr.common.LOTRSquadrons;
+import lotr.common.entity.npc.LOTREntityNPC;
+import lotr.common.entity.npc.LOTRHireableBase;
+import lotr.common.entity.npc.LOTRUnitTradeEntries;
+import lotr.common.entity.npc.LOTRUnitTradeEntry;
+import lotr.common.fac.LOTRAlignmentValues;
+import lotr.common.fac.LOTRFaction;
+import lotr.common.inventory.LOTRContainerUnitTrade;
+import lotr.common.inventory.LOTRSlotAlignmentReward;
+import lotr.common.network.LOTRPacketBuyUnit;
+import lotr.common.network.LOTRPacketHandler;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
@@ -20,6 +27,9 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.*;
 import net.minecraft.world.World;
+import org.lwjgl.opengl.GL11;
+
+import java.util.List;
 
 public abstract class LOTRGuiHireBase extends GuiContainer {
 	public static ResourceLocation guiTexture = new ResourceLocation("lotr:gui/npc/unit_trade.png");
@@ -36,7 +46,7 @@ public abstract class LOTRGuiHireBase extends GuiContainer {
 	public LOTRGuiUnitTradeButton buttonRightUnit;
 	public GuiTextField squadronNameField;
 
-	public LOTRGuiHireBase(EntityPlayer entityplayer, LOTRHireableBase trader, World world) {
+	protected LOTRGuiHireBase(EntityPlayer entityplayer, LOTRHireableBase trader, World world) {
 		super(new LOTRContainerUnitTrade(entityplayer, trader, world));
 		xSize = 220;
 		ySize = 256;
@@ -53,7 +63,7 @@ public abstract class LOTRGuiHireBase extends GuiContainer {
 				}
 			} else if (button == buttonHire) {
 				String squadron = squadronNameField.getText();
-				LOTRPacketBuyUnit packet = new LOTRPacketBuyUnit(currentTradeEntryIndex, squadron);
+				IMessage packet = new LOTRPacketBuyUnit(currentTradeEntryIndex, squadron);
 				LOTRPacketHandler.networkWrapper.sendToServer(packet);
 			} else if (button == buttonRightUnit && currentTradeEntryIndex < trades.tradeEntries.length - 1) {
 				++currentTradeEntryIndex;
@@ -97,9 +107,9 @@ public abstract class LOTRGuiHireBase extends GuiContainer {
 	@Override
 	public void drawGuiContainerForegroundLayer(int i, int j) {
 		LOTRUnitTradeEntry curTrade = currentTrade();
-		this.drawCenteredString(theUnitTrader.getNPCName(), 110, 11, 4210752);
+		drawCenteredString(theUnitTrader.getNPCName(), 110, 11, 4210752);
 		fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), 30, 162, 4210752);
-		this.drawCenteredString(curTrade.getUnitTradeName(), 138, 50, 4210752);
+		drawCenteredString(curTrade.getUnitTradeName(), 138, 50, 4210752);
 		int reqX = 64;
 		int reqXText = reqX + 19;
 		int reqY = 65;
@@ -145,7 +155,7 @@ public abstract class LOTRGuiHireBase extends GuiContainer {
 				cost = LOTRSlotAlignmentReward.REWARD_COST;
 				fontRendererObj.drawString(String.valueOf(cost), 179, 104, 4210752);
 			} else if (!slot.getHasStack() && LOTRLevelData.getData(mc.thePlayer).getAlignment(traderFaction) < 1500.0f && func_146978_c(slot.xDisplayPosition, slot.yDisplayPosition, 16, 16, i, j)) {
-				drawCreativeTabHoveringText(StatCollector.translateToLocalFormatted("container.lotr.unitTrade.requiresAlignment", Float.valueOf(1500.0f)), i - guiLeft, j - guiTop);
+				drawCreativeTabHoveringText(StatCollector.translateToLocalFormatted("container.lotr.unitTrade.requiresAlignment", 1500.0f), i - guiLeft, j - guiTop);
 				GL11.glDisable(2896);
 				GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 			}

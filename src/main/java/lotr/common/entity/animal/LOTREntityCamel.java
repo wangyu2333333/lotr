@@ -1,11 +1,17 @@
 package lotr.common.entity.animal;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
+import lotr.common.LOTRReflection;
 import lotr.common.world.biome.LOTRBiomeGenNearHarad;
 import net.minecraft.block.BlockColored;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.*;
-import net.minecraft.item.*;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemDye;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
@@ -97,7 +103,7 @@ public class LOTREntityCamel extends LOTREntityHorse implements LOTRBiomeGenNear
 	@Override
 	public void onLOTRHorseSpawn() {
 		double jumpStrength = getEntityAttribute(LOTRReflection.getHorseJumpStrength()).getAttributeValue();
-		getEntityAttribute(LOTRReflection.getHorseJumpStrength()).setBaseValue(jumpStrength *= 0.5);
+		getEntityAttribute(LOTRReflection.getHorseJumpStrength()).setBaseValue(jumpStrength * 0.5);
 	}
 
 	public void setNomadChestAndCarpet() {

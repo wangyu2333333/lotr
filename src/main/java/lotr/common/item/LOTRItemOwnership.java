@@ -1,16 +1,19 @@
 package lotr.common.item;
 
-import java.util.*;
-
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.*;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LOTRItemOwnership {
 	public static void addPreviousOwner(ItemStack itemstack, String name) {
 		if (!itemstack.hasTagCompound()) {
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
-		List<String> previousOwners = LOTRItemOwnership.getPreviousOwners(itemstack);
+		List<String> previousOwners = getPreviousOwners(itemstack);
 		NBTTagCompound nbt = itemstack.getTagCompound();
 		if (nbt.hasKey("LOTROwner", 8)) {
 			nbt.removeTag("LOTROwner");
@@ -38,7 +41,7 @@ public class LOTRItemOwnership {
 	}
 
 	public static List<String> getPreviousOwners(ItemStack itemstack) {
-		ArrayList<String> owners = new ArrayList<>();
+		List<String> owners = new ArrayList<>();
 		if (itemstack.getTagCompound() != null) {
 			NBTTagCompound nbt = itemstack.getTagCompound();
 			if (nbt.hasKey("LOTROwner", 8)) {
@@ -61,9 +64,9 @@ public class LOTRItemOwnership {
 		if (!itemstack.hasTagCompound()) {
 			itemstack.setTagCompound(new NBTTagCompound());
 		}
-		previousCurrentOwner = LOTRItemOwnership.getCurrentOwner(itemstack);
+		previousCurrentOwner = getCurrentOwner(itemstack);
 		if (previousCurrentOwner != null) {
-			LOTRItemOwnership.addPreviousOwner(itemstack, previousCurrentOwner);
+			addPreviousOwner(itemstack, previousCurrentOwner);
 		}
 		NBTTagCompound nbt = itemstack.getTagCompound();
 		nbt.setString("LOTRCurrentOwner", name);

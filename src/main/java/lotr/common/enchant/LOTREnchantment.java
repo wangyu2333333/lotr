@@ -1,16 +1,19 @@
 package lotr.common.enchant;
 
+import lotr.common.entity.npc.*;
+import net.minecraft.command.ICommandSender;
+import net.minecraft.entity.EnumCreatureAttribute;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.ChatComponentTranslation;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IChatComponent;
+import net.minecraft.util.StatCollector;
+
 import java.text.DecimalFormat;
 import java.util.*;
 
-import lotr.common.entity.npc.*;
-import net.minecraft.entity.EnumCreatureAttribute;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
-
 public abstract class LOTREnchantment {
-	public static List<LOTREnchantment> allEnchantments = new ArrayList<>();
+	public static Collection<LOTREnchantment> allEnchantments = new ArrayList<>();
 	public static Map<String, LOTREnchantment> enchantsByName = new HashMap<>();
 	public static LOTREnchantment strong1 = new LOTREnchantmentDamage("strong1", 0.5f).setEnchantWeight(10);
 	public static LOTREnchantment strong2 = new LOTREnchantmentDamage("strong2", 1.0f).setEnchantWeight(5);
@@ -71,22 +74,26 @@ public abstract class LOTREnchantment {
 	public static LOTREnchantment headhunting = new LOTREnchantmentWeaponSpecial("headhunting").setCompatibleOtherSpecial().setIncompatibleBane().setEnchantWeight(0).setApplyToProjectile();
 	public String enchantName;
 	public List<LOTREnchantmentType> itemTypes;
-	public int enchantWeight = 0;
+	public int enchantWeight;
 	public float valueModifier = 1.0f;
-	public boolean skilful = false;
-	public boolean persistsReforge = false;
-	public boolean bypassAnvilLimit = false;
-	public boolean applyToProjectile = false;
+	public boolean skilful;
+	public boolean persistsReforge;
+	public boolean bypassAnvilLimit;
+	public boolean applyToProjectile;
 
-	public LOTREnchantment(String s, LOTREnchantmentType type) {
-		this(s, new LOTREnchantmentType[] { type });
+	protected LOTREnchantment(String s, LOTREnchantmentType type) {
+		this(s, new LOTREnchantmentType[]{type});
 	}
 
-	public LOTREnchantment(String s, LOTREnchantmentType[] types) {
+	protected LOTREnchantment(String s, LOTREnchantmentType[] types) {
 		enchantName = s;
 		itemTypes = Arrays.asList(types);
 		allEnchantments.add(this);
 		enchantsByName.put(enchantName, this);
+	}
+
+	public static LOTREnchantment getEnchantmentByName(String s) {
+		return enchantsByName.get(s);
 	}
 
 	public boolean applyToProjectile() {
@@ -141,19 +148,24 @@ public abstract class LOTREnchantment {
 	}
 
 	public IChatComponent getEarnMessage(ItemStack itemstack) {
-		ChatComponentTranslation msg = new ChatComponentTranslation("lotr.enchant." + enchantName + ".earn", itemstack.getDisplayName());
+		IChatComponent msg = new ChatComponentTranslation("lotr.enchant." + enchantName + ".earn", itemstack.getDisplayName());
 		msg.getChatStyle().setColor(EnumChatFormatting.YELLOW);
 		return msg;
 	}
 
-	public IChatComponent getEarnMessageWithName(EntityPlayer entityplayer, ItemStack itemstack) {
-		ChatComponentTranslation msg = new ChatComponentTranslation("lotr.enchant." + enchantName + ".earnName", entityplayer.getCommandSenderName(), itemstack.getDisplayName());
+	public IChatComponent getEarnMessageWithName(ICommandSender entityplayer, ItemStack itemstack) {
+		IChatComponent msg = new ChatComponentTranslation("lotr.enchant." + enchantName + ".earnName", entityplayer.getCommandSenderName(), itemstack.getDisplayName());
 		msg.getChatStyle().setColor(EnumChatFormatting.YELLOW);
 		return msg;
 	}
 
 	public int getEnchantWeight() {
 		return enchantWeight;
+	}
+
+	public LOTREnchantment setEnchantWeight(int i) {
+		enchantWeight = i;
+		return this;
 	}
 
 	public String getNamedFormattedDescription(ItemStack itemstack) {
@@ -165,14 +177,19 @@ public abstract class LOTREnchantment {
 		return valueModifier;
 	}
 
+	public LOTREnchantment setValueModifier(float f) {
+		valueModifier = f;
+		return this;
+	}
+
 	public boolean hasTemplateItem() {
-		return getEnchantWeight() > 0 && isBeneficial();
+		return enchantWeight > 0 && isBeneficial();
 	}
 
 	public abstract boolean isBeneficial();
 
 	public boolean isCompatibleWith(LOTREnchantment other) {
-		return this.getClass() != other.getClass();
+		return getClass() != other.getClass();
 	}
 
 	public boolean isSkilful() {
@@ -193,11 +210,6 @@ public abstract class LOTREnchantment {
 		return this;
 	}
 
-	public LOTREnchantment setEnchantWeight(int i) {
-		enchantWeight = i;
-		return this;
-	}
-
 	public LOTREnchantment setPersistsReforge() {
 		persistsReforge = true;
 		return this;
@@ -206,14 +218,5 @@ public abstract class LOTREnchantment {
 	public LOTREnchantment setSkilful() {
 		skilful = true;
 		return this;
-	}
-
-	public LOTREnchantment setValueModifier(float f) {
-		valueModifier = f;
-		return this;
-	}
-
-	public static LOTREnchantment getEnchantmentByName(String s) {
-		return enchantsByName.get(s);
 	}
 }

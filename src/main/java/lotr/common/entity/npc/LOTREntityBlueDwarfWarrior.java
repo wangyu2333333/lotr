@@ -1,6 +1,7 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRMod;
+import lotr.common.LOTRShields;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -21,25 +22,25 @@ public class LOTREntityBlueDwarfWarrior extends LOTREntityBlueDwarf {
 		data = super.onSpawnWithEgg(data);
 		int i = rand.nextInt(7);
 		switch (i) {
-		case 0:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.swordBlueDwarven));
-			break;
-		case 1:
-		case 2:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.battleaxeBlueDwarven));
-			break;
-		case 3:
-		case 4:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.hammerBlueDwarven));
-			break;
-		case 5:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.mattockBlueDwarven));
-			break;
-		case 6:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.pikeBlueDwarven));
-			break;
-		default:
-			break;
+			case 0:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.swordBlueDwarven));
+				break;
+			case 1:
+			case 2:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.battleaxeBlueDwarven));
+				break;
+			case 3:
+			case 4:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.hammerBlueDwarven));
+				break;
+			case 5:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.mattockBlueDwarven));
+				break;
+			case 6:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.pikeBlueDwarven));
+				break;
+			default:
+				break;
 		}
 		if (rand.nextInt(6) == 0) {
 			npcItemsInv.setSpearBackup(npcItemsInv.getMeleeWeapon());

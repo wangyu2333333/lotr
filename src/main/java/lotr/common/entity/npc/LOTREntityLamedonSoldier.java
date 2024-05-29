@@ -1,6 +1,8 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRCapes;
+import lotr.common.LOTRMod;
+import lotr.common.LOTRShields;
 import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
 import lotr.common.entity.animal.LOTREntityHorse;
 import net.minecraft.entity.IEntityLivingData;
@@ -42,26 +44,26 @@ public class LOTREntityLamedonSoldier extends LOTREntityGondorSoldier {
 		data = super.onSpawnWithEgg(data);
 		int i = rand.nextInt(3);
 		switch (i) {
-		case 0:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.swordGondor));
-			break;
-		case 1:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.hammerGondor));
-			break;
-		case 2:
-			npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.pikeGondor));
-			break;
-		default:
-			break;
+			case 0:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.swordGondor));
+				break;
+			case 1:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.hammerGondor));
+				break;
+			case 2:
+				npcItemsInv.setMeleeWeapon(new ItemStack(LOTRMod.pikeGondor));
+				break;
+			default:
+				break;
 		}
 		npcItemsInv.setIdleItem(npcItemsInv.getMeleeWeapon());
 		setCurrentItemOrArmor(1, new ItemStack(LOTRMod.bootsLamedon));
 		setCurrentItemOrArmor(2, new ItemStack(LOTRMod.legsLamedon));
 		setCurrentItemOrArmor(3, new ItemStack(LOTRMod.bodyLamedon));
-		if (rand.nextInt(10) != 0) {
-			setCurrentItemOrArmor(4, new ItemStack(LOTRMod.helmetLamedon));
-		} else {
+		if (rand.nextInt(10) == 0) {
 			setCurrentItemOrArmor(4, null);
+		} else {
+			setCurrentItemOrArmor(4, new ItemStack(LOTRMod.helmetLamedon));
 		}
 		return data;
 	}

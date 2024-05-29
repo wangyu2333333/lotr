@@ -1,17 +1,22 @@
 package lotr.common.tileentity;
 
-import java.util.List;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRDimension;
+import lotr.common.LOTRGuiMessageTypes;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
 import lotr.common.world.LOTRTeleporterUtumno;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.*;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
-import net.minecraft.world.Teleporter;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MathHelper;
+
+import java.util.List;
 
 public class LOTRTileEntityUtumnoPortal extends TileEntity {
 	public static int WIDTH = 3;
@@ -42,14 +47,14 @@ public class LOTRTileEntityUtumnoPortal extends TileEntity {
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public double getMaxRenderDistanceSquared() {
 		double d = 256.0;
 		return d * d;
 	}
 
 	@Override
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public AxisAlignedBB getRenderBoundingBox() {
 		return AxisAlignedBB.getBoundingBox(xCoord - 2, yCoord, zCoord - 2, xCoord + 3, yCoord + 30, zCoord + 3);
 	}
@@ -70,7 +75,7 @@ public class LOTRTileEntityUtumnoPortal extends TileEntity {
 			LOTRTeleporterUtumno teleporter = LOTRTeleporterUtumno.newTeleporter(dimension);
 			teleporter.setTargetCoords(actingPortal.targetX, actingPortal.targetZ);
 			if (entity instanceof EntityPlayerMP) {
-				MinecraftServer.getServer().getConfigurationManager().transferPlayerToDimension((EntityPlayerMP) entity, dimension, (Teleporter) teleporter);
+				MinecraftServer.getServer().getConfigurationManager().transferPlayerToDimension((EntityPlayerMP) entity, dimension, teleporter);
 			} else {
 				LOTRMod.transferEntityToDimension(entity, dimension, teleporter);
 			}

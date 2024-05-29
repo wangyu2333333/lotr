@@ -1,11 +1,12 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
-import lotr.common.*;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
 import lotr.common.entity.npc.LOTREntityGulfHaradrim;
 import lotr.common.world.structure.LOTRChestContents;
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenGulfHouse extends LOTRWorldGenGulfStructure {
 	public LOTRWorldGenGulfHouse(boolean flag) {
@@ -15,7 +16,7 @@ public class LOTRWorldGenGulfHouse extends LOTRWorldGenGulfStructure {
 	@Override
 	public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
 		int j1;
-		this.setOriginAndRotation(world, i, j, k, rotation, 8);
+		setOriginAndRotation(world, i, j, k, rotation, 8);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			int minHeight = 0;
@@ -70,15 +71,15 @@ public class LOTRWorldGenGulfHouse extends LOTRWorldGenGulfStructure {
 		generateStrScan(world, random, 0, 0, 0);
 		setBlockAndMetadata(world, 0, 1, 5, bedBlock, 0);
 		setBlockAndMetadata(world, 0, 1, 6, bedBlock, 8);
-		this.placeChest(world, random, 6, 1, 0, LOTRMod.chestBasket, 5, LOTRChestContents.GULF_HOUSE);
-		for (int k1 : new int[] { -2, 0, 2 }) {
+		placeChest(world, random, 6, 1, 0, LOTRMod.chestBasket, 5, LOTRChestContents.GULF_HOUSE);
+		for (int k1 : new int[]{-2, 0, 2}) {
 			int i1 = -6;
 			int j12 = 2;
 			if (random.nextBoolean()) {
 				placePlate(world, random, i1, j12, k1, LOTRMod.woodPlateBlock, LOTRFoods.GULF_HARAD);
 				continue;
 			}
-			this.placeMug(world, random, i1, j12, k1, 3, LOTRFoods.GULF_HARAD_DRINK);
+			placeMug(world, random, i1, j12, k1, 3, LOTRFoods.GULF_HARAD_DRINK);
 		}
 		int men = 1 + random.nextInt(2);
 		for (int l = 0; l < men; ++l) {

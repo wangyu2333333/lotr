@@ -1,14 +1,17 @@
 package lotr.client.gui;
 
-import org.apache.commons.lang3.StringUtils;
-import org.lwjgl.opengl.GL11;
-
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import lotr.common.item.LOTRItemBrandingIron;
-import lotr.common.network.*;
-import net.minecraft.client.gui.*;
+import lotr.common.network.LOTRPacketBrandingIron;
+import lotr.common.network.LOTRPacketHandler;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.*;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
+import org.apache.commons.lang3.StringUtils;
+import org.lwjgl.opengl.GL11;
 
 public class LOTRGuiBrandingIron extends LOTRGuiScreenBase {
 	public static ResourceLocation guiTexture = new ResourceLocation("lotr:gui/brandingIron.png");
@@ -33,7 +36,7 @@ public class LOTRGuiBrandingIron extends LOTRGuiScreenBase {
 		drawDefaultBackground();
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		mc.getTextureManager().bindTexture(guiTexture);
-		this.drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
+		drawTexturedModalRect(guiLeft, guiTop, 0, 0, xSize, ySize);
 		String s = StatCollector.translateToLocal("lotr.gui.brandingIron.title");
 		fontRendererObj.drawString(s, guiLeft + xSize / 2 - fontRendererObj.getStringWidth(s) / 2, guiTop + 11, 4210752);
 		s = StatCollector.translateToLocal("lotr.gui.brandingIron.naming");
@@ -83,7 +86,7 @@ public class LOTRGuiBrandingIron extends LOTRGuiScreenBase {
 		super.onGuiClosed();
 		String brandName = brandNameField.getText();
 		if (!StringUtils.isBlank(brandName)) {
-			LOTRPacketBrandingIron packet = new LOTRPacketBrandingIron(brandName);
+			IMessage packet = new LOTRPacketBrandingIron(brandName);
 			LOTRPacketHandler.networkWrapper.sendToServer(packet);
 		}
 	}

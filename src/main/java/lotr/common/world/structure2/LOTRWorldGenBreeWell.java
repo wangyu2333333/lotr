@@ -1,8 +1,8 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRWorldGenBreeWell extends LOTRWorldGenBreeStructure {
 	public LOTRWorldGenBreeWell(boolean flag) {
@@ -14,7 +14,7 @@ public class LOTRWorldGenBreeWell extends LOTRWorldGenBreeStructure {
 		int i1;
 		int j1;
 		int k1;
-		this.setOriginAndRotation(world, i, j, k, rotation, 2);
+		setOriginAndRotation(world, i, j, k, rotation, 2);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			for (i1 = -1; i1 <= 2; ++i1) {

@@ -1,8 +1,9 @@
 package lotr.common.network;
 
 import com.google.common.base.Charsets;
-
-import cpw.mods.fml.common.network.simpleimpl.*;
+import cpw.mods.fml.common.network.simpleimpl.IMessage;
+import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import lotr.common.LOTRSquadrons;
 import lotr.common.entity.npc.LOTREntityNPC;
@@ -54,11 +55,11 @@ public class LOTRPacketNPCSquadron implements IMessage {
 				LOTREntityNPC hiredNPC = (LOTREntityNPC) npc;
 				if (hiredNPC.hiredNPCInfo.isActive && hiredNPC.hiredNPCInfo.getHiringPlayer() == entityplayer) {
 					String squadron = packet.squadron;
-					if (!StringUtils.isNullOrEmpty(squadron)) {
+					if (StringUtils.isNullOrEmpty(squadron)) {
+						hiredNPC.hiredNPCInfo.setSquadron("");
+					} else {
 						squadron = LOTRSquadrons.checkAcceptableLength(squadron);
 						hiredNPC.hiredNPCInfo.setSquadron(squadron);
-					} else {
-						hiredNPC.hiredNPCInfo.setSquadron("");
 					}
 				}
 			}

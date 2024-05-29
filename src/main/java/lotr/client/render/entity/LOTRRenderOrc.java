@@ -1,18 +1,22 @@
 package lotr.client.render.entity;
 
-import org.lwjgl.opengl.GL11;
-
 import lotr.client.LOTRTextures;
 import lotr.client.model.LOTRModelOrc;
-import lotr.common.entity.npc.*;
-import net.minecraft.entity.*;
+import lotr.common.entity.LOTRRandomSkinEntity;
+import lotr.common.entity.npc.LOTREntityBlackUruk;
+import lotr.common.entity.npc.LOTREntityOrc;
+import lotr.common.entity.npc.LOTREntityUrukHai;
+import lotr.common.entity.npc.LOTREntityUrukHaiBerserker;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 public class LOTRRenderOrc extends LOTRRenderBiped {
 	public static LOTRRandomSkins orcSkins;
 	public static LOTRRandomSkins urukSkins;
 	public static LOTRRandomSkins blackUrukSkins;
-	public LOTRModelOrc eyesModel = new LOTRModelOrc(0.05f);
+	public LOTRGlowingEyes.Model eyesModel = new LOTRModelOrc(0.05f);
 
 	public LOTRRenderOrc() {
 		super(new LOTRModelOrc(), 0.5f);
@@ -29,7 +33,7 @@ public class LOTRRenderOrc extends LOTRRenderBiped {
 
 	@Override
 	public ResourceLocation getEntityTexture(Entity entity) {
-		LOTREntityOrc orc = (LOTREntityOrc) entity;
+		LOTRRandomSkinEntity orc = (LOTRRandomSkinEntity) entity;
 		if (orc instanceof LOTREntityUrukHai) {
 			return urukSkins.getRandomSkin(orc);
 		}
@@ -54,7 +58,7 @@ public class LOTRRenderOrc extends LOTRRenderBiped {
 	@Override
 	public void renderModel(EntityLivingBase entity, float f, float f1, float f2, float f3, float f4, float f5) {
 		super.renderModel(entity, f, f1, f2, f3, f4, f5);
-		ResourceLocation eyes = LOTRTextures.getEyesTexture(this.getEntityTexture(entity), new int[][] { { 9, 11 }, { 13, 11 } }, 2, 1);
+		ResourceLocation eyes = LOTRTextures.getEyesTexture(getEntityTexture(entity), new int[][]{{9, 11}, {13, 11}}, 2, 1);
 		LOTRGlowingEyes.renderGlowingEyes(entity, eyes, eyesModel, f, f1, f2, f3, f4, f5);
 	}
 }

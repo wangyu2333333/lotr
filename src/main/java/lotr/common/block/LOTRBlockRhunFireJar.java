@@ -1,21 +1,29 @@
 package lotr.common.block;
 
-import java.util.Random;
-
-import cpw.mods.fml.relauncher.*;
-import lotr.common.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import lotr.common.LOTRCreativeTabs;
+import lotr.common.LOTRMod;
 import lotr.common.entity.LOTREntityFallingFireJar;
-import net.minecraft.block.*;
-import net.minecraft.block.material.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockFalling;
+import net.minecraft.block.material.MapColor;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialLogic;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.*;
-import net.minecraft.util.*;
-import net.minecraft.world.*;
+import net.minecraft.item.ItemFlintAndSteel;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.Explosion;
+import net.minecraft.world.World;
+
+import java.util.Random;
 
 public class LOTRBlockRhunFireJar extends BlockFalling {
-	public static int renderingStage = 0;
+	public static int renderingStage;
 	public static int renderBase = 1;
 	public static int renderNeck = 2;
 	public static int renderLid = 3;
@@ -24,29 +32,29 @@ public class LOTRBlockRhunFireJar extends BlockFalling {
 	public static int renderHandle = 6;
 	public static boolean explodeOnAdded = true;
 	public static Material materialFireJar = new MaterialLogic(MapColor.stoneColor);
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon iconBaseSide;
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon iconBaseTop;
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon iconBaseBottom;
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon iconNeckSide;
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon iconLidSide;
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon iconLidTop;
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon iconLidBottom;
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon iconCapSide;
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon iconCapTop;
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon iconCapBottom;
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon iconCrownSide;
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	public IIcon iconHandleSide;
 
 	public LOTRBlockRhunFireJar() {
@@ -81,24 +89,24 @@ public class LOTRBlockRhunFireJar extends BlockFalling {
 		explode(world, i, j, k);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(int i, int j) {
 		switch (renderingStage) {
-		case 1:
-			return i == 0 ? iconBaseBottom : i == 1 ? iconBaseTop : iconBaseSide;
-		case 2:
-			return iconNeckSide;
-		case 3:
-			return i == 0 ? iconLidBottom : i == 1 ? iconLidTop : iconLidSide;
-		case 4:
-			return i == 0 ? iconCapBottom : i == 1 ? iconCapTop : iconCapSide;
-		case 5:
-			return iconCrownSide;
-		case 6:
-			return iconHandleSide;
-		default:
-			break;
+			case 1:
+				return i == 0 ? iconBaseBottom : i == 1 ? iconBaseTop : iconBaseSide;
+			case 2:
+				return iconNeckSide;
+			case 3:
+				return i == 0 ? iconLidBottom : i == 1 ? iconLidTop : iconLidSide;
+			case 4:
+				return i == 0 ? iconCapBottom : i == 1 ? iconCapTop : iconCapSide;
+			case 5:
+				return iconCrownSide;
+			case 6:
+				return iconHandleSide;
+			default:
+				break;
 		}
 		return LOTRMod.brick5.getIcon(i, 11);
 	}
@@ -160,7 +168,7 @@ public class LOTRBlockRhunFireJar extends BlockFalling {
 		}
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerBlockIcons(IIconRegister iconregister) {
 		iconBaseSide = iconregister.registerIcon(getTextureName() + "_base_side");

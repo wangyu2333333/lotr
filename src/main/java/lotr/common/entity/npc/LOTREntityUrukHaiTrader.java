@@ -1,6 +1,8 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRLevelData;
+import lotr.common.LOTRMod;
 import net.minecraft.entity.IEntityLivingData;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -9,17 +11,12 @@ import net.minecraft.world.World;
 public class LOTREntityUrukHaiTrader extends LOTREntityUrukHai implements LOTRTradeable.Smith {
 	public LOTREntityUrukHaiTrader(World world) {
 		super(world);
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 	}
 
 	@Override
 	public boolean canTradeWith(EntityPlayer entityplayer) {
 		return LOTRLevelData.getData(entityplayer).getAlignment(getFaction()) >= 100.0f && isFriendly(entityplayer);
-	}
-
-	@Override
-	public float getAlignmentBonus() {
-		return 2.0f;
 	}
 
 	@Override

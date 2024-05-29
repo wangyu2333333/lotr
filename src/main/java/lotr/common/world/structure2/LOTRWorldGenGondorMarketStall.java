@@ -1,18 +1,27 @@
 package lotr.common.world.structure2;
 
-import java.util.Random;
-
 import com.google.common.math.IntMath;
-
 import lotr.common.entity.npc.*;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 
-public abstract class LOTRWorldGenGondorMarketStall extends LOTRWorldGenGondorStructure {
-	public static Class[] allStallTypes = { Greengrocer.class, Lumber.class, Mason.class, Brewer.class, Flowers.class, Butcher.class, Fish.class, Farmer.class, Blacksmith.class, Baker.class };
+import java.util.Random;
 
-	public LOTRWorldGenGondorMarketStall(boolean flag) {
+public abstract class LOTRWorldGenGondorMarketStall extends LOTRWorldGenGondorStructure {
+	public static Class[] allStallTypes = {Greengrocer.class, Lumber.class, Mason.class, Brewer.class, Flowers.class, Butcher.class, Fish.class, Farmer.class, Blacksmith.class, Baker.class};
+
+	protected LOTRWorldGenGondorMarketStall(boolean flag) {
 		super(flag);
+	}
+
+	public static LOTRWorldGenStructureBase2 getRandomStall(Random random, boolean flag) {
+		try {
+			Class cls = allStallTypes[random.nextInt(allStallTypes.length)];
+			return (LOTRWorldGenStructureBase2) cls.getConstructor(Boolean.TYPE).newInstance(flag);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	public abstract LOTREntityGondorMan createTrader(World var1);
@@ -22,7 +31,7 @@ public abstract class LOTRWorldGenGondorMarketStall extends LOTRWorldGenGondorSt
 	@Override
 	public boolean generateWithSetRotation(World world, Random random, int i, int j, int k, int rotation) {
 		int j1;
-		this.setOriginAndRotation(world, i, j, k, rotation, 3);
+		setOriginAndRotation(world, i, j, k, rotation, 3);
 		setupRandomBlocks(random);
 		if (restrictions) {
 			int minHeight = 0;
@@ -76,16 +85,6 @@ public abstract class LOTRWorldGenGondorMarketStall extends LOTRWorldGenGondorSt
 		return true;
 	}
 
-	public static LOTRWorldGenStructureBase2 getRandomStall(Random random, boolean flag) {
-		try {
-			Class cls = allStallTypes[random.nextInt(allStallTypes.length)];
-			return (LOTRWorldGenStructureBase2) cls.getConstructor(Boolean.TYPE).newInstance(flag);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
 	public static class Baker extends LOTRWorldGenGondorMarketStall {
 		public Baker(boolean flag) {
 			super(flag);
@@ -98,7 +97,6 @@ public abstract class LOTRWorldGenGondorMarketStall extends LOTRWorldGenGondorSt
 
 		@Override
 		public void generateRoof(World world, Random random, int i1, int j1, int k1) {
-			Math.abs(i1);
 			int k2 = Math.abs(k1);
 			if (k2 % 2 == 0) {
 				setBlockAndMetadata(world, i1, j1, k1, Blocks.wool, 1);
@@ -142,7 +140,6 @@ public abstract class LOTRWorldGenGondorMarketStall extends LOTRWorldGenGondorSt
 		@Override
 		public void generateRoof(World world, Random random, int i1, int j1, int k1) {
 			int i2 = Math.abs(i1);
-			Math.abs(k1);
 			if (i2 % 2 == 0) {
 				setBlockAndMetadata(world, i1, j1, k1, Blocks.wool, 12);
 			} else {

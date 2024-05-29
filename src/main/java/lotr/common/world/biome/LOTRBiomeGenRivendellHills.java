@@ -1,10 +1,14 @@
 package lotr.common.world.biome;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRMod;
 import lotr.common.world.biome.variant.LOTRBiomeVariant;
 import lotr.common.world.feature.LOTRTreeType;
 import lotr.common.world.map.LOTRWaypoint;
-import lotr.common.world.spawning.*;
+import lotr.common.world.spawning.LOTRBiomeSpawnList;
+import lotr.common.world.spawning.LOTREventSpawner;
+import lotr.common.world.spawning.LOTRInvasions;
+import lotr.common.world.spawning.LOTRSpawnList;
 
 public class LOTRBiomeGenRivendellHills extends LOTRBiomeGenRivendell {
 	public LOTRBiomeGenRivendellHills(int i, boolean major) {
@@ -27,8 +31,8 @@ public class LOTRBiomeGenRivendellHills extends LOTRBiomeGenRivendell {
 		npcSpawnList.conquestGainRate = 0.2f;
 		clearBiomeVariants();
 		variantChance = 0.4f;
-		this.addBiomeVariant(LOTRBiomeVariant.FLOWERS);
-		this.addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
+		addBiomeVariant(LOTRBiomeVariant.FLOWERS);
+		addBiomeVariant(LOTRBiomeVariant.FOREST_LIGHT);
 		decorator.treesPerChunk = 3;
 		decorator.flowersPerChunk = 2;
 		decorator.grassPerChunk = 10;

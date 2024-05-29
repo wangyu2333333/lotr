@@ -21,6 +21,45 @@ public enum LOTRMountains {
 		lavaRange = l;
 	}
 
+	public static int getLavaHeight(int x, int z) {
+		for (LOTRMountains m : values()) {
+			double dx;
+			double dz;
+			if (m.lavaRange <= 0 || (dx = x - m.xCoord) * dx + (dz = z - m.zCoord) * dz >= (m.lavaRange + 6) * (m.lavaRange + 6)) {
+				continue;
+			}
+			return Math.round(m.getLavaCraterHeight() * 110.0f);
+		}
+		return 0;
+	}
+
+	public static float getTotalHeightBoost(int x, int z) {
+		float f = 0.0f;
+		for (LOTRMountains m : values()) {
+			f += m.getHeightBoost(x, z);
+		}
+		return f;
+	}
+
+	public static boolean mountainAt(int x, int z) {
+		return getTotalHeightBoost(x, z) > 0.005f;
+	}
+
+	public static boolean mountainNear(int x, int z, int range) {
+		for (LOTRMountains m : values()) {
+			double dx = x - m.xCoord;
+			double dz = z - m.zCoord;
+			double distSq = dx * dx + dz * dz;
+			double mtnRange = range + m.range;
+			double rangeSq = mtnRange * mtnRange;
+			if (distSq > rangeSq) {
+				continue;
+			}
+			return true;
+		}
+		return false;
+	}
+
 	public float getHeightBoost(int x, int z) {
 		double dx = x - xCoord;
 		double dz = z - zCoord;
@@ -38,45 +77,6 @@ public enum LOTRMountains {
 	}
 
 	public float getLavaCraterHeight() {
-		return (1.0f - (float) lavaRange / (float) range) * height * 0.4f;
-	}
-
-	public static int getLavaHeight(int x, int z) {
-		for (LOTRMountains m : LOTRMountains.values()) {
-			double dx;
-			double dz;
-			if (m.lavaRange <= 0 || (dx = x - m.xCoord) * dx + (dz = z - m.zCoord) * dz >= (m.lavaRange + 6) * (m.lavaRange + 6)) {
-				continue;
-			}
-			return Math.round(m.getLavaCraterHeight() * 110.0f);
-		}
-		return 0;
-	}
-
-	public static float getTotalHeightBoost(int x, int z) {
-		float f = 0.0f;
-		for (LOTRMountains m : LOTRMountains.values()) {
-			f += m.getHeightBoost(x, z);
-		}
-		return f;
-	}
-
-	public static boolean mountainAt(int x, int z) {
-		return LOTRMountains.getTotalHeightBoost(x, z) > 0.005f;
-	}
-
-	public static boolean mountainNear(int x, int z, int range) {
-		for (LOTRMountains m : LOTRMountains.values()) {
-			double dx = x - m.xCoord;
-			double dz = z - m.zCoord;
-			double distSq = dx * dx + dz * dz;
-			double mtnRange = range + m.range;
-			double rangeSq = mtnRange * mtnRange;
-			if (distSq > rangeSq) {
-				continue;
-			}
-			return true;
-		}
-		return false;
+		return (1.0f - (float) lavaRange / range) * height * 0.4f;
 	}
 }

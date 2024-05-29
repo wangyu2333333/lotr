@@ -1,20 +1,27 @@
 package lotr.common.entity.npc;
 
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.client.LOTRTickHandlerClient;
-import lotr.common.entity.ai.*;
+import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
+import lotr.common.entity.ai.LOTREntityAIFollowHiringPlayer;
+import lotr.common.entity.ai.LOTREntityAIHiredRemainStill;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.culling.Frustrum;
-import net.minecraft.entity.*;
+import net.minecraft.client.renderer.culling.ICamera;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.init.Blocks;
-import net.minecraft.util.*;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
 public abstract class LOTREntityHuornBase extends LOTREntityTree {
-	public boolean ignoringFrustumForRender = false;
+	public boolean ignoringFrustumForRender;
 
-	public LOTREntityHuornBase(World world) {
+	protected LOTREntityHuornBase(World world) {
 		super(world);
 		setSize(1.5f, 4.0f);
 		getNavigator().setAvoidsWater(true);
@@ -102,7 +109,11 @@ public abstract class LOTREntityHuornBase extends LOTREntityTree {
 		return dataWatcher.getWatchableObjectByte(17) == 1;
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	public void setHuornActive(boolean flag) {
+		dataWatcher.updateObject(17, flag ? (byte) 1 : 0);
+	}
+
+	@SideOnly(Side.CLIENT)
 	@Override
 	public boolean isInRangeToRender3d(double d, double d1, double d2) {
 		EntityLivingBase viewer = Minecraft.getMinecraft().renderViewEntity;
@@ -110,7 +121,7 @@ public abstract class LOTREntityHuornBase extends LOTREntityTree {
 		double viewX = viewer.lastTickPosX + (viewer.posX - viewer.lastTickPosX) * f;
 		double viewY = viewer.lastTickPosY + (viewer.posY - viewer.lastTickPosY) * f;
 		double viewZ = viewer.lastTickPosZ + (viewer.posZ - viewer.lastTickPosZ) * f;
-		Frustrum camera = new Frustrum();
+		ICamera camera = new Frustrum();
 		camera.setPosition(viewX, viewY, viewZ);
 		AxisAlignedBB expandedBB = boundingBox.expand(2.0, 3.0, 2.0);
 		if (camera.isBoundingBoxInFrustum(expandedBB)) {
@@ -127,9 +138,5 @@ public abstract class LOTREntityHuornBase extends LOTREntityTree {
 			boolean active = !getNavigator().noPath() || getAttackTarget() != null && getAttackTarget().isEntityAlive();
 			setHuornActive(active);
 		}
-	}
-
-	public void setHuornActive(boolean flag) {
-		dataWatcher.updateObject(17, flag ? (byte) 1 : 0);
 	}
 }

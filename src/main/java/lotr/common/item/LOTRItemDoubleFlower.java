@@ -1,8 +1,9 @@
 package lotr.common.item;
 
-import cpw.mods.fml.relauncher.*;
-import lotr.common.block.LOTRBlockDoubleFlower;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDoublePlant;
 import net.minecraft.util.IIcon;
 
 public class LOTRItemDoubleFlower extends LOTRItemBlockMetadata {
@@ -10,9 +11,9 @@ public class LOTRItemDoubleFlower extends LOTRItemBlockMetadata {
 		super(block);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIconFromDamage(int i) {
-		return ((LOTRBlockDoubleFlower) field_150939_a).func_149888_a(true, i);
+		return ((BlockDoublePlant) field_150939_a).func_149888_a(true, i);
 	}
 }

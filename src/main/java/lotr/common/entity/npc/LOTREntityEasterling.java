@@ -1,12 +1,17 @@
 package lotr.common.entity.npc;
 
-import lotr.common.*;
+import lotr.common.LOTRAchievement;
+import lotr.common.LOTRFoods;
+import lotr.common.LOTRMod;
 import lotr.common.entity.ai.*;
 import lotr.common.fac.LOTRFaction;
-import lotr.common.quest.*;
+import lotr.common.quest.LOTRMiniQuest;
+import lotr.common.quest.LOTRMiniQuestFactory;
 import lotr.common.world.biome.LOTRBiomeGenRhunLand;
 import lotr.common.world.structure.LOTRChestContents;
-import net.minecraft.entity.*;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.IEntityLivingData;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -16,7 +21,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.BiomeGenBase;
 
 public class LOTREntityEasterling extends LOTREntityMan {
-	public static ItemStack[] weapons = { new ItemStack(LOTRMod.daggerRhun), new ItemStack(LOTRMod.daggerIron), new ItemStack(LOTRMod.daggerBronze) };
+	public static ItemStack[] weapons = {new ItemStack(LOTRMod.daggerRhun), new ItemStack(LOTRMod.daggerIron), new ItemStack(LOTRMod.daggerBronze)};
 
 	public LOTREntityEasterling(World world) {
 		super(world);
@@ -35,7 +40,7 @@ public class LOTREntityEasterling extends LOTREntityMan {
 		tasks.addTask(7, new EntityAIWatchClosest2(this, LOTREntityNPC.class, 5.0f, 0.02f));
 		tasks.addTask(8, new EntityAIWatchClosest(this, EntityLiving.class, 8.0f, 0.02f));
 		tasks.addTask(9, new EntityAILookIdle(this));
-		this.addTargetTasks(false);
+		addTargetTasks(false);
 	}
 
 	@Override
@@ -52,11 +57,6 @@ public class LOTREntityEasterling extends LOTREntityMan {
 	@Override
 	public LOTRMiniQuest createMiniQuest() {
 		return LOTRMiniQuestFactory.RHUN.createQuest(this);
-	}
-
-	@Override
-	public LOTRNPCMount createMountToRide() {
-		return super.createMountToRide();
 	}
 
 	@Override
@@ -104,9 +104,7 @@ public class LOTREntityEasterling extends LOTREntityMan {
 			int i = MathHelper.floor_double(posX);
 			int j = MathHelper.floor_double(boundingBox.minY);
 			int k = MathHelper.floor_double(posZ);
-			if (j > 62 && worldObj.getBlock(i, j - 1, k) == worldObj.getBiomeGenForCoords(i, k).topBlock) {
-				return true;
-			}
+			return j > 62 && worldObj.getBlock(i, j - 1, k) == worldObj.getBiomeGenForCoords(i, k).topBlock;
 		}
 		return false;
 	}

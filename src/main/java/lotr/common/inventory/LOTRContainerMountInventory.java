@@ -1,11 +1,14 @@
 package lotr.common.inventory;
 
-import java.util.ArrayList;
-
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.entity.animal.LOTREntityHorse;
-import net.minecraft.inventory.*;
+import net.minecraft.inventory.ContainerHorseInventory;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+
+import java.util.ArrayList;
 
 public class LOTRContainerMountInventory extends ContainerHorseInventory {
 	public LOTRContainerMountInventory(IInventory playerInv, IInventory horseInv, LOTREntityHorse horse) {
@@ -17,7 +20,7 @@ public class LOTRContainerMountInventory extends ContainerHorseInventory {
 		Slot armorSlot = (Slot) slots.get(1);
 		addSlotToContainer(new Slot(armorSlot.inventory, armorSlot.slotNumber, armorSlot.xDisplayPosition, armorSlot.yDisplayPosition) {
 
-			@SideOnly(value = Side.CLIENT)
+			@SideOnly(Side.CLIENT)
 			@Override
 			public boolean func_111238_b() {
 				return horse.func_110259_cr();

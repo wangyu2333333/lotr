@@ -1,7 +1,5 @@
 package lotr.client.render.entity;
 
-import org.lwjgl.opengl.GL11;
-
 import lotr.client.LOTRClientProxy;
 import lotr.client.model.LOTRModelSmokeShip;
 import lotr.common.entity.projectile.LOTREntitySmokeRing;
@@ -11,6 +9,7 @@ import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 public class LOTRRenderSmokeRing extends Render {
 	public ModelBase magicShipModel = new LOTRModelSmokeShip();
@@ -54,10 +53,10 @@ public class LOTRRenderSmokeRing extends Render {
 	}
 
 	public void drawSprite(Tessellator tessellator, int index) {
-		float var3 = (index % 16 * 16 + 0) / 128.0f;
+		float var3 = (index % 16 * 16) / 128.0f;
 		float var4 = (index % 16 * 16 + 16) / 128.0f;
-		float var5 = (index / 16 * 16 + 0) / 128.0f;
-		float var6 = (index / 16 * 16 + 16) / 128.0f;
+		float var5 = ((float) index / 16 * 16) / 128.0f;
+		float var6 = ((float) index / 16 * 16 + 16) / 128.0f;
 		float var7 = 1.0f;
 		float var8 = 0.5f;
 		float var9 = 0.25f;

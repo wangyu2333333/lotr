@@ -1,7 +1,5 @@
 package lotr.common.entity.animal;
 
-import java.util.List;
-
 import lotr.common.LOTRMod;
 import lotr.common.entity.LOTREntities;
 import lotr.common.entity.ai.LOTREntityAIAttackOnCollide;
@@ -15,15 +13,20 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.WorldChunkManager;
+
+import java.util.List;
+import java.util.Locale;
 
 public class LOTREntityBear extends EntityAnimal implements LOTRAnimalSpawnConditions {
 	public EntityAIBase attackAI = new LOTREntityAIAttackOnCollide(this, 1.7, false);
 	public EntityAIBase panicAI = new EntityAIPanic(this, 1.5);
 	public EntityAIBase targetNearAI = new EntityAINearestAttackableTarget(this, EntityPlayer.class, 0, true);
-	public int hostileTick = 0;
+	public int hostileTick;
 	public boolean prevIsChild = true;
 
 	public LOTREntityBear(World world) {
@@ -110,7 +113,7 @@ public class LOTREntityBear extends EntityAnimal implements LOTRAnimalSpawnCondi
 		}
 		if (flag) {
 			int rugChance = 30 - i * 5;
-			if (rand.nextInt(rugChance = Math.max(rugChance, 1)) == 0) {
+			if (rand.nextInt(Math.max(rugChance, 1)) == 0) {
 				entityDropItem(new ItemStack(LOTRMod.bearRug, 1, getBearType().bearID), 0.0f);
 			}
 		}
@@ -127,6 +130,10 @@ public class LOTREntityBear extends EntityAnimal implements LOTRAnimalSpawnCondi
 	public BearType getBearType() {
 		byte i = dataWatcher.getWatchableObjectByte(18);
 		return BearType.forID(i);
+	}
+
+	public void setBearType(BearType t) {
+		dataWatcher.updateObject(18, (byte) t.bearID);
 	}
 
 	@Override
@@ -195,6 +202,10 @@ public class LOTREntityBear extends EntityAnimal implements LOTRAnimalSpawnCondi
 		return dataWatcher.getWatchableObjectByte(20) == 1;
 	}
 
+	public void setHostile(boolean flag) {
+		dataWatcher.updateObject(20, flag ? (byte) 1 : 0);
+	}
+
 	@Override
 	public void onLivingUpdate() {
 		boolean isChild;
@@ -258,26 +269,11 @@ public class LOTREntityBear extends EntityAnimal implements LOTRAnimalSpawnCondi
 		hostileTick = nbt.getInteger("Angry");
 	}
 
-	public void setBearType(BearType t) {
-		dataWatcher.updateObject(18, (byte) t.bearID);
-	}
-
-	public void setHostile(boolean flag) {
-		dataWatcher.updateObject(20, flag ? (byte) 1 : 0);
-	}
-
 	@Override
 	public void writeEntityToNBT(NBTTagCompound nbt) {
 		super.writeEntityToNBT(nbt);
 		nbt.setByte("BearType", (byte) getBearType().bearID);
 		nbt.setInteger("Angry", hostileTick);
-	}
-
-	public static class BearGroupSpawnData implements IEntityLivingData {
-		public int numSpawned = 0;
-
-		public BearGroupSpawnData() {
-		}
 	}
 
 	public enum BearType {
@@ -289,20 +285,16 @@ public class LOTREntityBear extends EntityAnimal implements LOTRAnimalSpawnCondi
 			bearID = i;
 		}
 
-		public String textureName() {
-			return name().toLowerCase();
-		}
-
 		public static String[] bearTypeNames() {
-			String[] names = new String[BearType.values().length];
+			String[] names = new String[values().length];
 			for (int i = 0; i < names.length; ++i) {
-				names[i] = BearType.values()[i].textureName();
+				names[i] = values()[i].textureName();
 			}
 			return names;
 		}
 
 		public static BearType forID(int ID) {
-			for (BearType t : BearType.values()) {
+			for (BearType t : values()) {
 				if (t.bearID != ID) {
 					continue;
 				}
@@ -310,6 +302,15 @@ public class LOTREntityBear extends EntityAnimal implements LOTRAnimalSpawnCondi
 			}
 			return LIGHT;
 		}
+
+		public String textureName() {
+			return name().toLowerCase(Locale.ROOT);
+		}
+	}
+
+	public static class BearGroupSpawnData implements IEntityLivingData {
+		public int numSpawned;
+
 	}
 
 }

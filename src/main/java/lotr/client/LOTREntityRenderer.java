@@ -1,14 +1,17 @@
 package lotr.client;
 
-import java.util.List;
-
 import lotr.common.item.LOTRWeaponStats;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItemFrame;
-import net.minecraft.util.*;
+import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.Vec3;
+
+import java.util.List;
 
 public class LOTREntityRenderer extends EntityRenderer {
 	public Minecraft theMC;
@@ -27,7 +30,7 @@ public class LOTREntityRenderer extends EntityRenderer {
 			thePointedEntity = null;
 			double blockReach = theMC.playerController.getBlockReachDistance();
 			float meleeReachFactor = LOTRWeaponStats.getMeleeReachFactor(theMC.thePlayer.getHeldItem());
-			theMC.objectMouseOver = theMC.renderViewEntity.rayTrace(blockReach *= meleeReachFactor, partialTick);
+			theMC.objectMouseOver = theMC.renderViewEntity.rayTrace(blockReach * meleeReachFactor, partialTick);
 			double maxDist = reach = LOTRWeaponStats.getMeleeReachDistance(theMC.thePlayer);
 			Vec3 posVec = theMC.renderViewEntity.getPosition(partialTick);
 			if (theMC.objectMouseOver != null) {
@@ -49,7 +52,7 @@ public class LOTREntityRenderer extends EntityRenderer {
 				AxisAlignedBB entityBB = entity.boundingBox.expand(f, f, f);
 				MovingObjectPosition movingobjectposition = entityBB.calculateIntercept(posVec, sightVec);
 				if (entityBB.isVecInside(posVec)) {
-					if (0.0 >= leastDist && leastDist != 0.0) {
+					if (leastDist <= 0.0 && leastDist != 0.0) {
 						continue;
 					}
 					thePointedEntity = entity;

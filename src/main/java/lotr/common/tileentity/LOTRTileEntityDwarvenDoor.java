@@ -1,16 +1,18 @@
 package lotr.common.tileentity;
 
-import java.util.*;
-
-import org.apache.commons.lang3.tuple.Pair;
-
-import cpw.mods.fml.relauncher.*;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import lotr.common.block.LOTRBlockGateDwarvenIthildin;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.*;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LOTRTileEntityDwarvenDoor extends TileEntity {
 	public static Map<ChunkCoordinates, Pair<Long, Integer>> replacementGlowTicks = new HashMap<>();
@@ -60,7 +62,7 @@ public class LOTRTileEntityDwarvenDoor extends TileEntity {
 		return glowLogic.getGlowBrightness(worldObj, xCoord, yCoord, zCoord, f);
 	}
 
-	@SideOnly(value = Side.CLIENT)
+	@SideOnly(Side.CLIENT)
 	@Override
 	public double getMaxRenderDistanceSquared() {
 		double range = GLOW_RANGE + 20;
