@@ -1,0 +1,27 @@
+buildscript {
+	repositories {
+		mavenCentral()
+        maven {
+            name = "github"
+            url = "https://github.com/juanmuscaria/maven/raw/master"
+        }
+	}
+	dependencies {
+		classpath 'net.minecraftforge.gradle:ForgeGradle:[1.2-1.4.6-SNAPSHOT,)'
+	}
+}
+
+apply plugin: 'forge'
+
+version = "1.0"
+group= "com.yourname.modid"
+archivesBaseName = "modid"
+
+minecraft {
+    version = "1.7.10-10.13.4.1614-1.7.10"
+    runDir = "eclipse"
+}
+
+dependencies {
+
+}
